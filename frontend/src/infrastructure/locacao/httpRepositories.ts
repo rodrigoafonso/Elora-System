@@ -1,11 +1,24 @@
 import { z } from 'zod';
+import { ProblemasDoContratoError } from '@/application/locacao/casosDeUso';
 import type { LocacaoRepositories } from '@/application/ports/locacao';
 import type { ContratoLocacao } from '@/domain/locacao/contrato';
-import { http } from '../http/httpClient';
+import { ApiError, http } from '../http/httpClient';
 import { contratoSchema, imovelResumoSchema, pessoaResumoSchema } from './esquemas';
 
 const base = '/locacao';
-const contrato = async (p: Promise<unknown>) => contratoSchema.parse(await p) as ContratoLocacao;
+
+const problemaSchema = z.object({ art: z.string(), titulo: z.string(), msg: z.string() });
+
+/** Converte o 422 com "problemas" da API no mesmo erro que o caso de uso lança (o formulário mostra a lista). */
+async function contrato(p: Promise<unknown>): Promise<ContratoLocacao> {
+  try {
+    return contratoSchema.parse(await p) as ContratoLocacao;
+  } catch (e) {
+    const lista = e instanceof ApiError ? z.array(problemaSchema).safeParse(e.corpo.problemas) : null;
+    if (lista?.success && lista.data.length) throw new ProblemasDoContratoError(lista.data);
+    throw e;
+  }
+}
 
 /** Locação sobre a API REST do back-end. */
 export const locacaoHttp: LocacaoRepositories = {
