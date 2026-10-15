@@ -3,7 +3,13 @@ import { useOutletContext } from 'react-router';
 import { ProblemasDoContratoError } from '@/application/locacao/casosDeUso';
 import { agendaLegal, SEV } from '@/domain/locacao/agenda';
 import { GARANTIA, TIPO, type ContratoLocacao, type DadosContrato } from '@/domain/locacao/contrato';
-import { documentosDoContrato, reajustePendente, ultimoReajuste, type ProblemaContrato } from '@/domain/locacao/regras';
+import {
+  documentosDoContrato,
+  reajustePendente,
+  situacaoDoSeguro,
+  ultimoReajuste,
+  type ProblemaContrato,
+} from '@/domain/locacao/regras';
 import { formatarData } from '@/domain/shared/datas';
 import { formatarPct, formatarReais } from '@/domain/shared/dinheiro';
 import { useAviso } from '../../components/Avisos';
@@ -93,7 +99,7 @@ export function LocacaoPage() {
             />
             <p className="sub">
               O formulário recusa o que a Lei 8.245/91 não permite: caução acima de três aluguéis, cobrança antecipada
-              com garantia, índice proibido.
+              com garantia, índice proibido. Política da Elora: seguro-fiança; caução só com o consentimento do locador.
             </p>
           </Painel>
         </>
@@ -207,6 +213,7 @@ function TabelaContratos({
                   ) : (
                     <Etiqueta classe="ok">Ativo</Etiqueta>
                   )}
+                  <SeguroDoImovel contrato={c} hoje={hoje} />
                   {pend ? (
                     <small>Reajuste a aplicar desde {formatarData(pend)}</small>
                   ) : ult ? (
@@ -230,4 +237,18 @@ function TabelaContratos({
       </table>
     </div>
   );
+}
+
+/** Linha do seguro do imóvel na coluna Situação (só quando pede ação). */
+function SeguroDoImovel({ contrato: c, hoje }: { contrato: ContratoLocacao; hoje: string }) {
+  if (c.status !== 'ativo') return null;
+  const s = situacaoDoSeguro(c, hoje);
+  if (s === 'em_dia') return null;
+  const texto =
+    s === 'sem_seguro'
+      ? 'Seguro do imóvel não informado'
+      : s === 'vencido'
+        ? `Seguro do imóvel vencido em ${formatarData(c.seguroImovelFim)}`
+        : `Seguro do imóvel vence em ${formatarData(c.seguroImovelFim)}`;
+  return <small style={{ color: s === 'vence_logo' ? 'var(--warn)' : 'var(--bad)' }}>{texto}</small>;
 }

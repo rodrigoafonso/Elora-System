@@ -1,4 +1,4 @@
-import type { ContratoLocacao, DadosContrato } from '@/domain/locacao/contrato';
+import { ehCaucao, type ContratoLocacao, type DadosContrato } from '@/domain/locacao/contrato';
 import { validarContrato, validarReajuste, type ProblemaContrato } from '@/domain/locacao/regras';
 import type { LocacaoRepositories } from '../ports/locacao';
 
@@ -19,8 +19,15 @@ export const casosDeUsoLocacao = (repos: LocacaoRepositories) => ({
     const imovelJaAlugado = existentes.some(
       (o) => o.id !== id && o.imovelId === dados.imovelId && o.status === 'ativo',
     );
-    exigirSemProblemas(validarContrato(dados, { novo: !id, imovelJaAlugado }));
-    const limpos: DadosContrato = { ...dados, ...(dados.status === 'ativo' ? { encerradoEm: undefined } : {}) };
+    const anterior = id ? existentes.find((o) => o.id === id) : undefined;
+    const garantiaAlterada = Boolean(anterior && anterior.garantia !== dados.garantia);
+    exigirSemProblemas(validarContrato(dados, { novo: !id, imovelJaAlugado, garantiaAlterada }));
+    const limpos: DadosContrato = {
+      ...dados,
+      ...(dados.status === 'ativo' ? { encerradoEm: undefined } : {}),
+      // Consentimento só faz sentido em caução.
+      ...(ehCaucao(dados.garantia) ? {} : { consentimentoCaucaoEm: undefined }),
+    };
     return id ? repos.contratos.atualizar(id, limpos) : repos.contratos.criar(limpos);
   },
 

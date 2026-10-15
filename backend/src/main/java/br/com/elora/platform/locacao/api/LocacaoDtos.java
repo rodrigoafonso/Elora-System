@@ -9,6 +9,7 @@ import br.com.elora.platform.locacao.domain.Enums.StatusContrato;
 import br.com.elora.platform.locacao.domain.Enums.TipoLocacao;
 import br.com.elora.platform.locacao.domain.Enums.Venia;
 import br.com.elora.platform.locacao.domain.Reajuste;
+import br.com.elora.platform.locacao.domain.RegrasDoContrato;
 import br.com.elora.platform.locacao.domain.Resumos;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,13 +29,16 @@ public final class LocacaoDtos {
             BigDecimal premio, boolean antecipada, @NotNull Venia venia, BigDecimal cond, BigDecimal iptu, BigDecimal intermediacao,
             String corretorLocId, Integer diaRepasse, @Size(max = 120) String extraLocDesc, BigDecimal extraLocValor,
             @Size(max = 120) String extraPropDesc, BigDecimal extraPropValor, @Size(max = 4000) String clausulas, boolean docContrato,
-            boolean docVistoria, boolean docGarantia, boolean docSeguro, @NotNull StatusContrato status, LocalDate encerradoEm) {
+            boolean docVistoria, boolean docGarantia, boolean docSeguro, @NotNull StatusContrato status, LocalDate encerradoEm,
+            LocalDate consentimentoCaucaoEm, @Size(max = 120) String seguroImovelSeguradora, @Size(max = 60) String seguroImovelApolice,
+            LocalDate seguroImovelFim) {
 
         DadosContrato dados() {
             return new DadosContrato(imovelId, locatarioId, tipo, inicio, fim, aluguel, taxa, venc, formaPagamento, indice, garantia, caucao,
                     seguradora, apolice, apoliceFim, premio, antecipada, venia, cond, iptu, intermediacao, vazioNulo(corretorLocId), diaRepasse,
                     extraLocDesc, extraLocValor, extraPropDesc, extraPropValor, clausulas, docContrato, docVistoria, docGarantia, docSeguro,
-                    status, status == StatusContrato.ativo ? null : encerradoEm);
+                    status, status == StatusContrato.ativo ? null : encerradoEm,
+                    RegrasDoContrato.ehCaucao(garantia) ? consentimentoCaucaoEm : null, seguroImovelSeguradora, seguroImovelApolice, seguroImovelFim);
         }
 
         private static String vazioNulo(String s) {
@@ -69,7 +73,8 @@ public final class LocacaoDtos {
             BigDecimal premio, boolean antecipada, Venia venia, BigDecimal cond, BigDecimal iptu, BigDecimal intermediacao,
             String corretorLocId, Integer diaRepasse, String extraLocDesc, BigDecimal extraLocValor, String extraPropDesc,
             BigDecimal extraPropValor, String clausulas, boolean docContrato, boolean docVistoria, boolean docGarantia, boolean docSeguro,
-            StatusContrato status, LocalDate encerradoEm, List<ReajusteDto> reajustes) {
+            StatusContrato status, LocalDate encerradoEm, LocalDate consentimentoCaucaoEm, String seguroImovelSeguradora,
+            String seguroImovelApolice, LocalDate seguroImovelFim, List<ReajusteDto> reajustes) {
 
         static ContratoDto de(ContratoLocacao c, Resumos.Imovel imovel, Resumos.Pessoa locatario) {
             DadosContrato d = c.dados();
@@ -78,6 +83,7 @@ public final class LocacaoDtos {
                     d.seguradora(), d.apolice(), d.apoliceFim(), d.premio(), d.antecipada(), d.venia(), d.cond(), d.iptu(), d.intermediacao(),
                     d.corretorLocId(), d.diaRepasse(), d.extraLocDesc(), d.extraLocValor(), d.extraPropDesc(), d.extraPropValor(),
                     d.clausulas(), d.docContrato(), d.docVistoria(), d.docGarantia(), d.docSeguro(), d.status(), d.encerradoEm(),
+                    d.consentimentoCaucaoEm(), d.seguroImovelSeguradora(), d.seguroImovelApolice(), d.seguroImovelFim(),
                     c.reajustes().stream().map(ReajusteDto::de).toList());
         }
     }

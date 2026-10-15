@@ -37,7 +37,8 @@ class LocacaoApiIT {
         return """
                 {"imovelId":"%s","locatarioId":"%s","tipo":"residencial","inicio":"2026-11-01","fim":"2029-04-30","aluguel":3000,"taxa":8,
                  "indice":"IPCA","garantia":"%s","caucao":%s,"antecipada":false,"venia":"na","status":"ativo",
-                 "docContrato":false,"docVistoria":false,"docGarantia":false,"docSeguro":false}
+                 "docContrato":false,"docVistoria":false,"docGarantia":false,"docSeguro":false,
+                 "consentimentoCaucaoEm":"2026-10-20","seguroImovelSeguradora":"Seguradora Exemplo","seguroImovelFim":"2027-10-31"}
                 """.formatted(CASA, RAFAEL, garantia, caucao);
     }
 
@@ -60,6 +61,14 @@ class LocacaoApiIT {
         mvc.perform(post("/api/v1/locacao/contratos").header("X-Tenant-Id", "elora").contentType(MediaType.APPLICATION_JSON)
                         .content(contrato("seguro_fianca", "null")))
                 .andExpect(status().isUnprocessableEntity()).andExpect(jsonPath("$.problemas[0].titulo").value("Imóvel já alugado"));
+    }
+
+    @Test
+    void fiancaComumNaoEAceitaEmContratoNovo() throws Exception {
+        mvc.perform(post("/api/v1/locacao/contratos").header("X-Tenant-Id", "elora").contentType(MediaType.APPLICATION_JSON)
+                        .content(contrato("fianca", "null")))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.problemas[0].titulo").value("Garantia fora da política da Elora"));
     }
 
     @Test

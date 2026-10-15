@@ -43,3 +43,10 @@ export const mesesEntre = (a: string, b: string): number => {
     (y.getUTCDate() < x.getUTCDate() ? 1 : 0)
   );
 };
+
+/** Soma n dias corridos. */
+export const somaDias = (s: string, n: number): DataISO => {
+  const d = dt(s);
+  d.setUTCDate(d.getUTCDate() + n);
+  return iso(d);
+};

@@ -11,7 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Travas da Lei 8.245/91 e da Lei 10.192/2001 (mesmas do front-end: frontend/src/domain/locacao/regras.ts).
@@ -28,7 +30,18 @@ public final class RegrasDoContrato {
         return ChronoUnit.MONTHS.between(inicio, fim.plusDays(1));
     }
 
-    public static List<Problema> validar(DadosContrato c, boolean imovelJaAlugado) {
+    /** Garantias aceitas pela Elora em contrato novo ou troca de garantia. */
+    public static final Set<Garantia> GARANTIAS_ACEITAS = EnumSet.of(Garantia.seguro_fianca, Garantia.caucao_dinheiro, Garantia.caucao_bens);
+
+    public static boolean ehCaucao(Garantia g) {
+        return g == Garantia.caucao_dinheiro || g == Garantia.caucao_bens;
+    }
+
+    /**
+     * @param aplicarPoliticaDeGarantia contrato novo ou garantia trocada: vale a política da Elora
+     *     (seguro-fiança; caução só com o consentimento do locador). Contratos antigos mantêm a garantia que têm.
+     */
+    public static List<Problema> validar(DadosContrato c, boolean imovelJaAlugado, boolean aplicarPoliticaDeGarantia) {
         List<Problema> e = new ArrayList<>();
         if (vazio(c.imovelId())) e.add(new Problema("", "Campo obrigatório", "Imóvel"));
         if (vazio(c.locatarioId())) e.add(new Problema("", "Campo obrigatório", "Locatário"));
@@ -54,6 +67,18 @@ public final class RegrasDoContrato {
         if (c.status() == StatusContrato.ativo && mesesEntre(c.inicio(), c.fim()) >= 120 && c.venia() == Venia.pendente)
             e.add(new Problema("Lei 8.245/91, art. 3º", "Falta a vênia conjugal",
                     "Contrato de dez anos ou mais depende de vênia conjugal. Registre a vênia ou marque que não se aplica."));
+        if (aplicarPoliticaDeGarantia) {
+            if (!GARANTIAS_ACEITAS.contains(c.garantia()))
+                e.add(new Problema("", "Garantia fora da política da Elora", "A Elora aceita apenas seguro-fiança. Caução só com o consentimento do locador."));
+            else if (ehCaucao(c.garantia()) && c.consentimentoCaucaoEm() == null)
+                e.add(new Problema("", "Falta o consentimento do locador",
+                        "Caução só é aceita com o consentimento do locador. Informe a data em que ele autorizou e guarde a autorização por escrito."));
+        }
+        if (c.status() == StatusContrato.ativo && (vazio(c.seguroImovelSeguradora()) || c.seguroImovelFim() == null))
+            e.add(new Problema("", "Falta o seguro do imóvel",
+                    "Pergunte ao cliente e informe a seguradora e até quando o seguro do imóvel vale. Ele precisa estar em vigor durante todo o contrato."));
+        else if (c.status() == StatusContrato.ativo && c.seguroImovelFim().isBefore(c.inicio()))
+            e.add(new Problema("", "Seguro do imóvel fora do prazo", "O seguro do imóvel precisa valer desde o início do contrato."));
         if (c.status() == StatusContrato.ativo && imovelJaAlugado)
             e.add(new Problema("", "Imóvel já alugado", "Este imóvel já tem um contrato ativo. Encerre o anterior antes de ativar outro."));
         if (c.status() != StatusContrato.ativo && c.encerradoEm() == null)

@@ -31,6 +31,33 @@ export function agendaLegal(contratos: readonly ContratoLocacao[], hoje: DataISO
     const add = (data: DataISO, sev: Severidade, titulo: string, detalhe: string, lei: string) =>
       ev.push({ data, sev, titulo, detalhe, lei, contratoId: c.id });
 
+    // Seguro do imóvel: precisa estar em vigor durante todo o contrato (política da Elora).
+    const POLITICA = 'Política da Elora · seguro do imóvel';
+    if (!c.seguroImovelFim)
+      add(
+        hoje,
+        'pendente',
+        'Seguro do imóvel não informado',
+        `${nome}: pergunte ao cliente a seguradora e a vigência do seguro do imóvel.`,
+        POLITICA,
+      );
+    else if (c.seguroImovelFim < hoje)
+      add(
+        c.seguroImovelFim,
+        'bloqueio',
+        'Seguro do imóvel vencido',
+        `${nome}: o seguro venceu em ${formatarData(c.seguroImovelFim)}. Peça ao cliente a renovação e a nova apólice.`,
+        POLITICA,
+      );
+    else if (diasEntre(hoje, c.seguroImovelFim) <= n)
+      add(
+        c.seguroImovelFim,
+        diasEntre(hoje, c.seguroImovelFim) <= 30 ? 'atencao' : 'info',
+        'Renovar o seguro do imóvel',
+        `${nome}: o seguro vale até ${formatarData(c.seguroImovelFim)}${c.seguroImovelSeguradora ? ` (${c.seguroImovelSeguradora})` : ''}. Combine a renovação com o cliente antes do vencimento.`,
+        POLITICA,
+      );
+
     let aniv = c.inicio;
     while (aniv < hoje) aniv = somaMeses(aniv, 12);
     if (diasEntre(hoje, aniv) <= n)

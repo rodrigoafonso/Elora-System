@@ -24,6 +24,13 @@ export const GARANTIA: Record<Garantia, string> = {
   caucao_bens: 'Caução em bens',
   cessao_quotas_fundo: 'Quotas de fundo de investimento',
 };
+/**
+ * Política da Elora para contratos novos (ou troca de garantia): seguro-fiança como regra;
+ * caução só com o consentimento do locador. As demais garantias da lei não são aceitas.
+ */
+export const GARANTIAS_ACEITAS: readonly Garantia[] = ['seguro_fianca', 'caucao_dinheiro', 'caucao_bens'];
+export const ehCaucao = (g: Garantia): boolean => g === 'caucao_dinheiro' || g === 'caucao_bens';
+
 export const INDICES: Record<IndiceReajuste, string> = {
   IPCA: 'IPCA',
   IGPM: 'IGP-M',
@@ -92,10 +99,16 @@ export interface DadosContrato {
   readonly indice: IndiceReajuste;
   readonly garantia: Garantia;
   readonly caucao?: number;
+  /** Data em que o locador autorizou a caução (política da Elora: caução só com o consentimento dele). */
+  readonly consentimentoCaucaoEm?: DataISO;
   readonly seguradora?: string;
   readonly apolice?: string;
   readonly apoliceFim?: DataISO;
   readonly premio?: number;
+  /** Seguro do imóvel (contra incêndio): perguntado ao cliente; precisa estar em vigor durante todo o contrato. */
+  readonly seguroImovelSeguradora?: string;
+  readonly seguroImovelApolice?: string;
+  readonly seguroImovelFim?: DataISO;
   readonly antecipada: boolean;
   readonly venia: Venia;
   readonly cond?: number;

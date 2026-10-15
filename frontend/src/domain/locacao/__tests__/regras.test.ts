@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { PADRAO_CONTRATO, type ContratoLocacao, type DadosContrato } from '../contrato';
-import { aniversarios, documentosDoContrato, reajustePendente, validarContrato, validarReajuste } from '../regras';
+import {
+  aniversarios,
+  documentosDoContrato,
+  reajustePendente,
+  situacaoDoSeguro,
+  validarContrato,
+  validarReajuste,
+} from '../regras';
 import { agendaLegal } from '../agenda';
 
 const dados = (extra: Partial<DadosContrato> = {}): DadosContrato => ({
@@ -10,6 +17,8 @@ const dados = (extra: Partial<DadosContrato> = {}): DadosContrato => ({
   inicio: '2026-01-10',
   fim: '2028-07-09',
   aluguel: 2000,
+  seguroImovelSeguradora: 'Seguradora Exemplo',
+  seguroImovelFim: '2027-01-09',
   docContrato: false,
   docVistoria: false,
   docGarantia: false,
@@ -35,14 +44,16 @@ describe('validarContrato (Lei 8.245/91)', () => {
   });
 
   it('art. 38, § 2º: caução em dinheiro até três aluguéis', () => {
-    expect(titulos(dados({ garantia: 'caucao_dinheiro', caucao: 6000 }))).toEqual([]);
-    expect(titulos(dados({ garantia: 'caucao_dinheiro', caucao: 6000.01 }))).toEqual(['Caução acima de três aluguéis']);
-    expect(titulos(dados({ garantia: 'caucao_dinheiro' }))).toEqual(['Informe o valor da caução']);
+    const caucao = { garantia: 'caucao_dinheiro', consentimentoCaucaoEm: '2026-01-05' } as const;
+    expect(titulos(dados({ ...caucao, caucao: 6000 }))).toEqual([]);
+    expect(titulos(dados({ ...caucao, caucao: 6000.01 }))).toEqual(['Caução acima de três aluguéis']);
+    expect(titulos(dados({ ...caucao }))).toEqual(['Informe o valor da caução']);
   });
 
   it('arts. 20 e 43, III: aluguel antecipado só sem garantia', () => {
     expect(titulos(dados({ antecipada: true }))).toEqual(['Cobrança antecipada com garantia']);
-    expect(titulos(dados({ antecipada: true, garantia: 'nenhuma' }))).toEqual([]);
+    // Sem garantia a lei permite o antecipado, mas a política da Elora não aceita contrato novo sem garantia.
+    expect(titulos(dados({ antecipada: true, garantia: 'nenhuma' }))).toEqual(['Garantia fora da política da Elora']);
   });
 
   it('art. 3º: dez anos ou mais exigem vênia conjugal', () => {
@@ -53,6 +64,39 @@ describe('validarContrato (Lei 8.245/91)', () => {
   it('prazo inválido e imóvel já alugado', () => {
     expect(titulos(dados({ fim: '2026-01-10' }))).toEqual(['Prazo inválido']);
     expect(titulos(dados(), true)).toEqual(['Imóvel já alugado']);
+  });
+});
+
+describe('política da Elora: garantia e seguro do imóvel', () => {
+  it('aceita seguro-fiança; recusa fiança e outras garantias em contrato novo', () => {
+    expect(titulos(dados({ garantia: 'seguro_fianca' }))).toEqual([]);
+    expect(titulos(dados({ garantia: 'fianca' }))).toEqual(['Garantia fora da política da Elora']);
+    expect(titulos(dados({ garantia: 'cessao_quotas_fundo' }))).toEqual(['Garantia fora da política da Elora']);
+  });
+
+  it('caução só com o consentimento do locador', () => {
+    expect(titulos(dados({ garantia: 'caucao_bens' }))).toEqual(['Falta o consentimento do locador']);
+    expect(titulos(dados({ garantia: 'caucao_bens', consentimentoCaucaoEm: '2026-01-05' }))).toEqual([]);
+  });
+
+  it('contrato antigo com outra garantia continua editável, desde que a garantia não mude', () => {
+    expect(validarContrato(dados({ garantia: 'fianca' }), { novo: false, imovelJaAlugado: false })).toEqual([]);
+    expect(
+      validarContrato(dados({ garantia: 'fianca' }), { novo: false, imovelJaAlugado: false, garantiaAlterada: true }),
+    ).toHaveLength(1);
+  });
+
+  it('contrato ativo precisa do seguro do imóvel, valendo desde o início', () => {
+    expect(titulos(dados({ seguroImovelFim: undefined }))).toEqual(['Falta o seguro do imóvel']);
+    expect(titulos(dados({ seguroImovelFim: '2025-12-31' }))).toEqual(['Seguro do imóvel fora do prazo']);
+  });
+
+  it('situação do seguro e avisos na agenda', () => {
+    expect(situacaoDoSeguro({ seguroImovelFim: '2026-10-30' }, '2026-10-15')).toBe('vence_logo');
+    expect(situacaoDoSeguro({ seguroImovelFim: '2026-10-14' }, '2026-10-15')).toBe('vencido');
+    expect(situacaoDoSeguro({}, '2026-10-15')).toBe('sem_seguro');
+    const ev = agendaLegal([contrato({ inicio: '2026-01-10', seguroImovelFim: '2026-10-01' })], '2026-10-15');
+    expect(ev[0]).toMatchObject({ titulo: 'Seguro do imóvel vencido', sev: 'bloqueio' });
   });
 });
 
@@ -84,7 +128,12 @@ describe('documentos e agenda', () => {
   });
 
   it('avisa o reajuste, o fim do prazo e a janela da renovatória', () => {
-    const c = contrato({ tipo: 'nao_residencial', inicio: '2022-06-01', fim: '2027-05-31' });
+    const c = contrato({
+      tipo: 'nao_residencial',
+      inicio: '2022-06-01',
+      fim: '2027-05-31',
+      seguroImovelFim: '2030-01-01',
+    });
     expect(agendaLegal([c], '2026-10-15')).toEqual([
       expect.objectContaining({
         titulo: 'Janela da ação renovatória aberta',
@@ -93,10 +142,16 @@ describe('documentos e agenda', () => {
         lei: 'Lei 8.245/91, art. 51, § 5º',
       }),
     ]);
-    const fim = agendaLegal([contrato({ inicio: '2024-02-01', fim: '2026-12-31' })], '2026-10-15');
+    const fim = agendaLegal(
+      [contrato({ inicio: '2024-02-01', fim: '2026-12-31', seguroImovelFim: '2030-01-01' })],
+      '2026-10-15',
+    );
     expect(fim.map((e) => e.titulo)).toEqual(['Fim do prazo do contrato', 'Reajuste anual']);
     expect(fim[0]?.lei).toBe('Lei 8.245/91, art. 46');
-    const r = agendaLegal([contrato({ inicio: '2025-12-01', fim: '2028-05-31' })], '2026-10-15');
+    const r = agendaLegal(
+      [contrato({ inicio: '2025-12-01', fim: '2028-05-31', seguroImovelFim: '2030-01-01' })],
+      '2026-10-15',
+    );
     expect(r[0]).toMatchObject({ titulo: 'Reajuste anual', data: '2026-12-01', sev: 'info' });
   });
 });

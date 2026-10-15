@@ -66,13 +66,13 @@ public class JdbcContratoRepository implements ContratoRepository {
                   dia_vencimento, cobranca_antecipada, indice, garantia, caucao_valor, venia_conjugal, plano_id, status, encerrado_em,
                   forma_pagamento, seguradora, apolice, apolice_fim, premio, condominio, iptu, intermediacao, corretor_loc_id, dia_repasse,
                   extra_loc_desc, extra_loc_valor, extra_prop_desc, extra_prop_valor, clausulas, doc_contrato, doc_vistoria, doc_garantia,
-                  doc_seguro, versao)
+                  doc_seguro, consentimento_caucao_em, seguro_imovel_seguradora, seguro_imovel_apolice, seguro_imovel_fim, versao)
                 values (:t, :id::uuid, :imovel::uuid, (select proprietario_id from app.imovel where id = :imovel::uuid), :locatario::uuid,
                   :tipo::app.tipo_locacao, :inicio, :fim, :aluguel, :taxa, :venc, :antecipada, :indice::app.indice_reajuste,
                   :garantia::app.garantia, :caucao, :venia::app.venia, :plano::uuid, :status::app.status_contrato, :encerrado,
                   :forma, :seguradora, :apolice, :apoliceFim, :premio, :cond, :iptu, :interm, :corretorLoc::uuid, :diaRepasse,
                   :extraLocDesc, :extraLocValor, :extraPropDesc, :extraPropValor, :clausulas, :docContrato, :docVistoria, :docGarantia,
-                  :docSeguro, 0)
+                  :docSeguro, :consentimento, :seguroImSeg, :seguroImApolice, :seguroImFim, 0)
                 on conflict (id) do update set locatario_id = excluded.locatario_id, tipo = excluded.tipo, inicio = excluded.inicio,
                   fim = excluded.fim, aluguel = excluded.aluguel, taxa_adm_pct = excluded.taxa_adm_pct, dia_vencimento = excluded.dia_vencimento,
                   cobranca_antecipada = excluded.cobranca_antecipada, indice = excluded.indice, garantia = excluded.garantia,
@@ -84,7 +84,9 @@ public class JdbcContratoRepository implements ContratoRepository {
                   dia_repasse = excluded.dia_repasse, extra_loc_desc = excluded.extra_loc_desc, extra_loc_valor = excluded.extra_loc_valor,
                   extra_prop_desc = excluded.extra_prop_desc, extra_prop_valor = excluded.extra_prop_valor, clausulas = excluded.clausulas,
                   doc_contrato = excluded.doc_contrato, doc_vistoria = excluded.doc_vistoria, doc_garantia = excluded.doc_garantia,
-                  doc_seguro = excluded.doc_seguro, versao = app.contrato_locacao.versao + 1
+                  doc_seguro = excluded.doc_seguro, consentimento_caucao_em = excluded.consentimento_caucao_em,
+                  seguro_imovel_seguradora = excluded.seguro_imovel_seguradora, seguro_imovel_apolice = excluded.seguro_imovel_apolice,
+                  seguro_imovel_fim = excluded.seguro_imovel_fim, versao = app.contrato_locacao.versao + 1
                 where app.contrato_locacao.tenant_id = :t and app.contrato_locacao.versao = :versao
                 """);
         int linhas = q.param("t", t.valor()).param("id", c.id()).param("imovel", d.imovelId()).param("locatario", d.locatarioId())
@@ -98,7 +100,10 @@ public class JdbcContratoRepository implements ContratoRepository {
                 .param("corretorLoc", d.corretorLocId()).param("diaRepasse", d.diaRepasse()).param("extraLocDesc", d.extraLocDesc())
                 .param("extraLocValor", d.extraLocValor()).param("extraPropDesc", d.extraPropDesc()).param("extraPropValor", d.extraPropValor())
                 .param("clausulas", d.clausulas()).param("docContrato", d.docContrato()).param("docVistoria", d.docVistoria())
-                .param("docGarantia", d.docGarantia()).param("docSeguro", d.docSeguro()).param("versao", c.versao()).update();
+                .param("docGarantia", d.docGarantia()).param("docSeguro", d.docSeguro())
+                .param("consentimento", data(d.consentimentoCaucaoEm())).param("seguroImSeg", d.seguroImovelSeguradora())
+                .param("seguroImApolice", d.seguroImovelApolice()).param("seguroImFim", data(d.seguroImovelFim()))
+                .param("versao", c.versao()).update();
         if (linhas == 0) throw new OptimisticLockingFailureException("O contrato foi alterado por outra pessoa. Atualize a tela.");
 
         // Reajustes novos (o histórico é imutável: só inserimos o que ainda não está no banco).
@@ -154,7 +159,9 @@ public class JdbcContratoRepository implements ContratoRepository {
                 rs.getBigDecimal("condominio"), rs.getBigDecimal("iptu"), rs.getBigDecimal("intermediacao"), rs.getString("corretor_loc_id"),
                 inteiro(rs, "dia_repasse"), rs.getString("extra_loc_desc"), rs.getBigDecimal("extra_loc_valor"), rs.getString("extra_prop_desc"),
                 rs.getBigDecimal("extra_prop_valor"), rs.getString("clausulas"), rs.getBoolean("doc_contrato"), rs.getBoolean("doc_vistoria"),
-                rs.getBoolean("doc_garantia"), rs.getBoolean("doc_seguro"), StatusContrato.valueOf(rs.getString("status")), data(rs, "encerrado_em"));
+                rs.getBoolean("doc_garantia"), rs.getBoolean("doc_seguro"), StatusContrato.valueOf(rs.getString("status")), data(rs, "encerrado_em"),
+                data(rs, "consentimento_caucao_em"), rs.getString("seguro_imovel_seguradora"), rs.getString("seguro_imovel_apolice"),
+                data(rs, "seguro_imovel_fim"));
         return new ContratoLocacao(rs.getString("id"), d, reajustes, rs.getLong("versao"));
     }
 }

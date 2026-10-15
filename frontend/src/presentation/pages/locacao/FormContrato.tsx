@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import {
   FORMA_PAG,
   GARANTIA,
+  GARANTIAS_ACEITAS,
   INDICES,
   PADRAO_CONTRATO,
   STATUS_CONTRATO,
@@ -75,10 +76,14 @@ export function FormContrato({
       indice: l.texto('indice') as IndiceReajuste,
       garantia: l.texto('garantia') as Garantia,
       caucao: l.numero('caucao'),
+      consentimentoCaucaoEm: t('consentimentoCaucaoEm'),
       seguradora: t('seguradora'),
       apolice: t('apolice'),
       apoliceFim: t('apoliceFim'),
       premio: l.numero('premio'),
+      seguroImovelSeguradora: t('seguroImovelSeguradora'),
+      seguroImovelApolice: t('seguroImovelApolice'),
+      seguroImovelFim: t('seguroImovelFim'),
       antecipada: l.marcado('antecipada'),
       venia: l.texto('venia') as Venia,
       cond: l.numero('cond'),
@@ -120,6 +125,8 @@ export function FormContrato({
     if (!falta.length) aoEnviar(d);
   };
 
+  // Contrato novo: só as garantias da política. Contrato existente: mantém a garantia que já tem na lista.
+  const garantias = opcoes(GARANTIA).filter(([k]) => GARANTIAS_ACEITAS.includes(k) || k === c?.garantia);
   const imoveis = cadastros.imoveis.filter((i) => i.id === c?.imovelId || !imoveisAlugados.has(i.id));
 
   return (
@@ -162,13 +169,41 @@ export function FormContrato({
             nome="garantia"
             rotulo="Garantia (uma só, art. 37)"
             valor={v.garantia}
-            opcoes={opcoes(GARANTIA)}
+            opcoes={garantias}
+            dica="Política da Elora: seguro-fiança. Caução só com o consentimento do locador."
           />
           <CampoNumero nome="caucao" rotulo="Valor da caução (R$)" valor={v.caucao} />
+          <CampoTexto
+            nome="consentimentoCaucaoEm"
+            rotulo="Caução: locador autorizou em"
+            tipo="date"
+            valor={v.consentimentoCaucaoEm}
+            dica="Obrigatório para caução. Guarde a autorização por escrito."
+          />
           <CampoTexto nome="seguradora" rotulo="Seguro-fiança: seguradora" valor={v.seguradora} />
           <CampoTexto nome="apolice" rotulo="Seguro-fiança: número da apólice" valor={v.apolice} />
           <CampoTexto nome="apoliceFim" rotulo="Seguro-fiança: fim da vigência" tipo="date" valor={v.apoliceFim} />
           <CampoNumero nome="premio" rotulo="Seguro-fiança: prêmio mensal (R$)" valor={v.premio} />
+          <CampoTexto
+            nome="seguroImovelSeguradora"
+            rotulo="Seguro do imóvel (incêndio): seguradora"
+            obrigatorio
+            valor={v.seguroImovelSeguradora}
+            dica="Pergunte ao cliente. O seguro precisa estar em vigor durante todo o contrato."
+          />
+          <CampoTexto
+            nome="seguroImovelApolice"
+            rotulo="Seguro do imóvel: número da apólice"
+            valor={v.seguroImovelApolice}
+          />
+          <CampoTexto
+            nome="seguroImovelFim"
+            rotulo="Seguro do imóvel: vigente até"
+            obrigatorio
+            tipo="date"
+            valor={v.seguroImovelFim}
+            dica="A agenda avisa antes do vencimento para renovar."
+          />
           <CampoMarcar nome="antecipada" rotulo="Aluguel cobrado antecipadamente" valor={v.antecipada} />
           <CampoLista
             nome="venia"

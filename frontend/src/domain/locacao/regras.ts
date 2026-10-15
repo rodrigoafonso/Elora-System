@@ -1,5 +1,13 @@
 import { diasEntre, formatarData, mesesEntre, somaMeses, type DataISO } from '../shared/datas';
-import { DOCS, INDICES, type ChaveDocumento, type ContratoLocacao, type DadosContrato } from './contrato';
+import {
+  DOCS,
+  GARANTIAS_ACEITAS,
+  INDICES,
+  ehCaucao,
+  type ChaveDocumento,
+  type ContratoLocacao,
+  type DadosContrato,
+} from './contrato';
 
 /** Problema legal ou de cadastro, com a lei de origem (mostrada ao lado da mensagem). */
 export interface ProblemaContrato {
@@ -13,8 +21,8 @@ export interface ContextoValidacao {
   readonly novo: boolean;
   /** Já existe outro contrato ativo para o mesmo imóvel. */
   readonly imovelJaAlugado: boolean;
-  /** Política da imobiliária: só seguro-fiança em contratos novos. */
-  readonly soSeguroFianca?: boolean;
+  /** Na edição: a garantia foi trocada (a política da Elora vale para contrato novo e para troca de garantia). */
+  readonly garantiaAlterada?: boolean;
 }
 
 /** Travas da Lei 8.245/91 aplicadas no cadastro (mesmas do protótipo; o banco repete as principais). */
@@ -58,12 +66,28 @@ export function validarContrato(c: DadosContrato, ctx: ContextoValidacao): Probl
       'Falta a vênia conjugal',
       'Contrato de dez anos ou mais depende de vênia conjugal. Registre a vênia ou marque que não se aplica.',
     );
-  if (ctx.soSeguroFianca && ctx.novo && c.garantia !== 'seguro_fianca')
+  if (ctx.novo || ctx.garantiaAlterada) {
+    if (!GARANTIAS_ACEITAS.includes(c.garantia))
+      add(
+        '',
+        'Garantia fora da política da Elora',
+        'A Elora aceita apenas seguro-fiança. Caução só com o consentimento do locador.',
+      );
+    else if (ehCaucao(c.garantia) && !c.consentimentoCaucaoEm)
+      add(
+        '',
+        'Falta o consentimento do locador',
+        'Caução só é aceita com o consentimento do locador. Informe a data em que ele autorizou e guarde a autorização por escrito.',
+      );
+  }
+  if (c.status === 'ativo' && (!c.seguroImovelSeguradora || !c.seguroImovelFim))
     add(
       '',
-      'Garantia fora da política da Elora',
-      'A política atual aceita apenas seguro-fiança em contratos novos. Ela pode ser alterada em Jurídico.',
+      'Falta o seguro do imóvel',
+      'Pergunte ao cliente e informe a seguradora e até quando o seguro do imóvel vale. Ele precisa estar em vigor durante todo o contrato.',
     );
+  else if (c.status === 'ativo' && c.seguroImovelFim && c.seguroImovelFim < c.inicio)
+    add('', 'Seguro do imóvel fora do prazo', 'O seguro do imóvel precisa valer desde o início do contrato.');
   if (c.status === 'ativo' && ctx.imovelJaAlugado)
     add('', 'Imóvel já alugado', 'Este imóvel já tem um contrato ativo. Encerre o anterior antes de ativar outro.');
   if (c.status !== 'ativo' && !c.encerradoEm) add('', 'Campo obrigatório', 'Data de encerramento');
@@ -127,6 +151,15 @@ export function validarReajuste(c: ContratoLocacao, em: DataISO, pct: number, no
 /** Novo aluguel calculado pela variação, em reais com 2 casas. */
 export const aluguelReajustado = (aluguel: number, pct: number): number =>
   Math.round(aluguel * (1 + pct / 100) * 100) / 100;
+
+export type SituacaoSeguro = 'em_dia' | 'vence_logo' | 'vencido' | 'sem_seguro';
+
+/** Seguro do imóvel na data de hoje: vence_logo = nos próximos 30 dias. */
+export function situacaoDoSeguro(c: Pick<DadosContrato, 'seguroImovelFim'>, hoje: DataISO): SituacaoSeguro {
+  if (!c.seguroImovelFim) return 'sem_seguro';
+  if (c.seguroImovelFim < hoje) return 'vencido';
+  return diasEntre(hoje, c.seguroImovelFim) <= 30 ? 'vence_logo' : 'em_dia';
+}
 
 /** Documentos exigidos (o comprovante de garantia só quando há garantia) e quantos estão arquivados. */
 export function documentosDoContrato(c: DadosContrato): { exigidos: ChaveDocumento[]; arquivados: number } {

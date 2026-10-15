@@ -84,7 +84,7 @@ Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o m
 - **Documentos** (minuta do contrato, recibos e termo aditivo de reajuste em Word): ainda não portados; o botão volta quando o gerador de documentos for migrado.
 - **Situação "Em atraso"** na tabela: depende das cobranças, que chegam com a migração do Financeiro.
 - **"+ Cadastrar agora…"** no campo Locatário: depende da tela Pessoas; por enquanto o locatário precisa estar cadastrado.
-- Política "só seguro-fiança em contratos novos" (configurada em Jurídico): a regra existe no domínio, mas ainda não é lida da configuração.
+- Regras da casa já aplicadas (15/10/2026): garantia só seguro-fiança, caução só com o consentimento do locador (data registrada); seguro do imóvel perguntado ao cliente e em vigor durante todo o contrato, com aviso de renovação na agenda. Ainda fixas no código; podem virar configuração da imobiliária.
 
 ### Elora Casa+
 

@@ -23,14 +23,14 @@ public final class ContratoLocacao {
 
     /** Novo contrato: valida as travas legais antes de existir. */
     public static ContratoLocacao novo(String id, DadosContrato dados, boolean imovelJaAlugado) {
-        exigir(RegrasDoContrato.validar(dados, imovelJaAlugado));
+        exigir(RegrasDoContrato.validar(dados, imovelJaAlugado, true));
         return new ContratoLocacao(id, dados, List.of(), 0);
     }
 
     /** Edição: o imóvel fica travado (como no protótipo). */
     public void atualizar(DadosContrato novos, boolean imovelJaAlugado) {
         DadosContrato d = novos.comImovel(dados.imovelId());
-        exigir(RegrasDoContrato.validar(d, imovelJaAlugado));
+        exigir(RegrasDoContrato.validar(d, imovelJaAlugado, d.garantia() != dados.garantia()));
         this.dados = d;
     }
 

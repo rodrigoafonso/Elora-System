@@ -6,7 +6,7 @@ import type {
   ImovelResumo,
   PessoaResumo,
 } from '@/domain/locacao/contrato';
-import { somaMeses, hojeISO } from '@/domain/shared/datas';
+import { hojeISO, somaDias, somaMeses } from '@/domain/shared/datas';
 
 /** Dados FICTÍCIOS para desenvolver sem o back-end (VITE_DATA_SOURCE=mock) e para os testes. */
 const IMOVEIS: ImovelResumo[] = [
@@ -59,6 +59,9 @@ function exemplos(hoje: string): ContratoLocacao[] {
       indice: 'IPCA',
       garantia: 'seguro_fianca',
       seguradora: 'Seguradora Exemplo',
+      seguroImovelSeguradora: 'Seguradora Exemplo',
+      seguroImovelApolice: 'INC-000123',
+      seguroImovelFim: somaDias(hoje, 20),
       antecipada: false,
       venia: 'na',
       cond: 480,
@@ -86,6 +89,9 @@ function exemplos(hoje: string): ContratoLocacao[] {
       indice: 'IGPM',
       garantia: 'caucao_dinheiro',
       caucao: 55500,
+      consentimentoCaucaoEm: inicio2,
+      seguroImovelSeguradora: 'Seguradora Exemplo',
+      seguroImovelFim: somaMeses(hoje, 7),
       antecipada: false,
       venia: 'na',
       ...semDocs,

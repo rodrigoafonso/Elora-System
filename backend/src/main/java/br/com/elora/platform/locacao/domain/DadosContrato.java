@@ -16,18 +16,24 @@ public record DadosContrato(
         String apolice, LocalDate apoliceFim, BigDecimal premio, boolean antecipada, Venia venia, BigDecimal cond, BigDecimal iptu,
         BigDecimal intermediacao, String corretorLocId, Integer diaRepasse, String extraLocDesc, BigDecimal extraLocValor,
         String extraPropDesc, BigDecimal extraPropValor, String clausulas, boolean docContrato, boolean docVistoria,
-        boolean docGarantia, boolean docSeguro, StatusContrato status, LocalDate encerradoEm) {
+        boolean docGarantia, boolean docSeguro, StatusContrato status, LocalDate encerradoEm,
+        /* Política da Elora: caução só com o consentimento do locador. */
+        LocalDate consentimentoCaucaoEm,
+        /* Seguro do imóvel (contra incêndio): precisa estar em vigor durante todo o contrato. */
+        String seguroImovelSeguradora, String seguroImovelApolice, LocalDate seguroImovelFim) {
 
     /** Mesmo dado com outro imóvel (o imóvel não muda depois do cadastro). */
     public DadosContrato comImovel(String id) {
         return new DadosContrato(id, locatarioId, tipo, inicio, fim, aluguel, taxa, venc, formaPagamento, indice, garantia, caucao, seguradora,
                 apolice, apoliceFim, premio, antecipada, venia, cond, iptu, intermediacao, corretorLocId, diaRepasse, extraLocDesc, extraLocValor,
-                extraPropDesc, extraPropValor, clausulas, docContrato, docVistoria, docGarantia, docSeguro, status, encerradoEm);
+                extraPropDesc, extraPropValor, clausulas, docContrato, docVistoria, docGarantia, docSeguro, status, encerradoEm, consentimentoCaucaoEm,
+                seguroImovelSeguradora, seguroImovelApolice, seguroImovelFim);
     }
 
     public DadosContrato comAluguel(BigDecimal novo) {
         return new DadosContrato(imovelId, locatarioId, tipo, inicio, fim, novo, taxa, venc, formaPagamento, indice, garantia, caucao, seguradora,
                 apolice, apoliceFim, premio, antecipada, venia, cond, iptu, intermediacao, corretorLocId, diaRepasse, extraLocDesc, extraLocValor,
-                extraPropDesc, extraPropValor, clausulas, docContrato, docVistoria, docGarantia, docSeguro, status, encerradoEm);
+                extraPropDesc, extraPropValor, clausulas, docContrato, docVistoria, docGarantia, docSeguro, status, encerradoEm, consentimentoCaucaoEm,
+                seguroImovelSeguradora, seguroImovelApolice, seguroImovelFim);
     }
 }
