@@ -1,0 +1,64 @@
+/*
+ * Folha de estilo da plataforma.
+ *
+ * 1. Tailwind CSS 4 (tema e utilitários). O preflight do Tailwind NÃO é importado de propósito:
+ *    o reset da marca está em elora.css e precisa ser idêntico ao do protótipo aprovado.
+ * 2. elora.css: o sistema visual do protótipo, copiado sem alterações. Fica fora de camadas
+ *    (unlayered) e por isso vence os utilitários em caso de conflito, mantendo a interface fiel.
+ * 3. @theme inline: expõe os tokens da marca para o Tailwind (bg-surface, text-ink, font-display...).
+ *    Código novo usa esses utilitários; as classes do protótipo continuam valendo para as telas portadas.
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import './elora.css';
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-green: var(--green);
+  --color-on-green: var(--on-green);
+  --color-green-soft: var(--green-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-bad: var(--bad);
+  --color-bad-bg: var(--bad-bg);
+  --color-side: var(--side);
+  --color-side-ink: var(--side-ink);
+  --color-side-gold: var(--side-gold);
+  --font-ui: var(--ui);
+  --font-display: var(--display);
+}
+
+/* Ponte com telas ainda não migradas (protótipo embutido). */
+/* Telas ainda não migradas: o protótipo ocupa a área principal inteira, com rolagem própria. */
+main.embutida {
+  padding: 0;
+  height: 100dvh;
+  overflow: hidden;
+}
+.legacy-frame {
+  border: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: var(--bg);
+}
+.legacy-frame.cheia {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  z-index: 30;
+}
+@media (max-width: 860px) {
+  main.embutida {
+    height: calc(100dvh - 120px);
+  }
+}

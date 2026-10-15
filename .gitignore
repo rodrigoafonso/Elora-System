@@ -1,0 +1,18 @@
+# Node
+node_modules/
+dist/
+coverage/
+*.local
+.env
+
+# Java / Gradle
+backend/build/
+backend/.gradle/
+!backend/gradle/wrapper/gradle-wrapper.jar
+
+# IDE / SO
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.iml
+.DS_Store

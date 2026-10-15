@@ -1,0 +1,12 @@
+# Desenvolvimento local: sem login, tenant pelo cabeçalho X-Tenant-Id e dados de exemplo.
+spring:
+  flyway:
+    locations: classpath:db/migration,classpath:db/dev
+elora:
+  tenant:
+    aceitar-cabecalho: true
+  seguranca:
+    desligada: true
+logging:
+  level:
+    br.com.elora: debug
