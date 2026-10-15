@@ -3,6 +3,7 @@ import { Navigate, useParams } from 'react-router';
 import { todasAsTelas } from '@/presentation/navigation/menu';
 import { CasaMaisPage } from '@/presentation/pages/casamais/CasaMaisPage';
 import { LegacyScreen } from '@/presentation/pages/legacy/LegacyScreen';
+import { LocacaoPage } from '@/presentation/pages/locacao/LocacaoPage';
 
 /**
  * Telas já migradas para React. Para migrar uma tela:
@@ -11,6 +12,7 @@ import { LegacyScreen } from '@/presentation/pages/legacy/LegacyScreen';
  */
 const TELAS_MIGRADAS: Record<string, ComponentType> = {
   posvenda: CasaMaisPage,
+  locacao: LocacaoPage,
 };
 
 const TELAS_CONHECIDAS = new Set([...todasAsTelas('equipe'), ...todasAsTelas('corretor')].map((i) => i.id));

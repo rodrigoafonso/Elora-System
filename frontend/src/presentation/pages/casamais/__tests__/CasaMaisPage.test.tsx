@@ -4,14 +4,15 @@ import { createMemoryRouter, RouterProvider } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { Provedores } from '@/app/providers';
 import { rotas } from '@/app/rotas';
-import { casosDeUsoCasaMais } from '@/application/casamais/casosDeUso';
 import { criarCasaMaisMemoria } from '@/infrastructure/casamais/memoria';
+import { montarContainer } from '@/infrastructure/di/container';
+import { criarLocacaoMemoria } from '@/infrastructure/locacao/memoria';
 
 const abrir = () => {
   const casaMais = criarCasaMaisMemoria();
   const router = createMemoryRouter(rotas, { initialEntries: ['/posvenda'] });
   render(
-    <Provedores container={{ casaMais, casosCasaMais: casosDeUsoCasaMais(casaMais) }}>
+    <Provedores container={montarContainer(casaMais, criarLocacaoMemoria())}>
       <RouterProvider router={router} />
     </Provedores>,
   );

@@ -50,7 +50,7 @@ export const MENU: Record<Perfil, readonly PastaMenu[]> = {
     {
       titulo: 'Operações',
       itens: [
-        { id: 'locacao', titulo: 'Locação' },
+        { id: 'locacao', titulo: 'Locação', migrada: true },
         { id: 'financeiro', titulo: 'Financeiro' },
         { id: 'posvenda', titulo: 'Elora Casa+', migrada: true },
         { id: 'pessoas', titulo: 'Pessoas' },

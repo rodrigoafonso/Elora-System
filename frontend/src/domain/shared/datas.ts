@@ -16,3 +16,30 @@ export const hojeISO = (agora: Date = new Date()): DataISO => {
   const p = (n: number) => String(n).padStart(2, '0');
   return `${agora.getFullYear()}-${p(agora.getMonth() + 1)}-${p(agora.getDate())}`;
 };
+
+const dt = (s: string) => new Date(`${s.slice(0, 10)}T00:00:00Z`);
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+/** Soma n meses mantendo o dia (ou o último dia do mês, se não existir). Igual ao protótipo. */
+export const somaMeses = (s: string, n: number): DataISO => {
+  const d = dt(s);
+  const dia = d.getUTCDate();
+  d.setUTCDate(1);
+  d.setUTCMonth(d.getUTCMonth() + n);
+  const ultimo = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+  d.setUTCDate(Math.min(dia, ultimo));
+  return iso(d);
+};
+
+/** Meses completos de a até b, contando o dia final (prazo do contrato). */
+export const mesesEntre = (a: string, b: string): number => {
+  const x = dt(a);
+  const y = dt(b);
+  y.setUTCDate(y.getUTCDate() + 1);
+  return (
+    (y.getUTCFullYear() - x.getUTCFullYear()) * 12 +
+    y.getUTCMonth() -
+    x.getUTCMonth() -
+    (y.getUTCDate() < x.getUTCDate() ? 1 : 0)
+  );
+};
