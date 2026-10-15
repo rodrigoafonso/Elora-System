@@ -5,6 +5,8 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     message: string,
+    /** Corpo do problem+json (pode trazer propriedades extras, ex.: "problemas"). */
+    readonly corpo: Record<string, unknown> = {},
   ) {
     super(message);
   }
@@ -29,13 +31,14 @@ export async function http<T>(metodo: Metodo, caminho: string, corpo?: unknown, 
   });
   if (!resposta.ok) {
     let detalhe = 'Não foi possível concluir agora. Tente de novo.';
+    let problema: Record<string, unknown> = {};
     try {
-      const p = (await resposta.json()) as { detail?: string; title?: string };
-      detalhe = p.detail ?? p.title ?? detalhe;
+      problema = (await resposta.json()) as Record<string, unknown>;
+      detalhe = String(problema.detail ?? problema.title ?? detalhe);
     } catch {
       /* corpo vazio */
     }
-    throw new ApiError(resposta.status, detalhe);
+    throw new ApiError(resposta.status, detalhe, problema);
   }
   return (resposta.status === 204 ? undefined : await resposta.json()) as T;
 }

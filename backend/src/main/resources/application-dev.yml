@@ -2,6 +2,8 @@
 spring:
   flyway:
     locations: classpath:db/migration,classpath:db/dev
+    # Os dados de exemplo têm versão alta (V1000+); novas migrações (V5, V6...) entram mesmo assim.
+    out-of-order: true
 elora:
   tenant:
     aceitar-cabecalho: true

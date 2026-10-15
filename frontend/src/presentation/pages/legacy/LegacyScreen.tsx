@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const ORIGEM_LEGADO = '/legacy/elora-partner-os.html';
+const ORIGEM_LEGADO = `${import.meta.env.BASE_URL}legacy/elora-partner-os.html`;
 
 /**
  * Ponte de migração (padrão Strangler Fig): telas ainda não reescritas em React abrem a versão

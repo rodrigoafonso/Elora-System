@@ -1,0 +1,66 @@
+import { z } from 'zod';
+
+const opcional = <T extends z.ZodType>(t: T) => t.optional();
+
+export const imovelResumoSchema = z.object({
+  id: z.string(),
+  codigo: z.string(),
+  descricao: z.string(),
+  bairro: z.string(),
+  cidade: z.string(),
+});
+export const pessoaResumoSchema = z.object({ id: z.string(), nome: z.string() });
+
+export const contratoSchema = z.object({
+  id: z.string(),
+  imovelId: z.string(),
+  locatarioId: z.string(),
+  imovel: imovelResumoSchema,
+  locatario: pessoaResumoSchema,
+  corretorOrigemId: opcional(z.string()),
+  tipo: z.enum(['residencial', 'nao_residencial', 'built_to_suit']),
+  inicio: z.string(),
+  fim: z.string(),
+  aluguel: z.number(),
+  taxa: z.number(),
+  venc: opcional(z.number()),
+  formaPagamento: opcional(z.enum(['boleto', 'pix', 'transferencia', 'deposito'])),
+  indice: z.enum(['IPCA', 'IGPM', 'INPC', 'IVAR', 'FIXO_CONTRATUAL']),
+  garantia: z.enum(['nenhuma', 'seguro_fianca', 'fianca', 'caucao_dinheiro', 'caucao_bens', 'cessao_quotas_fundo']),
+  caucao: opcional(z.number()),
+  consentimentoCaucaoEm: opcional(z.string()),
+  seguradora: opcional(z.string()),
+  apolice: opcional(z.string()),
+  apoliceFim: opcional(z.string()),
+  premio: opcional(z.number()),
+  seguroImovelSeguradora: opcional(z.string()),
+  seguroImovelApolice: opcional(z.string()),
+  seguroImovelFim: opcional(z.string()),
+  antecipada: z.boolean(),
+  venia: z.enum(['na', 'pendente', 'obtida']),
+  cond: opcional(z.number()),
+  iptu: opcional(z.number()),
+  intermediacao: opcional(z.number()),
+  corretorLocId: opcional(z.string()),
+  diaRepasse: opcional(z.number()),
+  extraLocDesc: opcional(z.string()),
+  extraLocValor: opcional(z.number()),
+  extraPropDesc: opcional(z.string()),
+  extraPropValor: opcional(z.number()),
+  clausulas: opcional(z.string()),
+  docContrato: z.boolean(),
+  docVistoria: z.boolean(),
+  docGarantia: z.boolean(),
+  docSeguro: z.boolean(),
+  status: z.enum(['ativo', 'rescindido', 'encerrado']),
+  encerradoEm: opcional(z.string()),
+  reajustes: z.array(
+    z.object({
+      em: z.string(),
+      indice: z.enum(['IPCA', 'IGPM', 'INPC', 'IVAR', 'FIXO_CONTRATUAL']),
+      pct: z.number(),
+      de: z.number(),
+      para: z.number(),
+    }),
+  ),
+});
