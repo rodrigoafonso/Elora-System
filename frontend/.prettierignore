@@ -2,3 +2,4 @@ dist
 coverage
 public/legacy
 src/styles/elora.css
+dist-demo
