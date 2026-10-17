@@ -88,6 +88,8 @@ Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o m
 
 ### Elora Casa+
 
+- **Pacote Chegada e Casa+ Empresas** (protótipo v48) já migrados na visão da equipe. No app, o pacote continua no protótipo até o App Elora ser migrado. A opção "Precisa encontrar o imóvel?" fica gravada no pacote; a abertura automática do atendimento no Comercial chega com a migração do Comercial.
+
 - Aba **Solicitações e contratos**: ainda abre o protótipo.
 - **Mudança Plug & Play**: as tarefas (procuração, desligamentos, ligações) e a cobrança da taxa ainda não foram portadas; o pedido segue o fluxo comum.
 - Perfis e permissões (gestor x equipe) aguardam o login (OIDC); hoje a equipe vê como gestora.

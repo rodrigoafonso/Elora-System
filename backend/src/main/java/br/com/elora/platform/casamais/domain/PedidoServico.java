@@ -41,6 +41,7 @@ public final class PedidoServico {
     private Avaliacao avaliacao;
     private String motivoCancelamento;
     private final long versao;
+    private final String pacoteId;
 
     /** Reconstrói um pedido já existente (usado pela persistência). */
     public PedidoServico(Dados d) {
@@ -68,6 +69,7 @@ public final class PedidoServico {
         this.avaliacao = d.avaliacao();
         this.motivoCancelamento = d.motivoCancelamento();
         this.versao = d.versao();
+        this.pacoteId = d.pacoteId();
     }
 
     /** Novo pedido, registrado pelo cliente no app ou pela equipe/corretor em nome dele. */
@@ -81,7 +83,31 @@ public final class PedidoServico {
         return new PedidoServico(new Dados(
                 id, categoria, blankToNull(subservico), urgente && categoria.aceitaUrgencia(), cliente, imovelRef, corretorRef, corretorNome,
                 desc.length() > 500 ? desc.substring(0, 500) : desc, preferenciaEm, agora, StatusPedido.PEDIDO,
-                null, null, null, null, null, null, null, null, null, null, null, 0));
+                null, null, null, null, null, null, null, null, null, null, null, 0, null));
+    }
+
+    /** Pedido gerado por um pacote do Casa+ (fica ligado a ele pelo pacoteId). */
+    public static PedidoServico doPacote(
+            String id, String pacoteId, Categoria categoria, String subservico, Cliente cliente, String imovelRef, String corretorRef,
+            String corretorNome, String descricao, LocalDate data, Instant agora) {
+        PedidoServico p = novo(id, categoria, subservico, false, cliente, imovelRef, corretorRef, corretorNome, descricao, data, agora);
+        var d = p.dados();
+        return new PedidoServico(new Dados(d.id(), d.categoria(), d.subservico(), false, d.cliente(), d.imovelRef(), d.corretorRef(), d.corretorNome(),
+                d.descricao(), d.preferenciaEm(), d.criadoEm(), d.status(), null, null, null, null, null, null, null, null, null, null, null, 0, pacoteId));
+    }
+
+    /**
+     * Mudança Plug & Play dentro de um pacote: serviço da própria Elora, por taxa fixa. Nasce aprovado,
+     * com a taxa como orçamento e margem de 100% (a taxa inteira é receita da Elora).
+     */
+    public static PedidoServico plugPlayDoPacote(
+            String id, String pacoteId, Cliente cliente, String imovelRef, String corretorRef, String corretorNome, LocalDate data,
+            Dinheiro taxa, LocalDate hoje, Instant agora) {
+        exigir(cliente != null && cliente.referencia() != null, "Escolha o cliente.");
+        return new PedidoServico(new Dados(id, Categoria.PLUGPLAY, null, false, cliente, imovelRef, corretorRef, corretorNome,
+                "Pacote Chegada · luz, água, gás e internet", data, agora, StatusPedido.APROVADO, null, hoje, null,
+                new Orcamento(taxa, data == null ? null : "até " + data.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")), null, hoje),
+                BigDecimal.valueOf(100), null, null, null, null, null, null, 0, pacoteId));
     }
 
     public void registrarOrcamento(Parceiro parceiro, Dinheiro valor, String prazo, String observacao, LocalDate hoje) {
@@ -160,7 +186,7 @@ public final class PedidoServico {
     public Dados dados() {
         return new Dados(id, categoria, subservico, urgente, cliente, imovelRef, corretorRef, corretorNome, descricao, preferenciaEm, criadoEm,
                 status, parceiroId, aprovadoEm, executadoEm, orcamento, margemPct, margemRecebida, recebidaEm, corretorPct, fundoPct,
-                avaliacao, motivoCancelamento, versao);
+                avaliacao, motivoCancelamento, versao, pacoteId);
     }
 
     public String id() {
@@ -190,5 +216,5 @@ public final class PedidoServico {
             String corretorRef, String corretorNome, String descricao, LocalDate preferenciaEm, Instant criadoEm,
             StatusPedido status, String parceiroId, LocalDate aprovadoEm, LocalDate executadoEm, Orcamento orcamento,
             BigDecimal margemPct, Dinheiro margemRecebida, LocalDate recebidaEm, BigDecimal corretorPct, BigDecimal fundoPct,
-            Avaliacao avaliacao, String motivoCancelamento, long versao) {}
+            Avaliacao avaliacao, String motivoCancelamento, long versao, String pacoteId) {}
 }

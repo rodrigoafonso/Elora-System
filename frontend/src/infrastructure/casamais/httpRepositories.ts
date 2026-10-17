@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import type { CasaMaisRepositories } from '@/application/ports/casamais';
+import type { Empresa, Pacote } from '@/domain/casamais/pacote';
 import type { ClienteEmJornada, Parceiro, PedidoServico, RegrasCasaMais } from '@/domain/casamais/pedido';
 import { http } from '../http/httpClient';
-import { jornadaSchema, parceiroSchema, pedidoSchema, regrasSchema } from './esquemas';
+import { empresaSchema, jornadaSchema, pacoteSchema, parceiroSchema, pedidoSchema, regrasSchema } from './esquemas';
 
 const base = '/casamais';
 const pedido = async (p: Promise<unknown>) => pedidoSchema.parse(await p) as PedidoServico;
@@ -32,5 +33,17 @@ export const casaMaisHttp: CasaMaisRepositories = {
   },
   jornadas: {
     listar: async () => z.array(jornadaSchema).parse(await http('GET', `${base}/jornadas`)) as ClienteEmJornada[],
+  },
+  pacotes: {
+    listar: async () => z.array(pacoteSchema).parse(await http('GET', `${base}/pacotes`)) as Pacote[],
+    registrar: async (dados) => pacoteSchema.parse(await http('POST', `${base}/pacotes`, dados)) as Pacote,
+    marcarGuiaEnviado: async (id) => pacoteSchema.parse(await http('POST', `${base}/pacotes/${id}/guia`, {})) as Pacote,
+  },
+  empresas: {
+    listar: async () => z.array(empresaSchema).parse(await http('GET', `${base}/empresas`)) as Empresa[],
+    salvar: async ({ id, ...dados }) =>
+      empresaSchema.parse(
+        await http(id ? 'PUT' : 'POST', id ? `${base}/empresas/${id}` : `${base}/empresas`, dados),
+      ) as Empresa,
   },
 };

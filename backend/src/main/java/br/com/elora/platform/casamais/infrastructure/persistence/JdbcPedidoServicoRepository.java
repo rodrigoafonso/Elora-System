@@ -28,7 +28,7 @@ public class JdbcPedidoServicoRepository implements PedidoServicoRepository {
             id, categoria, subservico, urgente, cliente_perfil, cliente_ref, cliente_nome, cliente_telefone, imovel_ref,
             corretor_ref, corretor_nome, descricao, preferencia_em, status, criado_em, parceiro_id, aprovado_em, executado_em,
             orc_valor, orc_prazo, orc_observacao, orc_em, margem_pct, margem_recebida, recebida_em, corretor_pct, fundo_pct,
-            aval_nota, aval_comentario, aval_em, motivo_cancelamento, versao""";
+            aval_nota, aval_comentario, aval_em, motivo_cancelamento, versao, pacote_id""";
 
     private final JdbcClient jdbc;
 
@@ -58,7 +58,7 @@ public class JdbcPedidoServicoRepository implements PedidoServicoRepository {
                 values (:tenant, :id, :categoria, :subservico, :urgente, :perfil, :clienteRef, :clienteNome, :clienteTel, :imovel,
                         :corretorRef, :corretorNome, :descricao, :preferencia, :status, :criadoEm, :parceiro, :aprovadoEm, :executadoEm,
                         :orcValor, :orcPrazo, :orcObs, :orcEm, :margemPct, :margemRecebida, :recebidaEm, :corretorPct, :fundoPct,
-                        :avalNota, :avalComentario, :avalEm, :motivo, 0)
+                        :avalNota, :avalComentario, :avalEm, :motivo, 0, :pacote)
                 on conflict (tenant_id, id) do update set
                   status = excluded.status, parceiro_id = excluded.parceiro_id, aprovado_em = excluded.aprovado_em,
                   executado_em = excluded.executado_em, orc_valor = excluded.orc_valor, orc_prazo = excluded.orc_prazo,
@@ -80,7 +80,7 @@ public class JdbcPedidoServicoRepository implements PedidoServicoRepository {
                 .param("margemPct", d.margemPct()).param("margemRecebida", d.margemRecebida() == null ? null : d.margemRecebida().emReais())
                 .param("recebidaEm", data(d.recebidaEm())).param("corretorPct", d.corretorPct()).param("fundoPct", d.fundoPct())
                 .param("avalNota", a == null ? null : a.nota()).param("avalComentario", a == null ? null : a.comentario())
-                .param("avalEm", a == null ? null : data(a.em())).param("motivo", d.motivoCancelamento()).param("versao", d.versao())
+                .param("avalEm", a == null ? null : data(a.em())).param("motivo", d.motivoCancelamento()).param("versao", d.versao()).param("pacote", d.pacoteId())
                 .update();
         if (linhas == 0) throw new OptimisticLockingFailureException("O pedido foi alterado por outra pessoa. Atualize a tela.");
         return buscar(tenant, d.id()).orElseThrow();
@@ -117,6 +117,6 @@ public class JdbcPedidoServicoRepository implements PedidoServicoRepository {
                 rs.getBigDecimal("margem_pct"), margem == null ? null : Dinheiro.deReais(margem), data(rs, "recebida_em"),
                 rs.getBigDecimal("corretor_pct"), rs.getBigDecimal("fundo_pct"),
                 temNota ? new Avaliacao(nota, rs.getString("aval_comentario"), data(rs, "aval_em")) : null,
-                rs.getString("motivo_cancelamento"), rs.getLong("versao")));
+                rs.getString("motivo_cancelamento"), rs.getLong("versao"), rs.getString("pacote_id")));
     }
 }

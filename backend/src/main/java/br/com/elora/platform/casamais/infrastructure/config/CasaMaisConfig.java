@@ -1,11 +1,15 @@
 package br.com.elora.platform.casamais.infrastructure.config;
 
 import br.com.elora.platform.casamais.application.CasaMaisCasosDeUso;
+import br.com.elora.platform.casamais.application.port.EmpresaRepository;
 import br.com.elora.platform.casamais.application.port.JornadaRepository;
+import br.com.elora.platform.casamais.application.port.PacoteRepository;
 import br.com.elora.platform.casamais.application.port.ParceiroRepository;
 import br.com.elora.platform.casamais.application.port.PedidoServicoRepository;
 import br.com.elora.platform.casamais.application.port.RegrasRepository;
+import br.com.elora.platform.casamais.infrastructure.persistence.JdbcEmpresaRepository;
 import br.com.elora.platform.casamais.infrastructure.persistence.JdbcJornadaRepository;
+import br.com.elora.platform.casamais.infrastructure.persistence.JdbcPacoteRepository;
 import br.com.elora.platform.casamais.infrastructure.persistence.JdbcParceiroRepository;
 import br.com.elora.platform.casamais.infrastructure.persistence.JdbcPedidoServicoRepository;
 import br.com.elora.platform.casamais.infrastructure.persistence.JdbcRegrasRepository;
@@ -43,14 +47,27 @@ public class CasaMaisConfig {
     }
 
     @Bean
-    CasaMaisCasosDeUso casaMaisCasosDeUso(PedidoServicoRepository p, ParceiroRepository pa, RegrasRepository r, JornadaRepository j, Relogio relogio) {
-        return new Transacional(p, pa, r, j, relogio);
+    PacoteRepository pacoteRepository(JdbcClient jdbc) {
+        return new JdbcPacoteRepository(jdbc);
     }
 
+    @Bean
+    EmpresaRepository empresaRepository(JdbcClient jdbc) {
+        return new JdbcEmpresaRepository(jdbc);
+    }
+
+    @Bean
+    CasaMaisCasosDeUso casaMaisCasosDeUso(PedidoServicoRepository p, ParceiroRepository pa, RegrasRepository r, JornadaRepository j,
+                                          PacoteRepository pk, EmpresaRepository e, Relogio relogio) {
+        return new Transacional(p, pa, r, j, pk, e, relogio);
+    }
+
+    /** Transação por caso de uso: o pacote e os pedidos dele são gravados juntos ou nada é gravado. */
     @Transactional
     static class Transacional extends CasaMaisCasosDeUso {
-        Transacional(PedidoServicoRepository p, ParceiroRepository pa, RegrasRepository r, JornadaRepository j, Relogio relogio) {
-            super(p, pa, r, j, relogio);
+        Transacional(PedidoServicoRepository p, ParceiroRepository pa, RegrasRepository r, JornadaRepository j, PacoteRepository pk,
+                     EmpresaRepository e, Relogio relogio) {
+            super(p, pa, r, j, pk, e, relogio);
         }
     }
 }

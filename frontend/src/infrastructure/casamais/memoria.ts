@@ -8,6 +8,7 @@ import {
   type RegrasCasaMais,
 } from '@/domain/casamais/pedido';
 import { hojeISO } from '@/domain/shared/datas';
+import { itemPacote, type Empresa, type Pacote } from '@/domain/casamais/pacote';
 
 /**
  * Repositórios em memória com dados de exemplo (fictícios), para desenvolver o front-end sem o back-end
@@ -120,14 +121,31 @@ const JORNADAS: ClienteEmJornada[] = [
   },
 ];
 
+const EMPRESAS: Empresa[] = [
+  {
+    id: 'EM-1',
+    nome: 'Aeronáutica Vale S.A. (exemplo)',
+    cidade: 'São José dos Campos',
+    contato: 'Carla, RH',
+    whatsapp: '12988880000',
+    auxilio: 'até R$ 4.000 por mês',
+  },
+];
+
+const novoId = (prefixo: string) => `${prefixo}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
 export function criarCasaMaisMemoria(semente?: {
   pedidos?: PedidoServico[];
   parceiros?: Parceiro[];
   regras?: RegrasCasaMais;
+  pacotes?: Pacote[];
+  empresas?: Empresa[];
 }): CasaMaisRepositories {
   let pedidos = structuredClone(semente?.pedidos ?? PEDIDOS);
   let parceiros = structuredClone(semente?.parceiros ?? PARCEIROS);
   let regras = { ...(semente?.regras ?? REGRAS_PADRAO) };
+  let pacotes = structuredClone(semente?.pacotes ?? []);
+  let empresas = structuredClone(semente?.empresas ?? EMPRESAS);
   const atualizar = (id: string, f: (p: PedidoServico) => PedidoServico) => {
     const atual = pedidos.find((p) => p.id === id);
     if (!atual) throw new Error('Pedido não encontrado.');
@@ -198,5 +216,102 @@ export function criarCasaMaisMemoria(semente?: {
       },
     },
     jornadas: { listar: () => Promise.resolve(structuredClone(JORNADAS)) },
+    pacotes: {
+      listar: () => Promise.resolve(structuredClone(pacotes)),
+      registrar: (d) => {
+        const empresa =
+          d.cliente.perfil === 'empresa' ? empresas.find((e) => e.id === d.cliente.referencia) : undefined;
+        const jornada = JORNADAS.find((j) => j.perfil === d.cliente.perfil && j.referencia === d.cliente.referencia);
+        if (!empresa && !jornada) return Promise.reject(new Error('Cliente não encontrado.'));
+        const telefone = d.cliente.telefone || jornada?.telefone;
+        const cliente = {
+          perfil: d.cliente.perfil,
+          referencia: d.cliente.referencia,
+          nome: (empresa ? d.cliente.nome : jornada?.nome) ?? 'Cliente',
+          ...(telefone ? { telefone } : {}),
+        };
+        const pid = novoId('PK');
+        const agora = new Date().toISOString();
+        const hoje = hojeISO();
+        const comum = {
+          cliente,
+          ...(jornada?.imovelId ? { imovelId: jornada.imovelId } : {}),
+          ...(jornada?.corretorId ? { corretorId: jornada.corretorId, corretorNome: jornada.corretorNome } : {}),
+          criadoEm: agora,
+          pacoteId: pid,
+        };
+        const novos: PedidoServico[] = d.itens.flatMap((k): PedidoServico[] => {
+          const it = itemPacote(k);
+          if (!it?.categoria) return [];
+          const id = novoId('SV');
+          if (it.categoria === 'plugplay')
+            return [
+              {
+                ...comum,
+                id,
+                categoria: 'plugplay',
+                descricao: 'Pacote Chegada · luz, água, gás e internet',
+                preferenciaEm: d.data,
+                status: 'aprovado',
+                aprovadoEm: hoje,
+                orcamento: {
+                  valor: regras.taxaPlugPlay,
+                  prazo: `até ${d.data.split('-').reverse().join('/')}`,
+                  em: hoje,
+                },
+                margemPct: 100,
+              },
+            ];
+          return [
+            {
+              ...comum,
+              id,
+              categoria: it.categoria,
+              ...(it.subservico ? { subservico: it.subservico } : {}),
+              descricao: `Pacote Chegada · ${it.titulo}${d.observacao ? `. ${d.observacao}` : ''}`.slice(0, 500),
+              preferenciaEm: d.data,
+              status: 'pedido',
+            },
+          ];
+        });
+        pedidos = [...novos, ...pedidos];
+        const pk: Pacote = {
+          id: pid,
+          tipo: 'chegada',
+          cliente,
+          ...(empresa ? { empresaId: empresa.id } : {}),
+          ...(jornada?.imovelId ? { imovelId: jornada.imovelId } : {}),
+          ...(jornada?.corretorId ? { corretorId: jornada.corretorId, corretorNome: jornada.corretorNome } : {}),
+          data: d.data,
+          ...(d.origem ? { origem: d.origem } : {}),
+          pessoas: d.pessoas,
+          pet: d.pet,
+          ...(d.observacao ? { observacao: d.observacao } : {}),
+          ...(d.buscaImovel ? { buscaImovel: d.buscaImovel } : {}),
+          itens: [...d.itens],
+          pedidos: novos.map((p) => p.id),
+          criadoEm: agora,
+        };
+        pacotes = [pk, ...pacotes];
+        return Promise.resolve(structuredClone(pk));
+      },
+      marcarGuiaEnviado: (id) => {
+        const pk = pacotes.find((p) => p.id === id);
+        if (!pk) return Promise.reject(new Error('Pacote não encontrado.'));
+        const novo = { ...pk, guiaEnviadoEm: pk.guiaEnviadoEm ?? hojeISO() };
+        pacotes = pacotes.map((p) => (p.id === id ? novo : p));
+        return Promise.resolve(structuredClone(novo));
+      },
+    },
+    empresas: {
+      listar: () => Promise.resolve(structuredClone(empresas)),
+      salvar: (e) => {
+        const salva: Empresa = { ...e, id: e.id ?? novoId('EM') };
+        empresas = empresas.some((x) => x.id === salva.id)
+          ? empresas.map((x) => (x.id === salva.id ? salva : x))
+          : [...empresas, salva];
+        return Promise.resolve(structuredClone(salva));
+      },
+    },
   };
 }

@@ -19,5 +19,11 @@ public final class Comandos {
 
     public record DadosParceiro(String id, String nome, Set<Categoria> categorias, BigDecimal comissaoPct, String whatsapp, String cidades, String prazo, String apresentacao, boolean ativo) {}
 
+    /** Pacote Chegada: cliente em jornada (perfil + referência) ou funcionário de empresa (EMPRESA + id da empresa + nome). */
+    public record NovoPacote(PerfilCliente perfil, String referencia, String nome, String telefone, LocalDate data, String origem, int pessoas, boolean pet,
+                             boolean gasEncanado, String observacao, String buscaImovel, java.util.List<br.com.elora.platform.casamais.domain.ItemPacote> itens) {}
+
+    public record DadosEmpresa(String id, String nome, String cidade, String contato, String whatsapp, String email, String auxilio, String observacao) {}
+
     public record NovasRegras(BigDecimal corretorPct, BigDecimal fundoBoaIdeiaPct, Dinheiro taxaPlugPlay) {}
 }

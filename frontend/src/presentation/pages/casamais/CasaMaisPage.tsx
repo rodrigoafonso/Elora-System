@@ -9,6 +9,7 @@ import {
   type PedidoServico,
   type RegrasCasaMais,
 } from '@/domain/casamais/pedido';
+import type { Empresa, Pacote } from '@/domain/casamais/pacote';
 import { dividirMargem } from '@/domain/casamais/remuneracao';
 import { formatarData } from '@/domain/shared/datas';
 import { centavos, formatarBRL, formatarPct, formatarReais } from '@/domain/shared/dinheiro';
@@ -20,6 +21,7 @@ import { EMPRESA } from '../../marca';
 import { LegacyScreen } from '../legacy/LegacyScreen';
 import { ItemPedido, type AcoesDoPedido } from './ItemPedido';
 import { FormMargem, FormNovoPedido, FormOrcamento, FormParceiro } from './Janelas';
+import { FormEmpresa, FormPacote, PainelEmpresas, PainelPacotes } from './Pacotes';
 import { useAcaoCasaMais, useDadosCasaMais } from './useCasaMais';
 
 type JanelaAberta =
@@ -27,6 +29,8 @@ type JanelaAberta =
   | { tipo: 'orcamento'; pedido: PedidoServico }
   | { tipo: 'margem'; pedido: PedidoServico }
   | { tipo: 'parceiro'; parceiro?: Parceiro }
+  | { tipo: 'pacote'; empresaId?: string }
+  | { tipo: 'empresa'; empresa?: Empresa }
   | null;
 
 const QUEM_SOU = `a equipe da ${EMPRESA}`;
@@ -41,7 +45,7 @@ export function CasaMaisPage() {
   const { referencia: hoje } = useOutletContext<ContextoDoLayout>();
   const [aba, setAba] = useState<'servicos' | 'sol'>('servicos');
   const [janela, setJanela] = useState<JanelaAberta>(null);
-  const { pedidos, parceiros, regras, jornadas } = useDadosCasaMais();
+  const { pedidos, parceiros, regras, jornadas, pacotes, empresas } = useDadosCasaMais();
   const nPedidos = (pedidos.data ?? []).filter((p) => ['pedido', 'orcamento', 'aprovado'].includes(p.status)).length;
 
   return (
@@ -84,6 +88,8 @@ export function CasaMaisPage() {
           parceiros={parceiros.data}
           jornadas={jornadas.data}
           regras={regras.data ?? REGRAS_PADRAO}
+          pacotes={pacotes.data ?? []}
+          empresas={empresas.data ?? []}
           abrir={setJanela}
         />
       )}
@@ -93,6 +99,7 @@ export function CasaMaisPage() {
         hoje={hoje}
         parceiros={parceiros.data ?? []}
         jornadas={jornadas.data ?? []}
+        empresas={empresas.data ?? []}
         regras={regras.data ?? REGRAS_PADRAO}
       />
     </>
@@ -105,6 +112,8 @@ function PainelMarketplace({
   parceiros,
   jornadas,
   regras,
+  pacotes,
+  empresas,
   abrir,
 }: {
   hoje: string;
@@ -112,6 +121,8 @@ function PainelMarketplace({
   parceiros: Parceiro[];
   jornadas: ClienteEmJornada[];
   regras: RegrasCasaMais;
+  pacotes: Pacote[];
+  empresas: Empresa[];
   abrir: (j: JanelaAberta) => void;
 }) {
   const avisar = useAviso();
@@ -124,6 +135,7 @@ function PainelMarketplace({
   const aprovar = useAcaoCasaMais((c, id: string) => c.aprovar(id));
   const concluir = useAcaoCasaMais((c, id: string) => c.concluir(id));
   const cancelar = useAcaoCasaMais((c, id: string) => c.cancelar(id));
+  const guia = useAcaoCasaMais((c, id: string) => c.marcarGuiaEnviado(id));
 
   const acoes: AcoesDoPedido = {
     orcar: (p) => abrir({ tipo: 'orcamento', pedido: p }),
@@ -156,6 +168,15 @@ function PainelMarketplace({
             nota: `${formatarPct(regras.corretorPct)} da margem, depois do Boa Ideia · fundo Boa Ideia: ${formatarBRL(resumo.fundoBoaIdeia12m)}`,
           },
         ]}
+      />
+      <PainelPacotes
+        pacotes={pacotes}
+        pedidos={pedidos}
+        empresas={empresas}
+        hoje={hoje}
+        aoNovoPacote={() => abrir({ tipo: 'pacote' })}
+        aoNovaEmpresa={() => abrir({ tipo: 'empresa' })}
+        aoMarcarGuia={(pk) => guia.mutate(pk.id, { onSuccess: () => avisar('Guia do bairro marcado como enviado.') })}
       />
       <Painel titulo="Pedidos de serviço">
         <Chips
@@ -254,6 +275,12 @@ function PainelMarketplace({
           {EH_GESTOR ? <FormRegras regras={regras} /> : null}
         </Painel>
       </div>
+      <PainelEmpresas
+        empresas={empresas}
+        pacotes={pacotes}
+        aoNovoPacote={(empresaId) => abrir({ tipo: 'pacote', empresaId })}
+        aoEditar={(empresa) => abrir({ tipo: 'empresa', empresa })}
+      />
       <PainelParceiros parceiros={parceiros} pedidos={pedidos} abrir={abrir} />
     </>
   );
@@ -414,6 +441,7 @@ function JanelasDoCasaMais({
   hoje,
   parceiros,
   jornadas,
+  empresas,
   regras,
 }: {
   janela: JanelaAberta;
@@ -421,6 +449,7 @@ function JanelasDoCasaMais({
   hoje: string;
   parceiros: Parceiro[];
   jornadas: ClienteEmJornada[];
+  empresas: Empresa[];
   regras: RegrasCasaMais;
 }) {
   const avisar = useAviso();
@@ -429,6 +458,8 @@ function JanelasDoCasaMais({
   const orcamento = useAcaoCasaMais((c, d: Parameters<typeof c.registrarOrcamento>[0]) => c.registrarOrcamento(d));
   const margem = useAcaoCasaMais((c, d: Parameters<typeof c.registrarMargem>[0]) => c.registrarMargem(d));
   const parceiro = useAcaoCasaMais((c, d: Parameters<typeof c.salvarParceiro>[0]) => c.salvarParceiro(d));
+  const pacote = useAcaoCasaMais((c, d: Parameters<typeof c.registrarPacote>[0]) => c.registrarPacote(d));
+  const empresa = useAcaoCasaMais((c, d: Parameters<typeof c.salvarEmpresa>[0]) => c.salvarEmpresa(d));
   const ok = (texto: string) => ({
     onSuccess: () => {
       fechar();
@@ -439,7 +470,7 @@ function JanelasDoCasaMais({
   const comum = { aoCancelar: fechar };
 
   return (
-    <Janela aberta={janela !== null} aoFechar={fechar} largo={janela?.tipo === 'parceiro'}>
+    <Janela aberta={janela !== null} aoFechar={fechar} largo={janela?.tipo === 'parceiro' || janela?.tipo === 'pacote'}>
       {janela?.tipo === 'novo' ? (
         <FormNovoPedido
           {...comum}
@@ -475,6 +506,23 @@ function JanelasDoCasaMais({
           ocupado={parceiro.isPending}
           parceiro={janela.parceiro}
           aoEnviar={(d) => parceiro.mutate(d, ok('Parceiro salvo.'))}
+        />
+      ) : janela?.tipo === 'pacote' ? (
+        <FormPacote
+          {...comum}
+          ocupado={pacote.isPending}
+          jornadas={jornadas}
+          empresas={empresas}
+          empresaInicial={janela.empresaId}
+          taxaPlugPlay={regras.taxaPlugPlay}
+          aoEnviar={(d) => pacote.mutate(d, ok('Pacote registrado.'))}
+        />
+      ) : janela?.tipo === 'empresa' ? (
+        <FormEmpresa
+          {...comum}
+          ocupado={empresa.isPending}
+          empresa={janela.empresa}
+          aoEnviar={(d) => empresa.mutate(d, ok('Empresa salva.'))}
         />
       ) : null}
     </Janela>

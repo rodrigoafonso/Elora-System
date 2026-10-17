@@ -49,3 +49,21 @@ describe('Elora Casa+ (equipe)', () => {
     expect(within(item).getByRole('button', { name: 'Confirmar: cancelar' })).toBeInTheDocument();
   });
 });
+
+describe('Pacotes Casa+ (equipe)', () => {
+  it('registra o Pacote Chegada de um funcionário de empresa e mostra o andamento', async () => {
+    const u = userEvent.setup();
+    abrir();
+    expect(await screen.findByRole('heading', { name: /Pacotes Casa\+ · 0 em andamento/ })).toBeInTheDocument();
+    expect(screen.getByText('Aeronáutica Vale S.A. (exemplo)')).toBeInTheDocument();
+    await u.click(screen.getAllByRole('button', { name: 'Novo pacote' })[0]!);
+    await u.type(screen.getByLabelText('Nome do funcionário'), 'Daniel Okafor');
+    await u.type(screen.getByLabelText('Data da mudança *'), '2026-11-20');
+    await u.click(screen.getByRole('button', { name: 'Registrar pacote' }));
+    expect(await screen.findByText('Pacote registrado.')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Pacotes Casa\+ · 1 em andamento/ })).toBeInTheDocument();
+    expect(screen.getByText(/Pacote Chegada · Daniel Okafor · Aeronáutica Vale/)).toBeInTheDocument();
+    await u.click(screen.getByRole('button', { name: 'Marcar guia do bairro enviado' }));
+    expect(await screen.findByText(/Guia do bairro enviado em/)).toBeInTheDocument();
+  });
+});

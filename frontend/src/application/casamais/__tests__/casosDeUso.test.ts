@@ -87,3 +87,68 @@ describe('resumirCasaMais', () => {
     expect(r.pendentes.map((p) => p.id)).toEqual(['SV-1', 'SV-2']);
   });
 });
+
+describe('pacotes do Casa+', () => {
+  it('cria o pacote e um pedido por item (Plug & Play já aprovado, com a taxa)', async () => {
+    const { repos, casos } = montar();
+    const pk = await casos.registrarPacote({
+      cliente: { perfil: 'comprador', referencia: 'EL-0117' },
+      data: '2026-11-05',
+      pessoas: 3,
+      pet: false,
+      gasEncanado: false,
+      itens: ['plugplay', 'limpeza', 'guia', 'limpeza'],
+    });
+    expect(pk).toMatchObject({
+      itens: ['plugplay', 'limpeza', 'guia'],
+      cliente: { nome: 'Tatiana Moura' },
+      imovelId: 'EL-0117',
+    });
+    expect(pk.pedidos).toHaveLength(2);
+    const criados = (await repos.pedidos.listar()).filter((p) => p.pacoteId === pk.id);
+    expect(criados.map((p) => [p.categoria, p.status])).toEqual(
+      expect.arrayContaining([
+        ['plugplay', 'aprovado'],
+        ['limpeza', 'pedido'],
+      ]),
+    );
+    expect(criados.find((p) => p.categoria === 'plugplay')?.orcamento?.valor).toBe(150);
+  });
+
+  it('funcionário de empresa precisa de nome; pacote sem itens é recusado', async () => {
+    const { casos } = montar();
+    await expect(
+      casos.registrarPacote({
+        cliente: { perfil: 'empresa', referencia: 'EM-1' },
+        data: '2026-11-05',
+        pessoas: 1,
+        pet: false,
+        gasEncanado: false,
+        itens: ['guia'],
+      }),
+    ).rejects.toThrow('Informe o nome do funcionário.');
+    await expect(
+      casos.registrarPacote({
+        cliente: { perfil: 'empresa', referencia: 'EM-1', nome: 'Daniel' },
+        data: '2026-11-05',
+        pessoas: 1,
+        pet: false,
+        gasEncanado: false,
+        itens: [],
+      }),
+    ).rejects.toThrow('Escolha ao menos um item do pacote.');
+  });
+
+  it('marca o guia do bairro enviado', async () => {
+    const { casos } = montar();
+    const pk = await casos.registrarPacote({
+      cliente: { perfil: 'empresa', referencia: 'EM-1', nome: 'Daniel' },
+      data: '2026-11-05',
+      pessoas: 1,
+      pet: false,
+      gasEncanado: false,
+      itens: ['guia'],
+    });
+    expect((await casos.marcarGuiaEnviado(pk.id)).guiaEnviadoEm).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+});

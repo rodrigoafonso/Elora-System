@@ -23,7 +23,7 @@ export const pedidoSchema = z.object({
   urgente: z.boolean().optional(),
   parceiroId: z.string().optional(),
   cliente: z.object({
-    perfil: z.enum(['proprietario', 'inquilino', 'comprador']),
+    perfil: z.enum(['proprietario', 'inquilino', 'comprador', 'empresa']),
     referencia: z.string(),
     nome: z.string(),
     telefone: z.string().optional(),
@@ -46,6 +46,7 @@ export const pedidoSchema = z.object({
   corretorPct: z.number().optional(),
   fundoPct: z.number().optional(),
   avaliacao: z.object({ nota: z.number(), comentario: z.string().optional(), em: z.string() }).optional(),
+  pacoteId: z.string().optional(),
 });
 
 export const parceiroSchema = z.object({
@@ -77,4 +78,37 @@ export const jornadaSchema = z.object({
   desde: z.string(),
   rotulo: z.enum(['Comprou', 'Alugou']),
   pedidos: z.number(),
+});
+
+const itemPacote = z.enum(['plugplay', 'limpeza', 'mudanca', 'montagem', 'instalacao', 'clima', 'guia']);
+
+export const empresaSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  cidade: z.string().optional(),
+  contato: z.string().optional(),
+  whatsapp: z.string().optional(),
+  email: z.string().optional(),
+  auxilio: z.string().optional(),
+  observacao: z.string().optional(),
+});
+
+export const pacoteSchema = z.object({
+  id: z.string(),
+  tipo: z.literal('chegada'),
+  cliente: pedidoSchema.shape.cliente,
+  empresaId: z.string().optional(),
+  imovelId: z.string().optional(),
+  corretorId: z.string().optional(),
+  corretorNome: z.string().optional(),
+  data: z.string(),
+  origem: z.string().optional(),
+  pessoas: z.number(),
+  pet: z.boolean(),
+  observacao: z.string().optional(),
+  buscaImovel: z.enum(['Locação', 'Compra']).optional(),
+  itens: z.array(itemPacote),
+  pedidos: z.array(z.string()),
+  guiaEnviadoEm: z.string().optional(),
+  criadoEm: z.string(),
 });

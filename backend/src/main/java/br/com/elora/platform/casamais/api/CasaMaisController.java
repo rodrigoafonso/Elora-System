@@ -1,6 +1,10 @@
 package br.com.elora.platform.casamais.api;
 
 import br.com.elora.platform.casamais.api.CasaMaisDtos.CancelamentoRequest;
+import br.com.elora.platform.casamais.api.CasaMaisDtos.EmpresaDto;
+import br.com.elora.platform.casamais.api.CasaMaisDtos.EmpresaRequest;
+import br.com.elora.platform.casamais.api.CasaMaisDtos.NovoPacoteRequest;
+import br.com.elora.platform.casamais.api.CasaMaisDtos.PacoteDto;
 import br.com.elora.platform.casamais.api.CasaMaisDtos.JornadaDto;
 import br.com.elora.platform.casamais.api.CasaMaisDtos.MargemRequest;
 import br.com.elora.platform.casamais.api.CasaMaisDtos.NovoPedidoRequest;
@@ -11,6 +15,7 @@ import br.com.elora.platform.casamais.api.CasaMaisDtos.PedidoDto;
 import br.com.elora.platform.casamais.api.CasaMaisDtos.RegrasDto;
 import br.com.elora.platform.casamais.application.CasaMaisCasosDeUso;
 import br.com.elora.platform.casamais.application.Comandos;
+import br.com.elora.platform.casamais.domain.ItemPacote;
 import br.com.elora.platform.casamais.domain.PerfilCliente;
 import br.com.elora.platform.shared.api.TenantAtual;
 import br.com.elora.platform.shared.domain.Dinheiro;
@@ -111,6 +116,47 @@ public class CasaMaisController {
     @Operation(summary = "Clientes em jornada: compras dos últimos 180 dias e locações dos últimos 90")
     public List<JornadaDto> jornadas(@TenantAtual TenantId t) {
         return casos.listarJornadas(t).stream().map(JornadaDto::de).toList();
+    }
+
+    @GetMapping("/pacotes")
+    @Operation(summary = "Pacotes Chegada (ordem da data da mudança), com os pedidos de cada um")
+    public List<PacoteDto> pacotes(@TenantAtual TenantId t) {
+        return casos.listarPacotes(t).stream().map(PacoteDto::de).toList();
+    }
+
+    @PostMapping("/pacotes")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Cria um Pacote Chegada e um pedido do Casa+ para cada item (numa transação só)")
+    public PacoteDto novoPacote(@TenantAtual TenantId t, @Valid @RequestBody NovoPacoteRequest r) {
+        var c = r.cliente();
+        return PacoteDto.de(casos.registrarPacote(t, new Comandos.NovoPacote(PerfilCliente.daChave(c.perfil()), c.referencia(), c.nome(), c.telefone(),
+                r.data(), r.origem(), r.pessoas(), r.pet(), r.gasEncanado(), r.observacao(), r.buscaImovel(),
+                r.itens().stream().map(k -> ItemPacote.daChave(k).orElseThrow()).toList())));
+    }
+
+    @PostMapping("/pacotes/{id}/guia")
+    public PacoteDto guiaEnviado(@TenantAtual TenantId t, @PathVariable String id) {
+        return PacoteDto.de(casos.marcarGuiaEnviado(t, id));
+    }
+
+    @GetMapping("/empresas")
+    public List<EmpresaDto> empresas(@TenantAtual TenantId t) {
+        return casos.listarEmpresas(t).stream().map(EmpresaDto::de).toList();
+    }
+
+    @PostMapping("/empresas")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmpresaDto novaEmpresa(@TenantAtual TenantId t, @Valid @RequestBody EmpresaRequest r) {
+        return EmpresaDto.de(casos.salvarEmpresa(t, dadosEmpresa(null, r)));
+    }
+
+    @PutMapping("/empresas/{id}")
+    public EmpresaDto empresa(@TenantAtual TenantId t, @PathVariable String id, @Valid @RequestBody EmpresaRequest r) {
+        return EmpresaDto.de(casos.salvarEmpresa(t, dadosEmpresa(id, r)));
+    }
+
+    private static Comandos.DadosEmpresa dadosEmpresa(String id, EmpresaRequest r) {
+        return new Comandos.DadosEmpresa(id, r.nome(), r.cidade(), r.contato(), r.whatsapp(), r.email(), r.auxilio(), r.observacao());
     }
 
     private static Comandos.DadosParceiro comando(String id, ParceiroRequest r) {

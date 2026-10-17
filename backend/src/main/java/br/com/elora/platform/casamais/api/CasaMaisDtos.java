@@ -2,6 +2,9 @@ package br.com.elora.platform.casamais.api;
 
 import br.com.elora.platform.casamais.domain.Categoria;
 import br.com.elora.platform.casamais.domain.ClienteEmJornada;
+import br.com.elora.platform.casamais.domain.Empresa;
+import br.com.elora.platform.casamais.domain.ItemPacote;
+import br.com.elora.platform.casamais.domain.Pacote;
 import br.com.elora.platform.casamais.domain.Parceiro;
 import br.com.elora.platform.casamais.domain.PedidoServico;
 import br.com.elora.platform.casamais.domain.RegrasCasaMais;
@@ -37,7 +40,7 @@ public final class CasaMaisDtos {
             String id, String categoria, String subservico, boolean urgente, String parceiroId, ClienteDto cliente, String imovelId,
             String corretorId, String corretorNome, String descricao, LocalDate preferenciaEm, String status, Instant criadoEm,
             LocalDate aprovadoEm, LocalDate executadoEm, OrcamentoDto orcamento, BigDecimal margemPct, BigDecimal margemRecebida,
-            LocalDate recebidaEm, BigDecimal corretorPct, BigDecimal fundoPct, AvaliacaoDto avaliacao) {
+            LocalDate recebidaEm, BigDecimal corretorPct, BigDecimal fundoPct, AvaliacaoDto avaliacao, String pacoteId) {
 
         static PedidoDto de(PedidoServico p) {
             var d = p.dados();
@@ -48,7 +51,7 @@ public final class CasaMaisDtos {
                     d.imovelRef(), d.corretorRef(), d.corretorNome(), d.descricao(), d.preferenciaEm(), d.status().chave(), d.criadoEm(),
                     d.aprovadoEm(), d.executadoEm(), o == null ? null : new OrcamentoDto(o.valor().emReais(), o.prazo(), o.observacao(), o.em()),
                     d.margemPct(), d.margemRecebida() == null ? null : d.margemRecebida().emReais(), d.recebidaEm(), d.corretorPct(),
-                    d.fundoPct(), a == null ? null : new AvaliacaoDto(a.nota(), a.comentario(), a.em()));
+                    d.fundoPct(), a == null ? null : new AvaliacaoDto(a.nota(), a.comentario(), a.em()), d.pacoteId());
         }
     }
 
@@ -74,7 +77,39 @@ public final class CasaMaisDtos {
         }
     }
 
+    public record PacoteDto(
+            String id, String tipo, ClienteDto cliente, String empresaId, String imovelId, String corretorId, String corretorNome, LocalDate data,
+            String origem, int pessoas, boolean pet, String observacao, String buscaImovel, List<String> itens, List<String> pedidos,
+            LocalDate guiaEnviadoEm, Instant criadoEm) {
+        static PacoteDto de(Pacote pk) {
+            var c = pk.cliente();
+            return new PacoteDto(pk.id(), "chegada", new ClienteDto(c.perfil().chave(), c.referencia(), c.nome(), c.telefone()), pk.empresaId(),
+                    pk.imovelRef(), pk.corretorRef(), pk.corretorNome(), pk.data(), pk.origem(), pk.pessoas(), pk.pet(), pk.observacao(),
+                    pk.buscaImovel(), pk.itens().stream().map(ItemPacote::chave).toList(), pk.pedidos(), pk.guiaEnviadoEm(), pk.criadoEm());
+        }
+    }
+
+    public record EmpresaDto(String id, String nome, String cidade, String contato, String whatsapp, String email, String auxilio, String observacao) {
+        static EmpresaDto de(Empresa e) {
+            return new EmpresaDto(e.id(), e.nome(), e.cidade(), e.contato(), e.whatsapp(), e.email(), e.auxilio(), e.observacao());
+        }
+    }
+
     // ---------- Requisições ----------
+    private static final String ITENS = "plugplay|limpeza|mudanca|montagem|instalacao|clima|guia";
+
+    public record ClientePacote(@NotNull @Pattern(regexp = "proprietario|inquilino|comprador|empresa") String perfil,
+                                @NotBlank @Size(max = 60) String referencia, @Size(max = 100) String nome, @Size(max = 30) String telefone) {}
+
+    public record NovoPacoteRequest(
+            @NotNull @Valid ClientePacote cliente, @NotNull LocalDate data, @Size(max = 80) String origem, int pessoas, boolean pet,
+            boolean gasEncanado, @Size(max = 400) String observacao, @Pattern(regexp = "Locação|Compra") String buscaImovel,
+            @NotEmpty List<@Pattern(regexp = ITENS) String> itens) {}
+
+    public record EmpresaRequest(@NotBlank @Size(max = 100) String nome, @Size(max = 80) String cidade, @Size(max = 80) String contato,
+                                 @Size(max = 30) String whatsapp, @Size(max = 120) String email, @Size(max = 80) String auxilio,
+                                 @Size(max = 400) String observacao) {}
+
     public record ClienteRef(@NotNull @Pattern(regexp = "proprietario|inquilino|comprador") String perfil, @NotBlank @Size(max = 60) String referencia) {}
 
     public record NovoPedidoRequest(

@@ -1,4 +1,5 @@
 import type { ChaveCategoria } from '@/domain/casamais/categorias';
+import type { BuscaImovel, ChaveItemPacote, Empresa, Pacote } from '@/domain/casamais/pacote';
 import type {
   ClienteEmJornada,
   Parceiro,
@@ -60,9 +61,41 @@ export interface JornadaRepository {
   listar(): Promise<ClienteEmJornada[]>;
 }
 
+export interface NovoPacote {
+  /** Cliente em jornada (perfil + referência) ou funcionário de empresa (perfil 'empresa', referência = id da empresa). */
+  readonly cliente: {
+    readonly perfil: PerfilCliente;
+    readonly referencia: string;
+    readonly nome?: string;
+    readonly telefone?: string;
+  };
+  readonly data: string;
+  readonly origem?: string;
+  readonly pessoas: number;
+  readonly pet: boolean;
+  readonly gasEncanado: boolean;
+  readonly observacao?: string;
+  readonly buscaImovel?: BuscaImovel;
+  readonly itens: readonly ChaveItemPacote[];
+}
+
+export interface PacoteRepository {
+  listar(): Promise<Pacote[]>;
+  /** Cria o pacote e os pedidos dos itens numa operação só. */
+  registrar(dados: NovoPacote): Promise<Pacote>;
+  marcarGuiaEnviado(pacoteId: string): Promise<Pacote>;
+}
+
+export interface EmpresaRepository {
+  listar(): Promise<Empresa[]>;
+  salvar(empresa: Omit<Empresa, 'id'> & { id?: string }): Promise<Empresa>;
+}
+
 export interface CasaMaisRepositories {
   readonly pedidos: PedidoServicoRepository;
   readonly parceiros: ParceiroRepository;
   readonly regras: RegrasCasaMaisRepository;
   readonly jornadas: JornadaRepository;
+  readonly pacotes: PacoteRepository;
+  readonly empresas: EmpresaRepository;
 }

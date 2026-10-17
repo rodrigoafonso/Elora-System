@@ -1,6 +1,7 @@
 import { categoria, semComissao } from '@/domain/casamais/categorias';
 import type { Parceiro, RegrasCasaMais } from '@/domain/casamais/pedido';
-import type { CasaMaisRepositories, MargemRecebida, NovoOrcamento, NovoPedido } from '../ports/casamais';
+import { itemPacote, type Empresa } from '@/domain/casamais/pacote';
+import type { CasaMaisRepositories, MargemRecebida, NovoOrcamento, NovoPacote, NovoPedido } from '../ports/casamais';
 
 /** Erro de regra de negócio com mensagem pronta para a tela. */
 export class RegraVioladaError extends Error {}
@@ -39,6 +40,28 @@ export const casosDeUsoCasaMais = (repos: CasaMaisRepositories) => ({
     exigir(dados.valor > 0, 'Informe o valor recebido.');
     exigir(/^\d{4}-\d{2}-\d{2}$/.test(dados.recebidaEm), 'Informe a data do recebimento.');
     return repos.pedidos.registrarMargem(dados);
+  },
+
+  async registrarPacote(dados: NovoPacote) {
+    exigir(/^\d{4}-\d{2}-\d{2}$/.test(dados.data), 'Informe a data da mudança.');
+    const itens = [...new Set(dados.itens)].filter((k) => itemPacote(k));
+    exigir(itens.length > 0, 'Escolha ao menos um item do pacote.');
+    exigir(dados.cliente.referencia, 'Escolha para quem é o pacote.');
+    if (dados.cliente.perfil === 'empresa') exigir(dados.cliente.nome?.trim(), 'Informe o nome do funcionário.');
+    return repos.pacotes.registrar({
+      ...dados,
+      itens,
+      pessoas: Math.min(20, Math.max(1, Math.round(dados.pessoas) || 1)),
+      origem: dados.origem?.trim().slice(0, 80) || undefined,
+      observacao: dados.observacao?.trim().slice(0, 400) || undefined,
+    });
+  },
+
+  marcarGuiaEnviado: (pacoteId: string) => repos.pacotes.marcarGuiaEnviado(pacoteId),
+
+  async salvarEmpresa(e: Omit<Empresa, 'id'> & { id?: string }) {
+    exigir(e.nome.trim(), 'Informe o nome da empresa.');
+    return repos.empresas.salvar({ ...e, nome: e.nome.trim().slice(0, 100) });
   },
 
   aprovar: (pedidoId: string) => repos.pedidos.registrarAprovacao(pedidoId),

@@ -2,7 +2,8 @@ import type { DataISO } from '../shared/datas';
 import type { ChaveCategoria } from './categorias';
 
 export type StatusPedido = 'pedido' | 'orcamento' | 'aprovado' | 'executado' | 'cancelado';
-export type PerfilCliente = 'proprietario' | 'inquilino' | 'comprador';
+/** 'empresa' = funcionário de uma empresa cliente (Casa+ Empresas); a referência é o id da empresa. */
+export type PerfilCliente = 'proprietario' | 'inquilino' | 'comprador' | 'empresa';
 
 export const STATUS_PEDIDO: Record<StatusPedido, readonly [classe: string, rotulo: string]> = {
   pedido: ['gold', 'Pedido de orçamento'],
@@ -60,6 +61,8 @@ export interface PedidoServico {
   readonly corretorPct?: number;
   readonly fundoPct?: number;
   readonly avaliacao?: Avaliacao;
+  /** Pacote do Casa+ que gerou o pedido, se houver. */
+  readonly pacoteId?: string;
 }
 
 export interface Parceiro {

@@ -681,3 +681,39 @@ body.modo-app .fgrid{grid-template-columns:minmax(0,1fr)}
 .cp-st li.ok{border-top-color:var(--c1)}.cp-st li.meio{border-top-color:var(--c2)}.cp-st li.bad{border-top-color:var(--bad)}
 .intel-perfil h3{margin:14px 0 6px}.intel-perfil h3:first-child{margin-top:4px}
 #intel-bairros td small,#intel-prop td small{white-space:nowrap}
+/* Pacotes do Elora Casa+ (protótipo v48) */
+.pk-hero{background:var(--green);color:var(--on-green);border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pk-hero h3{font:400 22px/1.15 var(--display);display:flex;align-items:center;gap:8px}
+.pk-hero h3 svg{color:var(--gold-soft);flex:none}
+.pk-hero p{font-size:13px;line-height:1.5;opacity:.92}
+.pk-hero .btn{align-self:flex-start;background:var(--gold-soft);color:var(--ink);border-color:transparent}
+.pk-hero-sm h3{font-size:18px}
+.pk-eyebrow{font:600 10.5px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft)}
+.pk-ics{display:flex;gap:8px;flex-wrap:wrap}
+.pk-ics span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--on-green) 14%,transparent);color:var(--gold-soft)}
+.pk-linha{gap:18px}
+.pk-etapa{display:flex;flex-direction:column;gap:12px;padding-left:14px;border-left:2px solid var(--gold-soft)}
+.pk-etapa h4{font:600 11px/1.2 var(--ui);letter-spacing:.11em;text-transform:uppercase;color:var(--gold)}
+.pk-item{display:flex;gap:10px;align-items:flex-start}
+.pk-item svg{flex:none;color:var(--gold);margin-top:2px}
+.pk-item div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pk-item small{color:var(--muted);font-size:12px}
+.pk-item em{font-style:normal;font-size:11.5px;font-weight:600;color:var(--ok)}
+.pk-escolha{display:grid;gap:8px;border:0;padding:0;margin:0}
+.pk-escolha legend{margin-bottom:6px}
+.pk-op{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px 11px;cursor:pointer;background:var(--surface)}
+.pk-op:has(input:checked){border-color:var(--gold);background:var(--gold-soft)}
+.pk-op svg{color:var(--gold);flex:none}
+.pk-op span{display:flex;flex-direction:column;min-width:0}
+.pk-op small{color:var(--muted);font-size:11.5px}
+.pk-bar{height:6px;border-radius:99px;background:var(--sunken);overflow:hidden}
+.pk-bar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.pk-cont{color:var(--muted);font-size:12px}
+.pk-lista{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.pk-lista li{display:flex;align-items:center;gap:8px;font-size:13px}
+.pk-lista li svg{color:var(--gold);flex:none}
+.pk-lista li span{flex:1;min-width:0}
+.pk-pills{display:flex;flex-wrap:wrap;gap:6px}
+.item .pk-corpo{grid-column:1;display:flex;flex-direction:column;gap:8px;margin-top:4px;min-width:0}
+.pk-card h3{display:flex;align-items:center;gap:6px}
+.pk-card h3 svg{color:var(--gold)}
