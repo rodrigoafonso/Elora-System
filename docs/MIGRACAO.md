@@ -1,6 +1,6 @@
 # Migração das telas (protótipo → React)
 
-O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 49) é a **especificação visual e de comportamento**.
+O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 50) é a **especificação visual e de comportamento**.
 Usamos o padrão *Strangler Fig*: a casca (menu, rotas, estilos) já é React; cada tela é reescrita uma a uma.
 Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o menu dele — para o usuário, é o mesmo sistema.
 
@@ -18,58 +18,63 @@ Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o m
 
 ## Situação
 
+O menu é organizado por áreas (Hoje, Clientes, Imóveis, Operações, Equipe, Análises, Configurações). Telas irmãs são uma
+linha do menu e aparecem como abas no alto da tela (`MENU` em `navigation/menu.ts`; no protótipo, `GRUPOS_TELA`). As rotas não mudaram.
+Ao migrar uma tela que faz parte de um grupo, a página React precisa mostrar as mesmas abas (`.subnav`).
+"Buscar ou ir para" (Ctrl+K) fica no alto do menu: na plataforma, busca telas; no protótipo, também imóveis, clientes, pessoas e contratos.
+
 ### Equipe
 
-| Pasta | Tela | Rota | Situação |
-|---|---|---|---|
-| Início | Dashboard | `central` | ⏳ protótipo embutido |
-| Início | Agenda | `agenda` | ⏳ protótipo embutido |
-| Início | Chat da equipe | `chat` | ⏳ protótipo embutido |
-| Comercial | Atendimentos | `comercial` | ⏳ protótipo embutido |
-| Comercial | Sequências | `flows` | ⏳ protótipo embutido |
-| Comercial | Campanhas | `campanhas` | ⏳ protótipo embutido |
-| Comercial | Banco de compradores | `compradores` | ⏳ protótipo embutido |
-| Comercial | Prospecção | `prospeccao` | ⏳ protótipo embutido |
-| Comercial | Corretores Elora | `rede` | ⏳ protótipo embutido |
-| Comercial | Relatórios | `desempenho` | ⏳ protótipo embutido |
-| Comercial | Rodízio e funil | `rodizio` | ⏳ protótipo embutido |
-| Imóveis | Imóveis à venda | `im-venda` | ⏳ protótipo embutido |
-| Imóveis | Imóveis para locação | `im-locacao` | ⏳ protótipo embutido |
-| Imóveis | Recebimento e manutenção | `im-cuidado` | ⏳ protótipo embutido |
-| Operações | Locação | `locacao` | ✅ React |
-| Operações | Financeiro | `financeiro` | ⏳ protótipo embutido |
-| Operações | Elora Casa+ | `posvenda` | ✅ React |
-| Operações | Pessoas | `pessoas` | ⏳ protótipo embutido |
-| Gestão | Reuniões | `reunioes` | ⏳ protótipo embutido |
-| Gestão | Tickets e Kanban | `tickets` | ⏳ protótipo embutido |
-| Gestão | Resultados e OKRs | `resultados` | ⏳ protótipo embutido |
-| Gestão | Projeto Boa Ideia | `ideias` | ⏳ protótipo embutido |
-| Diretoria | Sala de guerra | `guerra` | ⏳ protótipo embutido |
-| Diretoria | Inteligência | `inteligencia` | ⏳ protótipo embutido |
-| Diretoria | Jurídico | `juridico` | ⏳ protótipo embutido |
-| Diretoria | Acessos | `acessos` | ⏳ protótipo embutido |
-| Tecnologia | Dados | `dados` | ⏳ protótipo embutido |
+| Área | Entrada no menu | Tela (aba) | Rota | Situação |
+|---|---|---|---|---|
+| Hoje | Dashboard | — | `central` | ⏳ protótipo embutido |
+| Hoje | Agenda | — | `agenda` | ⏳ protótipo embutido |
+| Hoje | (no alto de cada tela) | Chat da equipe | `chat` | ⏳ protótipo embutido |
+| Clientes | Atendimentos | Funil de atendimento | `comercial` | ⏳ protótipo embutido |
+| Clientes | Atendimentos | Compradores | `compradores` | ⏳ protótipo embutido |
+| Clientes | Atendimentos | Sequências | `flows` | ⏳ protótipo embutido |
+| Clientes | Pessoas | — | `pessoas` | ⏳ protótipo embutido |
+| Clientes | Campanhas | — | `campanhas` | ⏳ protótipo embutido |
+| Imóveis | Imóveis | Para locação | `im-locacao` | ⏳ protótipo embutido |
+| Imóveis | Imóveis | À venda | `im-venda` | ⏳ protótipo embutido |
+| Imóveis | Imóveis | Recebimento e manutenção | `im-cuidado` | ⏳ protótipo embutido |
+| Imóveis | Captação | — | `prospeccao` | ⏳ protótipo embutido |
+| Operações | Locação | — | `locacao` | ✅ React |
+| Operações | Financeiro | — | `financeiro` | ⏳ protótipo embutido |
+| Operações | Elora Casa+ | — | `posvenda` | ✅ React |
+| Equipe | Corretores | Corretores | `rede` | ⏳ protótipo embutido |
+| Equipe | Corretores | Rodízio e funil | `rodizio` | ⏳ protótipo embutido |
+| Equipe | Tickets e Kanban | — | `tickets` | ⏳ protótipo embutido |
+| Equipe | Reuniões | — | `reunioes` | ⏳ protótipo embutido |
+| Equipe | Projeto Boa Ideia | — | `ideias` | ⏳ protótipo embutido |
+| Análises | Relatórios | Comercial | `desempenho` | ⏳ protótipo embutido |
+| Análises | Relatórios | Resultados e OKRs | `resultados` | ⏳ protótipo embutido |
+| Análises | Inteligência | Inteligência | `inteligencia` | ⏳ protótipo embutido |
+| Análises | Inteligência | Sala de guerra (só o dono) | `guerra` | ⏳ protótipo embutido |
+| Configurações | Configurações | Empresa e jurídico (só o dono) | `juridico` | ⏳ protótipo embutido |
+| Configurações | Configurações | Acessos (só o dono) | `acessos` | ⏳ protótipo embutido |
+| Configurações | Configurações | Dados | `dados` | ⏳ protótipo embutido |
 
 ### Portal do corretor
 
-| Pasta | Tela | Rota | Situação |
-|---|---|---|---|
-| Início | Início | `inicio` | ⏳ protótipo embutido |
-| CRM de Atendimento | Atendimentos | `crm-c` | ⏳ protótipo embutido |
-| CRM de Atendimento | Mensagens do dia | `flows-c` | ⏳ protótipo embutido |
-| CRM de Atendimento | Meus leads | `leads-c` | ⏳ protótipo embutido |
-| CRM de Atendimento | Imóveis | `imoveis-c` | ⏳ protótipo embutido |
-| CRM de Atendimento | Minhas captações | `capt-c` | ⏳ protótipo embutido |
-| CRM de Atendimento | Prospecção | `prosp-c` | ⏳ protótipo embutido |
-| CRM de Atendimento | Compradores | `compradores-c` | ⏳ protótipo embutido |
-| CRM de Atendimento | Agenda | `agenda-c` | ⏳ protótipo embutido |
-| Meus ganhos | Carteira | `carteira` | ⏳ protótipo embutido |
-| Meus ganhos | Extrato | `extrato` | ⏳ protótipo embutido |
-| Meus ganhos | Elora Casa+ | `poschaves-c` | ⏳ protótipo embutido |
-| Elora | Chat da equipe | `chat-c` | ⏳ protótipo embutido |
-| Elora | Treinamento | `treino-c` | ⏳ protótipo embutido |
-| Elora | Projeto Boa Ideia | `ideias-c` | ⏳ protótipo embutido |
-| Elora | Elora AI | `ia` | ⏳ protótipo embutido |
+| Área | Entrada no menu | Tela (aba) | Rota | Situação |
+|---|---|---|---|---|
+| Hoje | Início | — | `inicio` | ⏳ protótipo embutido |
+| Hoje | Agenda | — | `agenda-c` | ⏳ protótipo embutido |
+| Hoje | Mensagens do dia | — | `flows-c` | ⏳ protótipo embutido |
+| Hoje | (no alto de cada tela) | Chat da equipe | `chat-c` | ⏳ protótipo embutido |
+| Clientes | Atendimentos | Funil | `crm-c` | ⏳ protótipo embutido |
+| Clientes | Atendimentos | Meus leads | `leads-c` | ⏳ protótipo embutido |
+| Clientes | Atendimentos | Compradores | `compradores-c` | ⏳ protótipo embutido |
+| Imóveis | Imóveis em oferta | — | `imoveis-c` | ⏳ protótipo embutido |
+| Imóveis | Captação | Minhas captações | `capt-c` | ⏳ protótipo embutido |
+| Imóveis | Captação | Prospecção | `prosp-c` | ⏳ protótipo embutido |
+| Meus ganhos | Carteira e extrato | Carteira | `carteira` | ⏳ protótipo embutido |
+| Meus ganhos | Carteira e extrato | Extrato | `extrato` | ⏳ protótipo embutido |
+| Meus ganhos | Elora Casa+ | — | `poschaves-c` | ⏳ protótipo embutido |
+| Elora | Treinamento | — | `treino-c` | ⏳ protótipo embutido |
+| Elora | Projeto Boa Ideia | — | `ideias-c` | ⏳ protótipo embutido |
+| Elora | Elora AI | — | `ia` | ⏳ protótipo embutido |
 
 ### App Elora (proprietário, locatário e comprador)
 

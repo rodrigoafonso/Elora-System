@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Icone } from './Icone';
 
@@ -134,6 +135,9 @@ export function Cabecalho({
         <button type="button" className="btn sm ghost sino" aria-label="Manuais em PDF" title="Manuais em PDF">
           <Icone nome="livro" />
         </button>
+        <Link className="btn sm ghost sino" to="/chat" aria-label="Chat da equipe" title="Chat da equipe">
+          <Icone nome="chat" />
+        </Link>
         <button type="button" className="btn sm ghost sino" aria-label={`Avisos: ${avisos}`} data-n={avisos}>
           <Icone nome="sino" />
           {avisos ? <b>{avisos > 99 ? '99+' : avisos}</b> : null}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 49). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 50). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -76,6 +76,19 @@ h1,h2,h3,p{margin:0}
 .nav button{border:0;background:none;color:var(--side-muted);text-align:left;padding:8px 12px;border-radius:7px;font-weight:500;font-size:13px}
 .nav button:hover{color:var(--side-ink)}
 .nav button[aria-current="page"]{background:var(--side-on);color:var(--side-ink);box-shadow:inset 2px 0 0 var(--side-gold)}
+.btn-busca{display:flex;align-items:center;gap:8px;width:100%;border:1px solid var(--side-line);background:var(--side-on);color:var(--side-muted);border-radius:8px;padding:8px 10px;font-size:12.5px;text-align:left}
+.btn-busca span{flex:1}.btn-busca kbd{font:600 10px var(--ui);border:1px solid var(--side-line);border-radius:4px;padding:1px 5px;color:var(--side-muted)}.btn-busca:hover{color:var(--side-ink)}
+.nav-area{display:flex;flex-direction:column;gap:1px}
+.nav-area>button:not(.grp){padding-left:35px}
+.nav button.nav-so{display:flex;align-items:center;gap:9px;margin-top:6px;padding:9px 12px;color:var(--side-muted)}
+.nav button.nav-so svg,.nav button.grp>svg:first-child{flex:none;opacity:.9}
+.subnav{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:-6px 0 16px}
+.subnav button{border:0;background:none;color:var(--muted);font-weight:600;font-size:13px;padding:9px 14px;border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:0}
+.subnav button:hover{color:var(--ink)}.subnav button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--gold)}
+.bx-res{display:grid;gap:2px;margin:12px 0 4px;max-height:min(60vh,460px);overflow-y:auto}
+.bx-it{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0 10px;align-items:baseline;text-align:left;border:0;background:none;padding:9px 10px;border-radius:8px;color:var(--ink)}
+.bx-it:hover,.bx-it:focus-visible{background:var(--sunken)}.bx-it span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;grid-row:span 2}
+.bx-it b{font-weight:600;font-size:13.5px}.bx-it small{color:var(--muted);font-size:12px;grid-column:2}
 .nav .grp{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--side-muted);font-weight:600;padding:11px 12px 3px;opacity:.85}
 .side small{margin-top:auto;color:var(--side-muted);font-size:11px;line-height:1.45}
 
@@ -320,6 +333,8 @@ dialog.tv .btn.ghost{color:var(--side-ink);border-color:var(--side-line)}
   .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:10px 16px;overflow:visible}
   .brand{flex-direction:row;border:0;padding:0;gap:9px;text-align:left}
   .brand svg{width:34px;height:26px} .brand b{font-size:18px} .brand .bt{gap:3px;align-items:flex-start} .brand em{margin:0 .3em 0 0;font-size:7px} .brand span,.brand i,.side small,.side .nav,.side .ctl.ref{display:none}
+  .btn-busca{flex:1 1 100%;order:5}.btn-busca kbd{display:none}
+  .subnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.subnav button{white-space:nowrap;flex:none}
   .ctl{flex-direction:row;flex:1 1 180px;gap:6px} .ctl label{display:none}
   main{padding-bottom:96px}
   .two,.three,.steps3,.simgrid{grid-template-columns:minmax(0,1fr)}
@@ -606,8 +621,9 @@ body.modo-app .fgrid{grid-template-columns:minmax(0,1fr)}
 @media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
 
 /* v18: pastas do menu, CRM de Atendimento, imóveis do corretor e botão da Elora AI */
-.nav button.grp{display:flex;align-items:center;gap:6px;width:100%;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--side-muted);font-weight:600;padding:11px 12px 3px;opacity:.85;border-radius:0;box-shadow:none;background:none}
-.nav button.grp:hover{opacity:1;color:var(--side-ink)} .nav button.grp svg{transition:transform .15s;flex:none} .nav button.grp[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.nav button.grp{display:flex;align-items:center;gap:9px;width:100%;font-size:12.5px;letter-spacing:.02em;text-transform:none;color:var(--side-ink);font-weight:600;padding:10px 12px 5px;opacity:.92;border-radius:7px;box-shadow:none;background:none;margin-top:6px}
+.nav button.grp>span{flex:1}
+.nav button.grp:hover{opacity:1;color:var(--side-ink)} .nav button.grp>svg:last-child{transition:transform .15s;flex:none;opacity:.6} .nav button.grp[aria-expanded="false"]>svg:last-child{transform:rotate(-90deg)}
 .crm-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center} .crm-bar .inp{flex:0 1 auto;min-width:0}
 .crm-q{flex:1 1 280px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 12px;color:var(--muted);min-width:0}
 .crm-q input{border:0;background:none;outline:none;padding:10px 0;font:inherit;color:var(--ink);flex:1;min-width:0}
@@ -765,13 +781,14 @@ body.modo-app .fgrid{grid-template-columns:minmax(0,1fr)}
       </svg>
       <div class="bt"><b>ELORA</b><span>Inteligência Imobiliária</span><i>imóveis do futuro, hoje</i><em>Powered by <strong>Elora Core</strong></em></div>
     </div>
+    <button type="button" class="btn-busca" data-act="busca"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>Buscar ou ir para…</span><kbd>Ctrl K</kbd></button>
+    <nav class="nav" id="nav" aria-label="Setores"></nav>
     <div class="ctl">
       <label for="sel-perfil">Ver como</label>
       <select id="sel-perfil"><option value="equipe">Equipe Elora</option><option value="corretor">Corretor</option><option value="proprietario">Proprietário</option><option value="inquilino">Locatário</option></select>
       <select id="sel-quem" aria-label="Quem" hidden></select>
     </div>
     <button type="button" class="btn-app" data-act="app-abrir"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>App Elora</button>
-    <nav class="nav" id="nav" aria-label="Setores"></nav>
     <div class="ctl ref"><label for="in-ref">Data de referência</label><input type="date" id="in-ref"></div>
     <small id="modo"></small>
   </aside>
@@ -3175,18 +3192,40 @@ if (typeof module !== 'undefined') Object.assign(module.exports, { FAIXAS_RENDA,
 const EMPRESA = 'Elora Inteligência Imobiliária';
 const estado = { simC: { capt: 2, alug: 3000, conv: 60 }, pronto: false, perfil: 'equipe', quem: {}, view: 'central', mesExt: null, mesFin: null, sim: null, conversa: { equipe: [], corretor: [] }, ocupado: false, confirmar: null };
 const VIEWS = {
-  equipe: [['central', 'Dashboard'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
-    ['#', 'Comercial'], ['comercial', 'Atendimentos'], ['flows', 'Sequências'], ['campanhas', 'Campanhas'], ['compradores', 'Banco de compradores'], ['prospeccao', 'Prospecção'], ['rede', 'Corretores Elora'], ['desempenho', 'Relatórios'], ['rodizio', 'Rodízio e funil'],
-    ['#', 'Imóveis'], ['im-venda', 'Imóveis à venda'], ['im-locacao', 'Imóveis para locação'], ['im-cuidado', 'Recebimento e manutenção'],
-    ['#', 'Operações'], ['locacao', 'Locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'], ['pessoas', 'Pessoas'],
-    ['#', 'Gestão'], ['reunioes', 'Reuniões'], ['tickets', 'Tickets e Kanban'], ['resultados', 'Resultados e OKRs'], ['ideias', 'Projeto Boa Ideia'],
-    ['#', 'Diretoria'], ['guerra', 'Sala de guerra'], ['inteligencia', 'Inteligência'], ['juridico', 'Jurídico'], ['acessos', 'Acessos'],
-    ['#', 'Tecnologia'], ['dados', 'Dados']],
-  corretor: [['inicio', 'Início'], ['#', 'CRM de Atendimento'], ['crm-c', 'Atendimentos'], ['flows-c', 'Mensagens do dia'], ['leads-c', 'Meus leads'], ['imoveis-c', 'Imóveis'], ['capt-c', 'Minhas captações'], ['prosp-c', 'Prospecção'], ['compradores-c', 'Compradores'], ['agenda-c', 'Agenda'],
-    ['#', 'Meus ganhos'], ['carteira', 'Carteira'], ['extrato', 'Extrato'], ['poschaves-c', 'Elora Casa+'], ['#', 'Elora'], ['chat-c', 'Chat da equipe'], ['treino-c', 'Treinamento'], ['ideias-c', 'Projeto Boa Ideia'], ['ia', 'Elora AI']],
+  // Menu por pergunta do dia a dia: Hoje, Clientes, Imóveis, Operações, Equipe, Análises e Configurações.
+  // Telas irmãs viram abas de uma entrada só (GRUPOS_TELA); o endereço de cada tela continua o mesmo.
+  equipe: [['#', 'Hoje'], ['central', 'Dashboard'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
+    ['#', 'Clientes'], ['comercial', 'Funil de atendimento'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['pessoas', 'Pessoas'], ['campanhas', 'Campanhas'],
+    ['#', 'Imóveis'], ['im-locacao', 'Para locação'], ['im-venda', 'À venda'], ['im-cuidado', 'Recebimento e manutenção'], ['prospeccao', 'Captação'],
+    ['#', 'Operações'], ['locacao', 'Locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'],
+    ['#', 'Equipe'], ['rede', 'Corretores'], ['rodizio', 'Rodízio e funil'], ['tickets', 'Tickets e Kanban'], ['reunioes', 'Reuniões'], ['ideias', 'Projeto Boa Ideia'],
+    ['#', 'Análises'], ['desempenho', 'Comercial'], ['resultados', 'Resultados e OKRs'], ['inteligencia', 'Inteligência'], ['guerra', 'Sala de guerra'],
+    ['#', 'Configurações'], ['juridico', 'Empresa e jurídico'], ['acessos', 'Acessos'], ['dados', 'Dados']],
+  corretor: [['#', 'Hoje'], ['inicio', 'Início'], ['agenda-c', 'Agenda'], ['flows-c', 'Mensagens do dia'], ['chat-c', 'Chat da equipe'],
+    ['#', 'Clientes'], ['crm-c', 'Funil'], ['leads-c', 'Meus leads'], ['compradores-c', 'Compradores'],
+    ['#', 'Imóveis'], ['imoveis-c', 'Imóveis em oferta'], ['capt-c', 'Minhas captações'], ['prosp-c', 'Prospecção'],
+    ['#', 'Meus ganhos'], ['carteira', 'Carteira'], ['extrato', 'Extrato'], ['poschaves-c', 'Elora Casa+'],
+    ['#', 'Elora'], ['treino-c', 'Treinamento'], ['ideias-c', 'Projeto Boa Ideia'], ['ia', 'Elora AI']],
   proprietario: [['proprietario', 'Meus imóveis']],
   inquilino: [['inquilino', 'Minha locação']],
 };
+// Telas irmãs: uma entrada no menu e abas no alto da tela.
+const GRUPOS_TELA = [['Atendimentos', ['comercial', 'compradores', 'flows']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado']], ['Corretores', ['rede', 'rodizio']],
+  ['Relatórios', ['desempenho', 'resultados']], ['Inteligência', ['inteligencia', 'guerra']], ['Configurações', ['juridico', 'acessos', 'dados']],
+  ['Atendimentos', ['crm-c', 'leads-c', 'compradores-c']], ['Captação', ['capt-c', 'prosp-c']], ['Carteira e extrato', ['carteira', 'extrato']]];
+const grupoDe = v => GRUPOS_TELA.find(g => g[1].includes(v)) || null;
+const OCULTAS_MENU = ['chat', 'chat-c'];   // o chat fica no alto de cada tela, ao lado do sino
+const tituloTela = v => { for (const p of ['equipe', 'corretor']) { const x = VIEWS[p].find(y => y[0] === v); if (x) return x[1]; } return v; };
+const MENU_IC = { hoje: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2.5 12h2M19.5 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  clientes: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6 6 0 0 1 3.5 5.8"/>',
+  imoveis: '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10M10 20v-6h4v6"/>', operacoes: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  equipe: '<circle cx="12" cy="7.5" r="3"/><circle cx="5" cy="10" r="2.2"/><circle cx="19" cy="10" r="2.2"/><path d="M7 20a5 5 0 0 1 10 0M1.5 19a3.6 3.6 0 0 1 5-3.3M22.5 19a3.6 3.6 0 0 0-5-3.3"/>',
+  analises: '<path d="M3 20h18M6.5 17v-5M11.5 17V6M16.5 17v-8"/>', configuracoes: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M2.5 12h3M18.5 12h3M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+  meusganhos: '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1.2-1.7-2-3-2-1.7 0-3 1-3 2.3 0 3.2 6 1.7 6 4.9 0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.8-3-2M12 5.5v2M12 16.5v2"/>',
+  elora: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+  busca: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>', chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>' };
+const mic = (n, s = 15) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${MENU_IC[n] || ''}</svg>`;
+const slugPasta = t => semAcento(t).replace(/[^a-z]/g, '');
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const $ = id => document.getElementById(id);
 const pill = (cls, txt) => `<span class="pill ${cls}">${esc(txt)}</span>`;
@@ -3195,7 +3234,8 @@ const avisosDoPerfil = () => estado.perfil === 'corretor' ? avisos().filter(a =>
 const sino = () => { if (!['equipe', 'corretor'].includes(estado.perfil)) return ''; const n = contaSino();
   return `<button type="button" class="btn sm ghost sino" data-act="avisos" aria-label="Avisos: ${n}" data-n="${n}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>${n ? `<b>${n > 99 ? '99+' : n}</b>` : ''}</button>`; };
 const btManuais = () => ['equipe', 'corretor'].includes(estado.perfil) ? `<button type="button" class="btn sm ghost sino" data-act="manuais" aria-label="Manuais em PDF" title="Manuais em PDF"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8 7h8M8 11h6"/></svg></button>` : '';
-const cab = (t, sub, acoes = '') => `<div class="head"><div><h1>${t}</h1><p>${sub}</p></div><div class="acts">${acoes}${btManuais()}${sino()}${estado.view === 'ia' || estado.perfil === 'corretor' ? '' : bt('elora', 'Pergunte à Elora AI', {}, 'elora')}</div></div>`;
+const btChat = () => ['equipe', 'corretor'].includes(estado.perfil) ? `<button type="button" class="btn sm ghost sino" data-act="ir" data-view="${estado.perfil === 'corretor' ? 'chat-c' : 'chat'}" aria-label="Chat da equipe" title="Chat da equipe">${mic('chat')}</button>` : '';
+const cab = (t, sub, acoes = '') => `<div class="head"><div><h1>${t}</h1><p>${sub}</p></div><div class="acts">${acoes}${btManuais()}${btChat()}${sino()}${estado.view === 'ia' || estado.perfil === 'corretor' ? '' : bt('elora', 'Pergunte à Elora AI', {}, 'elora')}</div></div>`;
 const QUANDO = { vencido: ['bad', d => `Venceu há ${-d} ${d === -1 ? 'dia' : 'dias'}`], hoje: ['warn', () => 'Vence hoje'], amanha: ['gold', () => 'Vence amanhã'], breve: ['', d => `Em ${d} dias`] };
 const AVISO_T = { receber: 'Aluguel a receber', pagar: 'Repasse a pagar', conta: 'Conta da empresa', tarefa: 'Tarefa', manut: 'Manutenção' };
 // ---------- Confirmação do repasse ao proprietário ----------
@@ -3400,7 +3440,7 @@ function viewCentral() {
   return cab('Dashboard', `Posição em ${fmtData(REF)}. Todos os setores leem a mesma base de dados.`, ehGestor ? bt('briefing', 'Resumo do dia pela IA', {}, '') : '') + (semDados ? `
   <section class="panel"><h2>Comece por aqui</h2><p>Ainda não há dados. A ordem natural é: corretores, proprietários e locatários, imóveis, contratos. Cada cadastro alimenta os demais setores.</p>
     <div class="acts">${bt('novo', 'Cadastrar corretor', { col: 'corretores' }, '')}${bt('novo', 'Cadastrar pessoa', { col: 'pessoas' }, '')}${bt('ir', 'Restaurar um backup', { view: 'dados' })}</div></section>` : `
-  <section class="panel"><h2>Busca rápida</h2><input id="busca" class="inp" type="search" autocomplete="off" placeholder="Código, nome, rua, telefone, placa ou chave" aria-label="Busca rápida" value="${esc(estado.busca || '')}"><div class="list" id="busca-out">${buscar(estado.busca || '')}</div></section>
+
   <div class="kpis six">
     <button type="button" data-act="drill" data-k="taxa" title="Ver os registros"><span>Taxa de administração recebida</span><b class="num">${brl(r.brutaC)}</b><em>${fmtMes(mesRef())}</em></button>
     <button type="button" data-act="drill" data-k="atraso" title="Ver os registros"><span>Aluguéis em atraso</span><b class="num">${brl(r.aluguelAtrasoC)}</b><em>${r.aluguelEmitidoC ? (r.aluguelAtrasoC / r.aluguelEmitidoC * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) : 0}% do emitido</em></button>
@@ -3585,7 +3625,6 @@ function viewComercial() {
   const t = { campanhas: 'campanhas', desempenho: 'desempenho', rodizio: 'rodizio' }[estado.view] || 'funil';
   const tit = { funil: ['CRM de Atendimento', 'Acompanhe os leads de locação e de venda, da entrada ao contrato, e transforme oportunidades em negócios.'], campanhas: ['Campanhas', 'Investimento, leads e retorno de cada campanha.'], desempenho: ['Relatórios do atendimento', 'Conversão, tempo de resposta, perdas e resultado por corretor.'], rodizio: ['Rodízio e funil', 'Regras de distribuição dos leads da imobiliária e etapas do funil.'] }[t];
   return cab(tit[0], tit[1], t === 'campanhas' ? bt('novo', 'Nova campanha', { col: 'campanhas' }, '') : bt('novo', 'Novo lead', { col: 'leads' }, '')) +
-    abas('com-tab', t, [['funil', `Atendimentos · ${lista('leads').length}`], ['campanhas', `Campanhas · ${lista('campanhas').length}`], ['desempenho', 'Relatórios'], ['rodizio', 'Rodízio e funil']]) +
     ({ funil: funilLeads, campanhas: painelCampanhas, desempenho: painelDesempenho, rodizio: painelRodizio }[t])();
 }
 
@@ -3679,7 +3718,7 @@ function abrirResumo(id) {
 function viewImoveis() {
   const todos = lista('imoveis'), loc = todos.filter(paraLocacao), ven = todos.filter(aVenda), cuid = estado.imTab === 'cuidado', aba = estado.imTab === 'venda' ? 'venda' : 'locacao', venda = aba === 'venda';
   const nCuid = cuidadoCarteira().reduce((s, x) => s + (x.sit === 'aceito' || (!emOferta(x.im) && x.sit === 'ressalvas') ? 0 : 1) + x.vencidas.length, 0);
-  const chipsIm = `<div class="chips" role="group" aria-label="Finalidade"><button type="button" data-act="im-tab" data-tab="locacao" aria-pressed="${!cuid && aba === 'locacao'}">Imóveis para locação · ${loc.length}</button><button type="button" data-act="im-tab" data-tab="venda" aria-pressed="${!cuid && venda}">Imóveis à venda · ${ven.length}</button><button type="button" data-act="im-tab" data-tab="cuidado" aria-pressed="${cuid}">Recebimento e manutenção · ${nCuid}</button></div>`;
+  const chipsIm = ''; // a troca entre locação, venda e recebimento fica nas abas do alto da tela (menu Imóveis)
   if (cuid) return cab('Imóveis', 'Recebimento, programa de manutenção e diário de bordo de cada imóvel.', bt('novo', 'Novo imóvel', { col: 'imoveis', fin: 'locacao' }, '')) + chipsIm + painelCuidado();
   const confirmar = todos.filter(im => emOferta(im) && im.autorizacaoEm && dias(baseConfirmacao(im), REF) > 30), nCub = todos.filter(i => i.precoCub > 0).length;
   return cab('Imóveis', 'Carteira captada para locação e para venda, com origem, autorização e anúncio.', bt('novo', venda ? 'Novo imóvel à venda' : 'Novo imóvel', { col: 'imoveis', fin: aba }, '') + bt('oferta', 'Montar oferta') + bt('tv', 'Apresentação para TV')) + `
@@ -6928,7 +6967,7 @@ const MAN_G = {
       ['agenda', 'Reúne as tarefas da equipe e dos corretores e os prazos legais da locação.', ['Clique em Nova tarefa para criar, com responsável e data.', 'Tarefa ligada a lead tem botão de WhatsApp.', 'Conclua a tarefa assim que fizer: o que fica aberto vira alerta.'], ['Prazo legal da locação não se apaga: resolva e registre.']],
       ['chat', 'Conversa interna por canal (geral e por departamento). A conversa de cada cliente fica no Atendimento do lead.', ['Escolha o canal e escreva.', 'Informe o seu nome na primeira vez (fica no navegador).'], ['Nunca envie documentos, senhas ou dados bancários pelo chat.']]],
     extras: [['O sino de avisos', 'Fica no alto de cada tela, com três abas: os tickets do seu departamento, todas as movimentações e o que vence nos próximos cinco dias.'], ['Quem está usando?', 'Quem não é o dono escolhe o próprio nome; o menu mostra só as pastas liberadas na tela Acessos.'], ['Elora AI', 'O botão "Pergunte à Elora AI" responde com os dados do sistema. Ela não inventa números e avisa quando falta informação.'], ['Trilha das solicitações', 'Pedidos com andamento (solicitações, tickets, propostas, cobranças, captações, crédito, ideias) mostram uma linha com pontos: verde é feito, dourado é o passo atual, vermelho é onde travou.'], ['Manuais', 'O botão do livro, no alto de cada tela, baixa o manual da área em PDF.']],
-    rotina: [['Todo dia', ['Dashboard e sino.', 'Agenda do dia.', 'Tickets do seu departamento.']], ['Toda semana', ['Reunião semanal (pasta Gestão).']]] }),
+    rotina: [['Todo dia', ['Dashboard e sino.', 'Agenda do dia.', 'Tickets do seu departamento.']], ['Toda semana', ['Reunião semanal (área Equipe).']]] }),
   comercial: () => ({ titulo: 'Comercial', quem: 'Gestão de corretores (Fabiana) e o dono', obj: 'Gerar e converter negócios: leads, sequências, campanhas, compradores, prospecção, rede de corretores, relatórios e rodízio.',
     telas: [['comercial', 'O quadro de leads por etapa (ou em lista), com próxima tarefa, valor, prioridade e a qualificação.', ['Clique em Novo lead para cadastrar.', 'No painel Pré-atendimento, pergunte pelo WhatsApp o que falta (ou cole a conversa no Atendimento para a Elora AI preencher). Respondidas as perguntas essenciais, o lead fica pronto e o rodízio entrega ao corretor.', 'Abra o Atendimento do lead: imóveis sugeridos por semelhança, qualificação, histórico, visitas e propostas.', 'Acompanhe a trilha do lead (entrada, distribuição, aceite, 1º contato, qualificação) e a trilha de cada proposta.', 'Arraste ou mude a etapa; ao perder, registre o motivo.'], ['Todo lead aberto precisa de próximo passo com data.', 'Registrar a visita protege a intermediação da Elora.']],
       ['flows', 'Diz a mensagem do dia de cada lead, em passos por dia para locação e compra.', ['Envie pelo botão de WhatsApp: o passo é marcado e vai ao histórico.', 'Pause ou retome a sequência de um lead.', 'Gestor: Editar as sequências muda os textos ({nome}, {quem}, {opcoes}, {qualif}).'], ['Mensagens sem promessa de crédito, preço ou prazo.']],
@@ -6966,8 +7005,12 @@ const MAN_G = {
     telas: [['dados', 'Exporta planilhas, imprime relatórios, faz backup e restauração e mostra o registro de alterações.', ['Baixar backup completo toda semana.', 'Relatórios: Baixar para imprimir ou Baixar planilha.', 'Confira o registro de alterações.', 'Limpeza dos exemplos só com a operação real pronta.'], ['Cada coleção carrega até 1.000 registros.', 'Backup tem dados pessoais: guarde em local seguro.']]],
     rotina: [['Toda semana', ['Backup completo.', 'Tickets de Tecnologia.']], ['Todo mês', ['Registro de alterações.']]] })
 };
-const AREA_DA_VIEW = v => Object.keys(MAN_G).find(k => (PASTAS_EQ[k] || []).includes(v)) || 'base';
-const areaPermitida = k => k === 'base' || (k === 'diretoria' ? veTudo() : (PASTAS_EQ[k] || []).some(viewPermitida));
+// Os manuais da gestão seguem os assuntos de sempre (o conteúdo de cada um), independentemente da área do menu.
+const MAN_TELAS = { base: ['central', 'agenda', 'chat'], comercial: ['comercial', 'flows', 'campanhas', 'compradores', 'prospeccao', 'rede', 'desempenho', 'rodizio'],
+  imoveis: ['im-venda', 'im-locacao', 'im-cuidado'], operacoes: ['locacao', 'financeiro', 'posvenda', 'pessoas'], gestao: ['reunioes', 'tickets', 'resultados', 'ideias'],
+  diretoria: ['guerra', 'inteligencia', 'juridico', 'acessos'], tecnologia: ['dados'] };
+const AREA_DA_VIEW = v => Object.keys(MAN_G).find(k => (MAN_TELAS[k] || []).includes(v)) || 'base';
+const areaPermitida = k => k === 'base' || (k === 'diretoria' ? veTudo() : (MAN_TELAS[k] || []).some(viewPermitida));
 const nomeView = v => ((VIEWS.equipe.find(x => x[0] === v) || [])[1]) || v;
 let jsPDFp = null;
 const carregarJsPDF = () => jsPDFp || (jsPDFp = new Promise((ok, erro) => { if (window.jspdf) return ok(window.jspdf.jsPDF);
@@ -9352,19 +9395,24 @@ const itensMenu = p => { const xs = VIEWS[p].filter(x => (x[0] !== 'guerra' && x
 
 // ---------- Acessos por gestor: pastas do menu ----------
 // Sem login no sistema, o acesso é por pessoa escolhida neste navegador. O dono da página vê tudo sempre. A trava definitiva depende do login no servidor.
-const PASTAS_EQ = (() => { const o = {}; let g = 'base'; for (const [v, t] of VIEWS.equipe) { if (v === '#') { g = semAcento(t).replace(/[^a-z]/g, ''); continue; } (o[g] = o[g] || []).push(v); } return o; })();
-const PASTAS_NOME = { comercial: 'Comercial', imoveis: 'Imóveis', operacoes: 'Operações', gestao: 'Gestão', diretoria: 'Diretoria', tecnologia: 'Tecnologia' };
+const PASTAS_EQ = (() => { const o = {}; let g = 'base'; for (const [v, t] of VIEWS.equipe) { if (v === '#') { g = slugPasta(t); if (g === 'hoje') g = 'base'; continue; } (o[g] = o[g] || []).push(v); } return o; })();
+// Telas só do dono (antiga pasta Diretoria), em qualquer área do menu.
+const DONO_SO = ['guerra', 'inteligencia', 'juridico', 'acessos'];
+// Acessos gravados com as pastas antigas continuam valendo (cada pasta antiga vira as áreas novas onde as telas dela estão).
+const PASTAS_ANTIGAS = { comercial: ['clientes', 'equipe', 'analises', 'imoveis'], gestao: ['equipe', 'analises'], tecnologia: ['configuracoes'], diretoria: [] };
+const normPastas = ps => [...new Set((ps || []).flatMap(k => PASTAS_ANTIGAS[k] || [k]))];
+const PASTAS_NOME = { clientes: 'Clientes', imoveis: 'Imóveis', operacoes: 'Operações', equipe: 'Equipe', analises: 'Análises', configuracoes: 'Configurações' };
 const ACESSOS_PADRAO = [
   { id: 'rodrigo', nome: 'Rodrigo', papel: 'Dono', pastas: '*' },
-  { id: 'pedro', nome: 'Pedro', papel: 'Operações', pastas: ['imoveis', 'operacoes', 'gestao'] },
-  { id: 'fabiana', nome: 'Fabiana', papel: 'Corretores (venda e locação)', pastas: ['comercial', 'imoveis', 'gestao'] },
-  { id: 'guilherme', nome: 'Guilherme', papel: 'Tecnologia (AI/Tech)', pastas: ['tecnologia', 'gestao'] }];
+  { id: 'pedro', nome: 'Pedro', papel: 'Operações', pastas: ['imoveis', 'operacoes', 'equipe', 'analises'] },
+  { id: 'fabiana', nome: 'Fabiana', papel: 'Corretores (venda e locação)', pastas: ['clientes', 'imoveis', 'equipe', 'analises'] },
+  { id: 'guilherme', nome: 'Guilherme', papel: 'Tecnologia (AI/Tech)', pastas: ['configuracoes', 'equipe', 'analises'] }];
 const acessosCfg = () => { const a = (DB.config || {}).acessos; return Array.isArray(a) && a.length ? a : ACESSOS_PADRAO; };
 const gestorAtual = () => { const id = prefLer('gestor'); return acessosCfg().find(x => x.id === id) || null; };
 const veTudo = () => souDono !== false || (gestorAtual() || {}).pastas === '*';
-const pastasDe = g => g ? (g.pastas === '*' ? Object.keys(PASTAS_NOME) : (g.pastas || []).filter(k => PASTAS_NOME[k] && k !== 'diretoria')) : [];
+const pastasDe = g => g ? (g.pastas === '*' ? Object.keys(PASTAS_NOME) : normPastas(g.pastas).filter(k => PASTAS_NOME[k])) : [];
 function viewPermitida(v) {
-  if (v === 'quem' || perfilDe(v) !== 'equipe') return true; if (veTudo()) return true;
+  if (v === 'quem' || perfilDe(v) !== 'equipe') return true; if (veTudo()) return true; if (DONO_SO.includes(v)) return false;
   const g = gestorAtual(); if (!g) return v === 'quem';
   return (PASTAS_EQ.base || []).includes(v) || pastasDe(g).some(k => (PASTAS_EQ[k] || []).includes(v));
 }
@@ -9378,13 +9426,13 @@ function viewQuem() {
 function viewAcessos() {
   if (!veTudo()) return cab('Acessos', 'Só o dono altera os acessos.');
   const ps = acessosCfg(), ks = Object.keys(PASTAS_NOME);
-  return cab('Acessos', 'Quem vê cada pasta do menu. O dono vê tudo. Dashboard, Agenda e Chat da equipe são de todos.') + `
+  return cab('Acessos', 'Quem vê cada área do menu. O dono vê tudo. Hoje (Dashboard e Agenda) e o Chat da equipe são de todos.') + `
   <section class="panel"><form id="frm-acessos"><div class="tbl"><table class="tight" id="tab-acessos"><tr><th>Pessoa</th><th>Função</th>${ks.map(k => `<th class="r">${PASTAS_NOME[k]}</th>`).join('')}<th></th></tr>
     ${ps.map((x, i) => `<tr><td><input class="inp" id="ac-n-${i}" type="text" maxlength="40" style="width:110px" value="${esc(x.nome)}" aria-label="Nome"></td><td><input class="inp" id="ac-p-${i}" type="text" maxlength="60" style="width:150px" value="${esc(x.papel || '')}" aria-label="Função"></td>
-      ${ks.map(k => `<td class="r"><input type="checkbox" id="ac-${i}-${k}" aria-label="${esc(x.nome)}: ${PASTAS_NOME[k]}"${x.pastas === '*' || (x.pastas || []).includes(k) ? ' checked' : ''}${x.pastas === '*' ? ' disabled' : ''}${k === 'diretoria' && x.pastas !== '*' ? ' disabled' : ''}></td>`).join('')}
+      ${ks.map(k => `<td class="r"><input type="checkbox" id="ac-${i}-${k}" aria-label="${esc(x.nome)}: ${PASTAS_NOME[k]}"${x.pastas === '*' || normPastas(x.pastas).includes(k) ? ' checked' : ''}${x.pastas === '*' ? ' disabled' : ''}></td>`).join('')}
       <td>${x.pastas === '*' ? pill('gold', 'Dono') : bt('ac-del', 'Remover', { i }, 'danger')}</td></tr>`).join('')}</table></div>
     <div class="acts" style="margin-top:12px">${bt('ac-add', 'Adicionar pessoa')}${bt('ac-padrao', 'Voltar ao padrão')}<button class="btn" type="submit">Salvar acessos</button></div></form>
-    <p class="sub">A Diretoria (Sala de guerra, Inteligência, Jurídico e Acessos) é só do dono. Atenção: o sistema ainda não tem login. A pessoa se identifica neste navegador e o menu respeita o que está aqui; quem tem o link da página ainda consegue ler os dados. A trava completa vem com o login no servidor.</p></section>`;
+    <p class="sub">Sala de guerra, Inteligência, Empresa e jurídico e Acessos são só do dono. Atenção: o sistema ainda não tem login. A pessoa se identifica neste navegador e o menu respeita o que está aqui; quem tem o link da página ainda consegue ler os dados. A trava completa vem com o login no servidor.</p></section>`;
 }
 const pastasFechadas = () => { try { const v = JSON.parse(prefLer('pastas') || '[]'); return new Set(Array.isArray(v) ? v : []); } catch (e) { return new Set(); } };
 const perfilDe = v => Object.keys(VIEWS).find(p => VIEWS[p].some(x => x[0] === v)) || 'equipe';
@@ -9410,13 +9458,54 @@ function render() {
   const p = estado.perfil, sq = $('sel-quem'); $('sel-perfil').value = p;
   if (OPCOES_QUEM[p]) { const ops = OPCOES_QUEM[p](); if (!ops.some(o => o[0] === estado.quem[p])) estado.quem[p] = ops.length ? ops[0][0] : null;
     sq.hidden = false; sq.innerHTML = ops.map(o => `<option value="${esc(o[0])}"${o[0] === estado.quem[p] ? ' selected' : ''}>${esc(o[1])}</option>`).join('') || '<option>Nenhum cadastro</option>'; } else sq.hidden = true;
-  const botao = ([v, t]) => v === '#' ? `<span class="grp">${t}</span>` : `<button type="button" data-act="ir" data-view="${v}"${v === estado.view ? ' aria-current="page"' : ''}>${t}</button>`;
-  const fech = pastasFechadas(); let grp = null;
+  const fech = pastasFechadas(), secoes = menuSecoes(p), item = x => `<button type="button" data-act="ir" data-view="${x.v}"${x.ativo ? ' aria-current="page"' : ''}>${esc(x.t)}</button>`;
   const gq = gestorAtual(), quemH = p === 'equipe' && souDono === false ? `<button type="button" class="grp" data-act="ir" data-view="quem">${icc('pasta', 12)}${gq ? esc(gq.nome) + ' · trocar' : 'Quem está usando?'}</button>` : '';
-  $('nav').innerHTML = quemH + itensMenu(p).map(([v, t]) => { if (v === '#') { grp = t; const aberta = !fech.has(t); return `<button type="button" class="grp" data-act="pasta" data-g="${esc(t)}" aria-expanded="${aberta}">${icc('pasta', 12)}${t}</button>`; }
-    return grp && fech.has(grp) && v !== estado.view ? '' : botao([v, t]); }).join(''); $('tabbar').innerHTML = itensMenu(p).filter(x => x[0] !== '#').map(botao).join('');
+  $('nav').innerHTML = quemH + secoes.map(sc => { if (!sc.t) return sc.itens.map(item).join('');
+    const ic = mic(slugPasta(sc.t)), so = sc.itens.length === 1 && sc.itens[0].t === sc.t;
+    if (so) return `<button type="button" class="nav-so" data-act="ir" data-view="${sc.itens[0].v}"${sc.itens[0].ativo ? ' aria-current="page"' : ''}>${ic}${esc(sc.t)}</button>`;
+    const aberta = !fech.has(sc.t) || sc.itens.some(x => x.ativo);
+    return `<div class="nav-area"><button type="button" class="grp" data-act="pasta" data-g="${esc(sc.t)}" aria-expanded="${aberta}">${ic}<span>${esc(sc.t)}</span>${icc('pasta', 11)}</button>${aberta ? sc.itens.map(item).join('') : ''}</div>`; }).join('');
+  $('tabbar').innerHTML = secoes.flatMap(sc => sc.itens).map(item).join('');
   const nEx = COLS.reduce((s, c) => s + Object.values(DB[c]).filter(x => x.exemplo).length, 0);
   $('main').innerHTML = (nEx && p === 'equipe' && estado.view !== 'dados' ? `<div class="banner"><span>Há ${nEx} registros fictícios de exemplo para você explorar. Cadastros novos já são seus.</span>${bt('ir', 'Gerenciar em Dados', { view: 'dados' })}</div>` : '') + RENDER[estado.view]() + (p === 'corretor' && estado.view !== 'ia' ? `<button type="button" class="fab-ia" data-act="elora" aria-label="Pergunte à Elora AI: dúvidas da empresa e do mercado imobiliário">${icc('ia', 18)}<span>Elora AI</span></button>` : '');
+  abasDoGrupo(p);
+}
+// Seções do menu: telas do mesmo grupo viram uma entrada; o chat sai do menu (fica no alto da tela).
+function menuSecoes(p) {
+  const secoes = [], vistos = new Set();
+  for (const [v, t] of itensMenu(p)) {
+    if (v === '#') { secoes.push({ t, itens: [] }); continue; } if (OCULTAS_MENU.includes(v)) continue;
+    if (!secoes.length) secoes.push({ t: null, itens: [] }); const g = grupoDe(v), sc = secoes[secoes.length - 1];
+    if (g) { if (vistos.has(g)) continue; vistos.add(g); sc.itens.push({ v, t: g[0], ativo: g[1].includes(estado.view) }); }
+    else sc.itens.push({ v, t, ativo: v === estado.view }); }
+  return secoes.filter(sc => sc.itens.length);
+}
+// Abas no alto das telas agrupadas (ex.: Atendimentos: Funil, Compradores, Sequências).
+function abasDoGrupo(p) {
+  const g = grupoDe(estado.view); if (!g) return; const ok = new Set(itensMenu(p).map(x => x[0])), ms = g[1].filter(v => ok.has(v)); if (ms.length < 2) return;
+  const html = `<nav class="subnav" aria-label="${esc(g[0])}">${ms.map(v => `<button type="button" data-act="ir" data-view="${v}"${v === estado.view ? ' aria-current="page"' : ''}>${esc(tituloTela(v))}</button>`).join('')}</nav>`;
+  const h = $('main').querySelector('.head'); if (h) h.insertAdjacentHTML('afterend', html); else $('main').insertAdjacentHTML('afterbegin', html);
+}
+// ---------- Buscar ou ir para (Ctrl+K): telas, imóveis, clientes e pessoas ----------
+function abrirBusca() {
+  if (!['equipe', 'corretor'].includes(estado.perfil) || estado.app) return;
+  abrirDlg(`<h2>Buscar ou ir para</h2><input id="bx-q" class="inp" type="search" autocomplete="off" spellcheck="false" placeholder="Tela, imóvel (código, rua, chave), cliente, pessoa ou contrato" aria-label="Buscar" aria-controls="bx-res">
+    <div id="bx-res" class="bx-res"></div><p class="sub">Atalho: Ctrl+K (⌘K no Mac). Enter abre o primeiro resultado.</p>`);
+  $('bx-q').focus(); $('bx-res').innerHTML = resultadosBusca('');
+}
+function resultadosBusca(q) {
+  const n = semAcento(q.trim()), dig = q.replace(/\D/g, ''), p = estado.perfil, soC = p === 'corretor', r = [], tem = t => semAcento(t).includes(n);
+  const linha = (tipo, titulo, sub, act, d) => `<button type="button" class="bx-it" data-act="${act}"${Object.entries(d).map(([k, v]) => ` data-${k}="${esc(v)}"`).join('')}><span>${esc(tipo)}</span><b>${esc(titulo)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</button>`;
+  let area = '';
+  for (const [v, t] of itensMenu(p)) { if (v === '#') { area = t; continue; } const g = grupoDe(v), nome = g && g[0] !== t ? `${g[0]} · ${t}` : t;
+    if (!n || tem(nome) || tem(area)) r.push(linha('Tela', nome, area, 'ir-fechar', { view: v })); }
+  if (n.length >= 2) {
+    lista('imoveis').filter(i => tem((soC ? [i.id, i.descricao, i.local, i.caracteristicas] : [i.id, i.descricao, i.local, i.endereco, i.cep, i.construtora, i.chave, i.placa, i.caracteristicas, i.referencia, i.matricula, i.inscricaoIptu, i.codLuz, i.codAgua, nomesDonos(i)]).join(' '))).slice(0, 6).forEach(i => r.push(linha('Imóvel', `${i.id} · ${i.descricao}`, i.local, soC ? 'imc-ficha' : 'im-resumo', { id: i.id })));
+    lista('leads').filter(l => (!soC || l.corretorId === eu()) && (tem([l.nome, l.email, l.quer].join(' ')) || (dig.length >= 4 && soDigitos(l.telefone).includes(dig)))).slice(0, 6).forEach(l => r.push(linha('Cliente', l.nome, `${l.tipo || ''} · ${(ETAPAS[l.etapa] || l.etapa || '').toLowerCase()}`, 'atendimento', { id: l.id })));
+    if (!soC && viewPermitida('pessoas')) lista('pessoas').filter(x => tem([x.nome, x.email].join(' ')) || (dig.length >= 4 && soDigitos(x.telefone).includes(dig))).slice(0, 4).forEach(x => r.push(linha('Pessoa', x.nome, 'cadastro', 'editar', { col: 'pessoas', id: x.id })));
+    if (!soC && viewPermitida('locacao')) lista('contratos').filter(c => tem([c.id, nomeP(c.locatarioId)].join(' '))).slice(0, 4).forEach(c => r.push(linha('Contrato', `${c.id} · ${nomeP(c.locatarioId)}`, rot(c.id), 'editar', { col: 'contratos', id: c.id })));
+    if (!soC && viewPermitida('rede')) lista('corretores').filter(k => tem(k.nome)).slice(0, 3).forEach(k => r.push(linha('Corretor', k.nome, k.creci || '', 'editar', { col: 'corretores', id: k.id }))); }
+  return r.length ? r.slice(0, 24).join('') : `<p class="sub">Nada encontrado para "${esc(q)}".</p>`;
 }
 function ir(v) { if (!RENDER[v]) v = 'central'; estado.app = false; estado.view = v; estado.perfil = perfilDe(v); estado.confirmar = null; try { history.replaceState(null, '', '#' + v); } catch (e) {} render(); window.scrollTo(0, 0); }
 
@@ -9528,6 +9617,7 @@ const ACOES = {
   'tk-tudo': () => { estado.tkTudo = true; render(); }, 'tk-setor': d => { estado.tkTudo = false; estado.meuSetor = d.d; prefGravar('setor', d.d); render(); },
   'okr-tri': d => { estado.okrTri = d.t; render(); }, 'okr-form': d => !ehGestor ? toast('Só os gestores editam os OKRs.') : abrirOkr(d.id, d.tri),
   'okr-del': d => { if (!ehGestor) return; if (estado.confirmar !== 'okr' + d.id) { estado.confirmar = 'okr' + d.id; return render(); } const o = DB.okrs[d.id]; store.apagar('okrs', d.id); registrar('Resultados', `OKR excluído: ${o ? o.objetivo : d.id}.`); estado.confirmar = null; },
+  busca: () => abrirBusca(),
   'dlg-x': () => fecharDlg(), ficha: d => abrirFicha(d.id), 'ir-fechar': d => { fecharDlg(); ir(d.view); },
   'ficha-vitrine': d => entregarBlob(`ficha-${d.id}.html`, vitrineHTML(DB.imoveis[d.id])),
   'ficha-qr': d => { const lk = linkImovel(DB.imoveis[d.id]); if (lk) entregarBlob(`qrcode-${d.id}.svg`, qrSVG(lk.url)); },
@@ -10168,11 +10258,14 @@ document.addEventListener('change', e => { const t = e.target;
   if (t.id === 'of-texto') return;
   if (t.type === 'radio' && /^ac-/.test(t.name || '')) { const o = $(t.name + '-obs'); if (o) { o.hidden = t.value !== 'nc'; if (!o.hidden) o.focus(); } placarAceite(); return; }
   if (t.dataset && t.dataset.of != null && estado.oferta) { const o = estado.oferta; if (t.id === 'of-lead') { abrirOferta(t.value); return; } o.ids = [...document.querySelectorAll('#dlg input[data-of]:checked')].map(x => x.dataset.of); $('of-texto').value = textoOferta(); atualizarLinksOferta(); return; }
-  if (t.id === 'sel-perfil') ir(VIEWS[t.value][0][0]);
+  if (t.id === 'sel-perfil') ir(VIEWS[t.value].find(x => x[0] !== '#')[0]);
   else if (t.id === 'sel-quem') { estado.quem[estado.perfil] = t.value; render(); }
   else if ((t.id === 'in-ref' || t.id === 'in-ref2') && /^\d{4}-\d{2}-\d{2}$/.test(t.value)) { REF = t.value; estado.mesFin = estado.mesExt = null; render(); }
   else if (t.id === 'arq-backup' && t.files && t.files[0]) { const fr = new FileReader(); fr.onload = () => restaurar(String(fr.result)); fr.readAsText(t.files[0]); t.value = ''; } });
 document.addEventListener('focusout', () => { if (pendente) setTimeout(agendar, 0); });
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key || '').toLowerCase() === 'k') { if (estado.app || !['equipe', 'corretor'].includes(estado.perfil)) return; e.preventDefault(); abrirBusca(); return; }
+  if (e.key === 'Enter' && e.target && e.target.id === 'bx-q' && !e.isComposing) { e.preventDefault(); const b = document.querySelector('#bx-res .bx-it'); if (b) b.click(); } });
+document.addEventListener('input', e => { if (e.target && e.target.id === 'bx-q' && $('bx-res')) $('bx-res').innerHTML = resultadosBusca(e.target.value); });
 $('dlg').addEventListener('close', () => { estado.confirmar = null; clearInterval(tvT); });
 $('dlg').addEventListener('cancel', e => { e.preventDefault(); fecharDlg(); });
 $('dlg').addEventListener('click', e => { const d = $('dlg'); if (e.target !== d || d.querySelector('form')) return; const r = d.getBoundingClientRect();
