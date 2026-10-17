@@ -1,6 +1,6 @@
 # Migração das telas (protótipo → React)
 
-O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 47) é a **especificação visual e de comportamento**.
+O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 49) é a **especificação visual e de comportamento**.
 Usamos o padrão *Strangler Fig*: a casca (menu, rotas, estilos) já é React; cada tela é reescrita uma a uma.
 Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o menu dele — para o usuário, é o mesmo sistema.
 
@@ -76,6 +76,15 @@ Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o m
 | Tela | Rota | Situação |
 |---|---|---|
 | App Elora (pt, en, es) | `/app` | ⏳ protótipo embutido em tela cheia |
+
+## Divulgação (link, prévia no WhatsApp e brochure)
+
+- **Back-end pronto** (módulo `divulgacao`, migração V7, ADR 0006): `POST/GET /api/v1/divulgacao/envios` e o link público `GET /i/{código}?e={envio}`
+  com metatags Open Graph, redirecionamento ao site e registro de abertura (robôs de prévia não contam).
+- **Telas no protótipo** (v49): botão "Enviar ao cliente" do app do corretor com a prévia do WhatsApp, o link do envio e o aviso de abertura;
+  oferta da equipe com link por cliente; brochure em PDF e imagens para o WhatsApp na ficha do imóvel e no envio.
+- Falta: ligar essas telas à API quando Imóveis e Comercial forem migrados; preencher `foto_capa_url` quando as fotos forem para o
+  armazenamento de arquivos; configurar `ELORA_SITE_URL` e o proxy do site para `/i/*`.
 
 ## Pendências conhecidas das telas migradas
 

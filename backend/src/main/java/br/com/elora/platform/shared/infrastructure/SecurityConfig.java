@@ -22,6 +22,8 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(a -> {
                     a.requestMatchers("/actuator/health/**", "/actuator/info", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+                    // Link público do imóvel (prévia no WhatsApp): sem login, só leitura e registro de abertura.
+                    a.requestMatchers(org.springframework.http.HttpMethod.GET, "/i/*").permitAll();
                     if (desligada) a.anyRequest().permitAll();
                     else a.anyRequest().authenticated();
                 });

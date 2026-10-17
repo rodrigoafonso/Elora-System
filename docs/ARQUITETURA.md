@@ -27,7 +27,7 @@ Navegador (React SPA)  ──HTTPS/JSON──▶  API Spring Boot (stateless)  �
 
 ## Back-end (`backend/`)
 
-Monólito modular, um pacote por módulo de negócio (`casamais`, `imoveis`, `participacao`, ...), cada um com:
+Monólito modular, um pacote por módulo de negócio (`casamais`, `locacao`, `divulgacao`, `imoveis`, `participacao`, ...), cada um com:
 
 ```
 <modulo>/domain          entidades e regras (Java puro)

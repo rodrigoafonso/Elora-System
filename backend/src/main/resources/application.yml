@@ -38,6 +38,13 @@ management:
         enabled: true
 
 elora:
+  site:
+    # Site público: o link /i/{código} leva o cliente para {url}/imovel/{código}. O proxy do site encaminha /i/* para o backend.
+    url: ${ELORA_SITE_URL:}
+    nome: ${ELORA_SITE_NOME:Elora Inteligência Imobiliária}
+    imagem-padrao: ${ELORA_SITE_IMAGEM_PADRAO:}
+  publico:
+    tenant-padrao: ${ELORA_TENANT_PADRAO:elora}
   tenant:
     aceitar-cabecalho: false
   seguranca:
