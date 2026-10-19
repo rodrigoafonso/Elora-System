@@ -1,6 +1,6 @@
 # Cadastrar imóvel com IA
 
-Status: **protótipo v51 pronto** (tela da equipe em Imóveis e "Minhas captações" do corretor). Versão de produção: este documento.
+Status: **protótipo v52 pronto** (Imóveis da equipe, "Minhas captações" do corretor e App Elora do corretor: Início e Mais). Versão de produção: este documento.
 
 ## O que faz
 

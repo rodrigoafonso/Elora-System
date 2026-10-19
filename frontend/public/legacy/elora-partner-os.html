@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 51). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 52). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -5037,7 +5037,7 @@ function ciaFontesHTML(s) {
     ${ciaAviso()}
     <div class="f w"><label for="cia-notas">Anotações ou conversa colada</label><textarea id="cia-notas" class="inp" rows="7" maxlength="20000"${lendo ? ' disabled' : ''} placeholder="Ex.: Apto 2 dorm no Jd Aquarius, 62m², 1 vaga, aluguel 2.400 + cond 480, IPTU 90/mês. Desocupado, chaves com o porteiro.">${esc(s.notas)}</textarea>
       <small>Pode colar texto de WhatsApp, e-mail ou anotação. Não cole CPF, RG nem dados bancários: não são usados.</small></div>
-    <div id="cia-drop" class="cia-drop"><input id="cia-arq" type="file" multiple accept="image/jpeg,image/png,image/webp,application/pdf" hidden${lendo ? ' disabled' : ''}>
+    <div id="cia-drop" class="cia-drop"><input id="cia-arq" type="file" multiple accept="image/*,application/pdf" hidden${lendo ? ' disabled' : ''}>
       <label for="cia-arq" class="btn sm${lendo ? ' ghost' : ''}">${ic('doc', 16)}Adicionar fotos, prints ou PDF</label><span>ou arraste os arquivos para cá · no computador, Ctrl+V cola um print</span></div>
     ${arqs.length ? `<div class="cia-arqs">${arqs.map(a => `<div class="cia-arq${a.status === 'erro' ? ' erro' : ''}">
         ${a.url ? `<img src="${esc(a.url)}" alt="">` : `<span class="cia-ico">${a.tipo === 'pdf' ? 'PDF' : '?'}</span>`}
@@ -8882,6 +8882,9 @@ function axCorInicio(feed) {
       <div class="rx-fatos"><div><b>${meus.length}</b><span>${meus.length === 1 ? 'cliente ativo' : 'clientes ativos'}</span></div><div><b>${visitas}</b><span>${visitas === 1 ? 'visita' : 'visitas'} em 7 dias</span></div><div><b>${cat.length}</b><span>${cat.length === 1 ? 'imóvel' : 'imóveis'} em oferta</span></div></div></section>
     ${axPendencias(feed)}
     ${axAtalhos([['app-aba', 'Imóveis', 'predio', { aba: 'vender' }], ['app-aba', 'Clientes', 'pessoa', { aba: 'clientes' }], ['cor-sim', 'Simular', 'calc'], ['elora', 'Elora AI', 'ia']])}
+    ${(rs => `<section class="ax-sec"><div class="ax-card"><div class="top"><div><h3>Captou um imóvel?</h3><small>Fotografe ou anexe prints, PDFs e anotações: a Elora AI monta o rascunho e você confere cada campo.</small></div></div>
+      <div class="acts" style="justify-content:flex-start">${axBtn('cia', 'Cadastrar imóvel com IA', {}, 'sm')}</div>
+      ${rs.length ? `<div class="ax-pend" style="margin-top:10px">${rs.slice(0, 1).map(r => `<div class="gold"><h3>${esc(ciaDescricao(r.campos || {}) || 'Imóvel')}${ciaV(r, 'bairro') ? ', ' + esc(ciaV(r, 'bairro')) : ''}</h3><p>Rascunho · revisão pendente</p></div>`).join('')}</div><div class="acts" style="justify-content:flex-start;margin-top:8px">${rs.slice(0, 1).map(r => axBtn('cia-abrir', 'Revisar', { id: r.id }, 'sm') + axBtn('cia-concluir', 'Registrar a captação', { id: r.id }, 'sm ghost')).join('')}${rs.length > 1 ? axBtn('ir', 'Ver todos', { view: 'capt-c' }, 'sm ghost') : ''}</div>` : ''}</div></section>`)(ciaRascunhosVisiveis())}
     <section class="ax-sec"><h2>Para oferecer hoje · ${combos.length}</h2>${combos.length ? combos.map(x => { const modo = x.l.tipo === 'Compra' ? 'venda' : 'locacao'; return `<div class="ax-card"><div class="top"><div><h3>${esc(x.l.nome)}</h3><small>${axOnde(x.im)} (${esc(x.im.id)}) · ${reais(precoModo(x.im, modo))}</small></div>${pill(x.pct >= 75 ? 'ok' : 'gold', x.pct + '%')}</div>
         <p class="sub">${esc(corCap(x.motivos.join('; ')))}.</p><div class="acts" style="justify-content:flex-start">${axBtn('cor-im', 'Ver o imóvel', { id: x.im.id, modo }, 'sm')}${axBtn('cor-enviar', 'Enviar ao cliente', { im: x.im.id, modo, lead: x.l.id }, 'sm ghost')}</div></div>`; }).join('')
       : vazio('Nenhuma combinação nova entre os seus clientes e os imóveis em oferta.')}
@@ -9020,6 +9023,7 @@ function axCorMais() {
       ${linha('app-avisos', 'sino', 'Avisos', 'O que precisa de você e o que mudou na carteira')}
       ${linha('cor-sim', 'calc', 'Simular financiamento', 'Parcela fixa e decrescente, com a taxa do banco')}
       ${linha('cor-painel', 'extrato', 'Ganhos, carteira e extrato', 'Abre o painel do corretor no sistema')}
+      ${linha('cia', 'doc', 'Cadastrar imóvel com IA', 'Prints, PDFs e anotações viram um rascunho para conferir')}
       ${linha('app-indicar', 'indicar', 'Indicar à Elora', 'Imóvel para captar ou contato que você não vai atender')}
       ${u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${ic('fone', 22, 'i')}<b>Falar com a Elora</b><small>WhatsApp da imobiliária</small>${ic('seta', 18, 's')}</a>` : ''}
       ${linha('app-perfil', 'pessoa', 'Trocar de perfil', 'Corretor, proprietário, locatário ou comprador')}

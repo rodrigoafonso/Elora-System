@@ -1,6 +1,6 @@
 # Migração das telas (protótipo → React)
 
-O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 51) é a **especificação visual e de comportamento**.
+O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 52) é a **especificação visual e de comportamento**.
 Usamos o padrão *Strangler Fig*: a casca (menu, rotas, estilos) já é React; cada tela é reescrita uma a uma.
 Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o menu dele — para o usuário, é o mesmo sistema.
 
