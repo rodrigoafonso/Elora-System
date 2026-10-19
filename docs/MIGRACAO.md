@@ -1,6 +1,6 @@
 # Migração das telas (protótipo → React)
 
-O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 50) é a **especificação visual e de comportamento**.
+O protótipo aprovado (`frontend/public/legacy/elora-partner-os.html`, versão 51) é a **especificação visual e de comportamento**.
 Usamos o padrão *Strangler Fig*: a casca (menu, rotas, estilos) já é React; cada tela é reescrita uma a uma.
 Enquanto não migra, a tela abre o protótipo embutido (`LegacyScreen`), sem o menu dele — para o usuário, é o mesmo sistema.
 
@@ -81,6 +81,12 @@ Ao migrar uma tela que faz parte de um grupo, a página React precisa mostrar as
 | Tela | Rota | Situação |
 |---|---|---|
 | App Elora (pt, en, es) | `/app` | ⏳ protótipo embutido em tela cheia |
+
+## Cadastrar imóvel com IA
+
+- **Protótipo v51 pronto** (Imóveis da equipe e "Minhas captações" do corretor). Desenho de produção em
+  [`funcionalidades/cadastro-com-ia.md`](funcionalidades/cadastro-com-ia.md): tabelas, arquivos com retenção, IA no servidor, API e permissões.
+- Falta: migrar para React junto com o módulo Imóveis.
 
 ## Divulgação (link, prévia no WhatsApp e brochure)
 
