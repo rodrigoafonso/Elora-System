@@ -132,3 +132,11 @@ pura `relatorioMercado` no protótipo, a migrar para o domínio de imóveis.
 
 Ver `docs/funcionalidades/apresentacao-consultiva.md`. Coleção nova `apresentacoes`; tipos novos no histórico do lead:
 `apresentacao` e `retorno`. Fase 2 (página pública com respostas) fica para a plataforma.
+
+## Faixas rotativas (protótipo v56)
+
+Componente `faixaRotativa(id, rótulo, itens)`: faixa marrom com as informações passando da direita para a esquerda,
+pausa ao passar o mouse ou no botão, e parada (texto em linhas) com "reduzir movimento". Usada em Treinamento (equipe e
+corretor), Reuniões e Projeto Boa Ideia (substitui o painel do fundo). Reuniões ganharam título, data, hora e local:
+a reunião com data de hoje em diante entra na faixa assim que é salva. Na plataforma: componente React `FaixaRotativa`
+com os mesmos itens calculados no frontend a partir da API.

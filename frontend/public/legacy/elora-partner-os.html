@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 55). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 56). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -841,6 +841,17 @@ body.modo-app .fgrid{grid-template-columns:minmax(0,1fr)}
 .ap-funil{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .ap-funil div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}.ap-funil span,.ap-funil em{font-size:11.5px;color:var(--muted);font-style:normal}.ap-funil b{font-size:20px}
 @media (max-width:760px){.ap-funil{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.faixa{display:flex;align-items:center;gap:0;background:#6B5530;color:#FBF6EC;border-radius:10px;overflow:hidden;margin:12px 0 16px;min-height:44px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.fx-tag{flex:none;align-self:stretch;display:flex;align-items:center;padding:0 14px;background:#4E3D21;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#E9D9B6}
+.fx-v{flex:1;overflow:hidden;min-width:0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.fx-t{display:flex;width:max-content;animation:fx-mov var(--dur,30s) linear infinite}
+.fx-g{display:flex;align-items:center;white-space:nowrap;padding-right:0}
+.fx-i{font-size:13.5px;padding:0 6px}.fx-i b{color:#F3DFA9;font-weight:700}.fx-i.ok b{color:#CFE7C4}.fx-i.al b{color:#FFC9A8}
+.fx-sep{color:#C7A86A;font-size:9px;padding:0 10px}
+.faixa:hover .fx-t,.faixa:focus-within .fx-t,.faixa.parada .fx-t{animation-play-state:paused}
+.fx-p{flex:none;align-self:stretch;border:0;background:rgba(0,0,0,.18);color:#FBF6EC;width:40px;cursor:pointer;font-size:11px}.fx-p:hover{background:rgba(0,0,0,.3)}.fx-p:focus-visible{outline:2px solid #F3DFA9;outline-offset:-3px}
+@keyframes fx-mov{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.fx-t{animation:none;width:auto}.fx-g{white-space:normal;flex-wrap:wrap;padding:8px 0}.fx-g[aria-hidden]{display:none}.fx-v{-webkit-mask-image:none;mask-image:none}}
 </style>
 
 <div class="app" id="shell">
@@ -4033,10 +4044,66 @@ function abrirHistVistorias(id) {
 }
 // ---------- Treinamento: tela da equipe, portal do corretor e módulo ----------
 const pillTreino = (k, m) => { const t = ((k && k.treino) || {})[m.id], st = treinoStatus(k); return st.feito(m) ? pill('ok', m.q().length ? `${t.nota}%` : 'Lido') : t && t.nota != null ? pill('bad', `${t.nota}%`) : pill('', '—'); };
+// ---------- Faixa rotativa: informações passando da direita para a esquerda ----------
+// O texto vem todo do sistema (nada inventado). Para ao passar o mouse ou ao tocar em "Pausar"; com "reduzir movimento", fica parada.
+function faixaRotativa(id, rotulo, itens) {
+  const xs = itens.filter(x => x && x.t).slice(0, 14); if (!xs.length) return '';
+  const pausa = (estado.faixaPausa || {})[id], larg = xs.reduce((s, x) => s + x.t.length, 0), dur = Math.max(18, Math.round(larg / 7));
+  const um = xs.map(x => `<span class="fx-i${x.tom ? ' ' + x.tom : ''}">${x.b ? `<b>${esc(x.b)}</b> ` : ''}${esc(x.t)}</span><span class="fx-sep" aria-hidden="true">◆</span>`).join('');
+  return `<section class="faixa${pausa ? ' parada' : ''}" id="${id}" aria-label="${esc(rotulo)}"><span class="fx-tag">${esc(rotulo)}</span>
+    <div class="fx-v"><div class="fx-t" style="--dur:${dur}s"><div class="fx-g">${um}</div><div class="fx-g" aria-hidden="true">${um}</div></div></div>
+    <button type="button" class="fx-p" data-act="faixa-pausa" data-id="${id}" aria-pressed="${!!pausa}" title="${pausa ? 'Continuar' : 'Pausar'}">${pausa ? '▶' : '❚❚'}<span class="sr">${pausa ? 'Continuar' : 'Pausar'}</span></button>
+    <ul class="sr">${xs.map(x => `<li>${esc((x.b ? x.b + ' ' : '') + x.t)}</li>`).join('')}</ul></section>`;
+}
+const DIA_SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+const quandoRe = r => { const d = r.data || ''; if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return '—'; const dd = dias(REF, d), ds = DIA_SEM[new Date(d + 'T12:00:00').getDay()];
+  return `${dd === 0 ? 'hoje' : dd === 1 ? 'amanhã' : `${ds} ${fmtData(d).slice(0, 5)}`}${r.hora ? ' às ' + r.hora.replace(':00', 'h').replace(':', 'h') : ''}`; };
+// Treinamento: progresso da equipe ou do corretor, módulos mais pendentes e quem concluiu nos últimos 30 dias.
+function itensFaixaTreino(kid) {
+  const ks = lista('corretores'), ms = modulosTreino(), its = [], cfg = DB.config || {};
+  const sts = ks.map(k => [k, treinoStatus(k)]), ok_ = sts.filter(([, s]) => s.trilhaOk).length;
+  if (kid && DB.corretores[kid]) { const s = treinoStatus(DB.corretores[kid]), prox = ms.find(m => m.obrig && !s.feito(m)) || ms.find(m => !s.feito(m));
+    its.push({ b: 'Seu progresso:', t: `${s.feitos} de ${s.total} módulos (${s.pct}%).` });
+    its.push(s.trilhaOk ? { b: 'Trilha obrigatória concluída.', t: 'Continue pelos módulos extras.', tom: 'ok' } : { b: 'Próximo módulo:', t: `${prox ? prox.titulo : '—'}. Faltam ${s.pendentes.length} obrigatório(s).` });
+    if (cfg.treinoExige && !s.trilhaOk) its.push({ b: 'Atenção:', t: 'sem a trilha obrigatória você não recebe leads do rodízio.', tom: 'al' }); }
+  its.push({ b: 'Equipe:', t: `${ok_} de ${ks.length} corretor(es) com a trilha obrigatória concluída.` });
+  const pend = ms.filter(m => m.obrig).map(m => [m, ks.filter(k => !treinoStatus(k).feito(m)).length]).filter(x => x[1]).sort((a, b) => b[1] - a[1])[0];
+  if (pend) its.push({ b: 'Módulo mais pendente:', t: `${pend[0].titulo} (${pend[1]} corretor(es) faltando).` });
+  const rec = ks.flatMap(k => ms.filter(m => { const t = (k.treino || {})[m.id]; return t && t.em && dias(t.em, REF) <= 30 && dias(t.em, REF) >= 0 && treinoStatus(k).feito(m); }).map(m => ({ k, m, em: k.treino[m.id].em }))).sort((a, b) => b.em.localeCompare(a.em)).slice(0, 4);
+  for (const r of rec) its.push({ b: `${r.k.nome.split(' ')[0]} concluiu`, t: `${r.m.titulo} em ${fmtData(r.em)}.`, tom: 'ok' });
+  its.push({ b: 'Para aprovar:', t: `${TREINO_APROVA}% de acertos no teste de cada módulo.` });
+  its.push({ b: 'Rodízio:', t: cfg.treinoExige ? 'exige a trilha obrigatória concluída.' : 'livre; o treinamento é recomendado.' });
+  return its;
+}
+// Reuniões: agendadas (a próxima primeiro), ações em aberto e os números da semana.
+function itensFaixaReunioes() {
+  const rs = lista('reunioes'), fut = rs.filter(r => (r.data || '') >= REF).sort((a, b) => `${a.data} ${a.hora || '99'}`.localeCompare(`${b.data} ${b.hora || '99'}`)), its = [];
+  if (!fut.length) its.push({ b: 'Nenhuma reunião agendada.', t: ehGestor ? 'Use "Agendar reunião" para marcar a próxima.' : 'Os gestores avisam por aqui quando marcarem.' });
+  fut.slice(0, 5).forEach((r, i) => its.push({ b: i ? 'Agendada:' : (r.data === REF ? 'Hoje:' : 'Próxima reunião:'), t: `${r.titulo || 'Reunião'} · ${quandoRe(r)}${r.local ? ' · ' + r.local : ''}${r.participantes ? ' · ' + r.participantes : ''}.`, tom: r.data === REF ? 'al' : '' }));
+  const ab = rs.flatMap(r => (r.acoes || []).map(a => ({ a, t: a.tarefaId && DB.tarefas[a.tarefaId] }))).filter(x => !x.t || (x.t.status || 'pendente') === 'pendente');
+  const venc = ab.filter(x => x.a.prazo && x.a.prazo < REF);
+  if (ab.length) its.push({ b: 'Ações das reuniões:', t: `${ab.length} em aberto${venc.length ? `, ${venc.length} com prazo vencido` : ''}.`, tom: venc.length ? 'al' : '' });
+  try { const k = painelSemana().kpi, nc = k.novasCaptacoes.residencial + k.novasCaptacoes.comercial, nl = k.novasLocacoes.residencial + k.novasLocacoes.comercial; its.push({ b: 'Nesta semana:', t: `${nc} captação(ões) nova(s), ${nl} locação(ões) nova(s), ${k.ativas} locações ativas, ${k.rescisoes} rescisão(ões).` }); } catch (e) {}
+  const ult = rs.filter(r => r.data < REF && r.ata).sort((a, b) => b.data.localeCompare(a.data))[0]; if (ult) its.push({ b: 'Última ata:', t: `${ult.titulo || 'Reunião'} de ${fmtData(ult.data)}, ${(ult.acoes || []).length} ação(ões).` });
+  return its;
+}
+// Projeto Boa Ideia: o fundo, as ideias em cada etapa e quem mais pontuou.
+function itensFaixaIdeias(fundo12, fundoBI) {
+  const todas = ideias(), n = st => todas.filter(i => st.includes(i.status)).length, its = [];
+  its.push({ b: 'Fundo do Projeto Boa Ideia:', t: `${reais(fundo12)} nos últimos 12 meses · ${reais(fundoBI)} desde o início.`, tom: 'ok' });
+  its.push({ b: 'De onde vem:', t: `${pct(pcFundoPct())} de cada margem recebida no Elora Casa+. Cobre as recompensas e os custos do programa.` });
+  its.push({ b: 'Aguardam os gestores:', t: `${n(['enviada'])} ideia(s).`, tom: n(['enviada']) ? 'al' : '' });
+  its.push({ b: 'Em prática:', t: `${n(['aprovada', 'em_pratica'])} ideia(s) · ${n(['resultado_atingido', 'recompensada'])} com o resultado atingido.` });
+  const ultR = todas.filter(i => i.status === 'recompensada').sort((a, b) => String(b.recompensadaEm || b.em).localeCompare(String(a.recompensadaEm || a.em)))[0];
+  if (ultR) its.push({ b: 'Última recompensa:', t: `${ultR.autor}, pela ideia "${ultR.titulo}".`, tom: 'ok' });
+  const top = pontuacao().filter(r => r.pontos > 0).sort((a, b) => b.pontos - a.pontos)[0]; if (top) its.push({ b: 'Mais pontos:', t: `${top.autor}, ${top.pontos} ponto(s).` });
+  its.push({ b: 'Tem uma ideia?', t: 'Envie: a recompensa sai quando a ideia praticada atinge o resultado combinado.' });
+  return its;
+}
 function viewTreinoEquipe() {
   const ks = lista('corretores'), ms = modulosTreino(), cfg = DB.config, sts = ks.map(k => [k, treinoStatus(k)]), ok_ = sts.filter(([, s]) => s.trilhaOk).length;
   const media = ks.length ? Math.round(sts.reduce((t, [, s]) => t + s.pct, 0) / ks.length) : 0;
-  return `<div class="kpis"><div><span>Trilha obrigatória concluída</span><b class="num">${ok_} de ${ks.length}</b><em>${ms.filter(m => m.obrig).length} módulos obrigatórios</em></div>
+  return faixaRotativa('fx-treino', 'Treinamento', itensFaixaTreino(null)) + `<div class="kpis"><div><span>Trilha obrigatória concluída</span><b class="num">${ok_} de ${ks.length}</b><em>${ms.filter(m => m.obrig).length} módulos obrigatórios</em></div>
     <div><span>Progresso médio</span><b class="num">${media}%</b><em>dos ${ms.length} módulos</em></div>
     <div><span>Aprovação</span><b class="num">${TREINO_APROVA}%</b><em>de acertos no teste</em></div>
     <div><span>Rodízio</span><b class="num">${cfg.treinoExige ? 'Exige a trilha' : 'Livre'}</b><em>${cfg.treinoExige ? 'sem a trilha, sem leads' : 'treinamento recomendado'}</em></div></div>
@@ -4053,7 +4120,7 @@ function viewTreinoEquipe() {
 function viewTreinoCorretor() {
   const k = DB.corretores[eu()]; if (!k) return cab('Treinamento', 'Cadastre um corretor para ver este painel.');
   const ms = modulosTreino(), s = treinoStatus(k), t = k.treino || {};
-  return cab('Treinamento', 'Aprenda as regras do programa, a captação, a locação, a venda e o sistema. Cada módulo tem um teste curto; aprova com ' + TREINO_APROVA + '% de acertos.', bt('treino-ia', 'Perguntar à Elora AI', {}, 'elora')) + `
+  return cab('Treinamento', 'Aprenda as regras do programa, a captação, a locação, a venda e o sistema. Cada módulo tem um teste curto; aprova com ' + TREINO_APROVA + '% de acertos.', bt('treino-ia', 'Perguntar à Elora AI', {}, 'elora')) + faixaRotativa('fx-treino', 'Treinamento', itensFaixaTreino(k.id)) + `
   ${!s.trilhaOk && DB.config.treinoExige ? `<div class="banner"><span>Conclua a trilha obrigatória para receber leads do rodízio. Faltam: ${esc(s.pendentes.join(', '))}.</span></div>` : ''}
   <section class="panel"><h2>Seu progresso · ${s.feitos} de ${s.total}</h2><div class="meter" role="img" aria-label="${s.pct}% concluído"><i style="width:${s.pct}%"></i></div>
     <p class="sub">${s.trilhaOk ? 'Trilha obrigatória concluída.' : `Obrigatórios pendentes: ${esc(s.pendentes.join(', '))}.`}</p></section>
@@ -4819,14 +4886,18 @@ function pautaSemana(ps) {
 }
 function viewReunioes() {
   const ps = painelSemana(), rs = lista('reunioes').sort((a, b) => String(b.data).localeCompare(String(a.data)));
-  return cab('Reuniões', 'Reunião semanal com os números que importam (método do e-book "De 100 a 1000 locações"), ata escrita pela Elora AI e tarefas com responsável e prazo.', ehGestor ? bt('re-nova', 'Nova reunião semanal', {}, '') : '') + `
+  return cab('Reuniões', 'Reunião semanal com os números que importam (método do e-book "De 100 a 1000 locações"), ata escrita pela Elora AI e tarefas com responsável e prazo.', ehGestor ? bt('re-nova', 'Agendar reunião', {}, '') : '') + faixaRotativa('fx-reunioes', 'Reuniões', itensFaixaReunioes()) + `
   <h2 class="h-sec">Painel da semana · ${fmtData(ps.ini)} a ${fmtData(ps.fim)}</h2>${painelSemanaHtml(ps)}
-  <section class="panel"><h2>Reuniões · ${rs.length}</h2>${rs.length ? `<div class="list">${rs.slice(0, 20).map(r => `<div class="item"><h3>${esc(r.titulo || 'Reunião semanal')} · ${fmtData(r.data)}</h3><p>${esc(r.participantes || 'Participantes não informados')} · ${(r.acoes || []).length} ação(ões)${r.ata ? ' · ata pronta' : ''}</p><div class="acts">${bt('re-abrir', 'Abrir', { id: r.id })}</div></div>`).join('')}</div>` : vazio('Nenhuma reunião registrada. Comece pela reunião semanal: a pauta já vem montada com os números.')}</section>`;
+  <section class="panel"><h2>Reuniões · ${rs.length}</h2>${rs.length ? `<div class="list">${rs.slice(0, 20).map(r => `<div class="item"><h3>${esc(r.titulo || 'Reunião semanal')} · ${fmtData(r.data)}${r.hora ? ' às ' + esc(r.hora) : ''} ${r.data >= REF && !r.ata ? pill('gold', 'Agendada · ' + quandoRe(r)) : ''}</h3><p>${esc(r.participantes || 'Participantes não informados')} · ${(r.acoes || []).length} ação(ões)${r.ata ? ' · ata pronta' : ''}</p><div class="acts">${bt('re-abrir', 'Abrir', { id: r.id })}</div></div>`).join('')}</div>` : vazio('Nenhuma reunião registrada. Comece pela reunião semanal: a pauta já vem montada com os números.')}</section>`;
 }
 function abrirReuniao(id) {
   const r = DB.reunioes[id]; if (!r) return; const ks = ['', ...Object.values((DB.config || {}).heads || {}), ...lista('corretores').map(k => k.nome)].filter((v, i, a) => a.indexOf(v) === i);
   abrirDlg(`<h2>${esc(r.titulo || 'Reunião semanal')} · ${fmtData(r.data)}</h2>
-    <form id="frm-reuniao" data-id="${esc(id)}"><div class="f"><label for="re-part">Participantes</label><input id="re-part" type="text" maxlength="200" value="${esc(r.participantes || '')}" placeholder="Ex.: Rodrigo, Pedro, Fabiana, Guilherme"></div>
+    <form id="frm-reuniao" data-id="${esc(id)}"><div class="fgrid"><div class="f"><label for="re-tit">Título</label><input id="re-tit" type="text" maxlength="80" value="${esc(r.titulo || 'Reunião semanal')}"></div>
+      <div class="f"><label for="re-data">Data</label><input id="re-data" type="date" required value="${esc(r.data || REF)}"></div><div class="f"><label for="re-hora">Hora</label><input id="re-hora" type="time" value="${esc(r.hora || '')}"></div>
+      <div class="f"><label for="re-local">Local ou link</label><input id="re-local" type="text" maxlength="120" value="${esc(r.local || '')}" placeholder="Sala da Elora, Meet, Teams…"></div></div>
+      <p class="sub">Reunião com data de hoje em diante aparece na faixa rotativa da tela Reuniões assim que for salva.</p>
+      <div class="f"><label for="re-part">Participantes</label><input id="re-part" type="text" maxlength="200" value="${esc(r.participantes || '')}" placeholder="Ex.: Rodrigo, Pedro, Fabiana, Guilherme"></div>
       <div class="f"><label for="re-pauta">Pauta</label><textarea id="re-pauta" rows="10" maxlength="4000">${esc(r.pauta || '')}</textarea></div>
       <div class="f"><label for="re-notas">Anotações da reunião</label><textarea id="re-notas" rows="6" maxlength="6000" placeholder="O que foi falado e decidido. A Elora AI transforma em ata e ações.">${esc(r.notas || '')}</textarea></div>
       <div class="acts">${bt('re-ia', estado.reOc ? 'A Elora AI está escrevendo…' : 'Escrever a ata com a Elora AI', { id }, 'elora')}<button class="btn" type="submit">Salvar</button></div></form>
@@ -6074,7 +6145,7 @@ function viewIdeias(soCorretor) {
   const novas = todas.filter(i => i.status === 'enviada'), semAn = novas.filter(i => !i.analise && !analisando.has(i.id)).length;
   const fundoBI = lista('servicos').reduce((s, x) => s + svFundo(x), 0), fundo12 = lista('servicos').filter(x => x.recebidaEm && dias(x.recebidaEm, REF) <= 365).reduce((s, x) => s + svFundo(x), 0);
   return cab('Projeto Boa Ideia', 'Sugestões de melhoria de quem vive a operação, endereçadas aos gestores. A recompensa sai quando a ideia praticada atinge o resultado combinado.') + `
-  <section class="panel"><h2>Fundo do Projeto Boa Ideia</h2><p><b>${reais(fundo12)}</b> nos últimos 12 meses · ${reais(fundoBI)} desde o início. Vem de ${pct(pcFundoPct())} de cada margem recebida no Elora Casa+ e cobre as recompensas e os custos do programa.</p></section>
+  ${faixaRotativa('fx-ideias', 'Boa Ideia', itensFaixaIdeias(fundo12, fundoBI))}
   ${soCorretor ? '' : `<div class="kpis">
     <div><span>Aguardam os gestores</span><b class="num">${n(['enviada'])}</b><em>${novas.length ? `${novas.length - semAn} com análise da Elora AI` : 'ideias novas'}</em></div>
     <div><span>Em prática</span><b class="num">${n(['aprovada', 'em_pratica'])}</b><em>aprovadas ou em teste</em></div>
@@ -11052,6 +11123,7 @@ Object.assign(ACOES, {
   'ap-msg-refazer': () => { const st = estado.ap; if (!st) return; st.msgEditada = false; st.aprovado = false; estado.apManter = true; abrirApresentacao(st.lead); },
   'ap-pdf': () => apArquivo('pdf'), 'ap-img': () => apArquivo('img'), 'ap-enviar': () => apEnviar(),
   'ap-fb': d => apFeedback(d.id, d.im, d.fb), 'ap-ler': d => apLerResposta(d.id, ($('ap-colar') || {}).value), 'ap-visita': d => { fecharDlg(); abrirVisita(d.im, d.lead); },
+  'faixa-pausa': d => { estado.faixaPausa = { ...(estado.faixaPausa || {}), [d.id]: !(estado.faixaPausa || {})[d.id] }; const el = $(d.id); if (el) { el.classList.toggle('parada'); const b = el.querySelector('.fx-p'); if (b) { const on = el.classList.contains('parada'); b.setAttribute('aria-pressed', on); b.innerHTML = (on ? '▶' : '❚❚') + `<span class="sr">${on ? 'Continuar' : 'Pausar'}</span>`; } } },
   'gz-cmd': d => comandoGuerra(d), 'gz-nota': () => { if (ehGestor) abrirNotaElora(); },
 });
 document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm-qualif' && f.id !== 'frm-colar') return; e.preventDefault(); e.stopImmediatePropagation(); if (f.id === 'frm-qualif') salvarQualif(f); else lerConversa(f); });
@@ -11098,7 +11170,8 @@ document.addEventListener('submit', e => { const f = e.target;
   else if (f.id === 'frm-pr-perda') { resultadoProsp(f.dataset.id, 'recusou', { motivo: $('prp-m').value }); fecharDlg(); }
   else if (f.id === 'frm-flows') { if (!ehGestor) return; const out = {}; for (const tp of ['Locação', 'Compra']) out[tp] = flowsCfg()[tp].map((s, i) => ({ d: Math.max(0, Math.round(+($(`fl-${tp[0]}-${i}-d`) || {}).value || 0)), t: (($(`fl-${tp[0]}-${i}-t`) || {}).value || s.t).trim().slice(0, 60), x: (($(`fl-${tp[0]}-${i}-x`) || {}).value || s.x).trim().slice(0, 600) })).sort((a, b) => a.d - b.d);
     salvarConfig({ flows: out }); estado.flEdit = false; registrar('Comercial', 'Sequências de mensagens atualizadas.'); toast('Sequências salvas.'); }
-  else if (f.id === 'frm-reuniao') { const r = DB.reunioes[f.dataset.id]; if (!r) return; store.salvar('reunioes', r.id, { ...r, participantes: $('re-part').value.trim().slice(0, 200), pauta: $('re-pauta').value.slice(0, 4000), notas: $('re-notas').value.slice(0, 6000) }); toast('Reunião salva.'); }
+  else if (f.id === 'frm-reuniao') { const r = DB.reunioes[f.dataset.id]; if (!r) return; const dt = /^\d{4}-\d{2}-\d{2}$/.test($('re-data').value) ? $('re-data').value : r.data, hr = /^\d{2}:\d{2}$/.test($('re-hora').value) ? $('re-hora').value : '';
+    store.salvar('reunioes', r.id, { ...r, titulo: $('re-tit').value.trim().slice(0, 80) || 'Reunião', data: dt, hora: hr, local: $('re-local').value.trim().slice(0, 120), participantes: $('re-part').value.trim().slice(0, 200), pauta: $('re-pauta').value.slice(0, 4000), notas: $('re-notas').value.slice(0, 6000) }); toast('Reunião salva.'); }
   else if (f.id === 'frm-re-acao') { const r = DB.reunioes[f.dataset.id]; if (!r) return; const t = $('ra-txt').value.trim(); if (!t) return; store.salvar('reunioes', r.id, { ...r, notas: ($('re-notas') || {}).value ?? r.notas, acoes: [...(r.acoes || []), { txt: t.slice(0, 200), quem: $('ra-quem').value.trim().slice(0, 60), prazo: $('ra-prazo').value || somaDias(REF, 7) }] }); abrirReuniao(r.id); }
 });
 
