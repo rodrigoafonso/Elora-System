@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 53). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 54). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -823,6 +823,18 @@ body.modo-app .fgrid{grid-template-columns:minmax(0,1fr)}
 .inv-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center} .inv-ideia{background:var(--sunken);border-radius:8px;padding:8px 10px}
 .inv-item{scroll-margin-top:80px}
 @media (max-width:640px){.inv-mat{grid-template-columns:1fr}}
+.rm-box{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--surface);display:grid;gap:12px;margin:10px 0}
+.rm-man{font-size:15.5px;line-height:1.45;margin:0;font-weight:500}
+.rm-barra{position:relative;height:14px;border-radius:7px;background:var(--sunken);margin:26px 4px 4px}
+.rm-fx{position:absolute;top:0;bottom:0;border-radius:7px;background:var(--gold);opacity:.55}
+.rm-ref{position:absolute;top:-5px;width:2px;height:24px;background:var(--ink,#1E2A1F);transform:translateX(-1px)}
+.rm-pt{position:absolute;top:-4px;width:20px;height:20px;border-radius:50%;background:var(--ok,#2f7d4f);border:3px solid var(--surface);transform:translateX(-10px)}
+.rm-pt span{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;color:var(--muted)}
+.rm-esc{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);gap:8px}
+.rm-kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.rm-kpi div{display:flex;flex-direction:column;gap:3px;min-width:0}.rm-kpi span,.rm-kpi small{font-size:11.5px;color:var(--muted)}.rm-kpi b{font-size:17px}
+#rm-comps .rm-off td{opacity:.5} #rm-comps td small{display:inline-block;margin-top:2px}
+.rm-graf{margin:6px 0}.rm-graf svg{width:100%;max-width:560px;height:auto}.rm-graf rect{fill:var(--gold)}.rm-graf text{font-size:12px;fill:var(--muted)}.rm-graf text.v{fill:currentColor;font-weight:600}
+@media (max-width:640px){.rm-kpi{grid-template-columns:1fr}.rm-pt span{display:none}}
 </style>
 
 <div class="app" id="shell">
@@ -8126,7 +8138,7 @@ function abrirFicha(id) {
       <div class="qr">${lk ? qrSVG(lk.url) + `<span>Aponte a câmera do celular: abre ${lk.via}.</span>` : '<span>Para gerar o QR Code, informe o WhatsApp comercial da Elora em Jurídico, Dados da empresa.</span>'}</div></div>
     ${pend.length ? `<p class="sub">Pendências do cadastro: ${esc(pend.join(', '))}.</p>` : ''}
     <h3>Divulgação</h3>
-    <div class="acts" style="justify-content:flex-start">${lk ? bt('ficha-vitrine', 'Ficha para vitrine', { id }, '') + bt('ficha-qr', 'QR Code', { id }) + bt('ficha-link', 'Copiar o link', { id }) : bt('ir-fechar', 'Informar o WhatsApp em Jurídico', { view: 'juridico' }, '')}${bt('anuncio', 'Prévia do anúncio', { id }, '')}${bt('br-pdf', 'Brochure em PDF', { id }, '')}${bt('br-img', 'Imagens para o WhatsApp', { id })}${bt('peca', 'Imagem para feed', { id, f: 'feed' })}${bt('peca', 'Imagem para story', { id, f: 'story' })}${bt('ia-anuncio', 'Texto do anúncio (IA)', { id, modo: paraLocacao(im) && !contratoAtivoDo(im.id) ? 'locacao' : 'venda' })}</div>
+    <div class="acts" style="justify-content:flex-start">${bt('rel-mercado', 'Relatório de mercado', { id, persp: 'proprietario' })}${lk ? bt('ficha-vitrine', 'Ficha para vitrine', { id }, '') + bt('ficha-qr', 'QR Code', { id }) + bt('ficha-link', 'Copiar o link', { id }) : bt('ir-fechar', 'Informar o WhatsApp em Jurídico', { view: 'juridico' }, '')}${bt('anuncio', 'Prévia do anúncio', { id }, '')}${bt('br-pdf', 'Brochure em PDF', { id }, '')}${bt('br-img', 'Imagens para o WhatsApp', { id })}${bt('peca', 'Imagem para feed', { id, f: 'feed' })}${bt('peca', 'Imagem para story', { id, f: 'story' })}${bt('ia-anuncio', 'Texto do anúncio (IA)', { id, modo: paraLocacao(im) && !contratoAtivoDo(im.id) ? 'locacao' : 'venda' })}</div>
     <p class="sub">O brochure (PDF em A4) e as imagens para o WhatsApp saem do cadastro, com a data dos valores, o QR Code do link e o rodapé do CRECI. Para mandar a um cliente, use "Enviar ao cliente" no app do corretor ou a oferta do lead: assim o link avisa quando ele abrir. A ficha para vitrine é para imprimir; as imagens de feed e story saem no tamanho do Instagram.</p>
     ${vende ? `<h3>Simulação de financiamento</h3><div class="fgrid">
       <div class="f"><label for="fin-valor">Valor do imóvel (R$)</label><input id="fin-valor" type="number" min="0" step="1000" value="${esc(im.precoVenda || '')}"></div><div class="f"><label for="fin-entrada">Entrada (%)</label><input id="fin-entrada" type="number" min="0" max="95" step="1" value="20"></div>
@@ -8335,6 +8347,211 @@ async function entregarBlob(nome, dados) {
   if (!baixar) return toast('O download só funciona com a página aberta pelo Claude, na sua conta.');
   try { await baixar.save({ filename: nome, data: dados }); toast('Arquivo salvo.'); } catch (e) { if (!e || e.code !== 'declined') toast('Não foi possível salvar o arquivo agora.'); }
 }
+// ---------- Relatório de mercado para o cliente (só com dados da Elora) ----------
+// Comparáveis, faixa de preço, tempo para sair e histórico saem só dos imóveis e dos negócios registrados no sistema:
+// aluguéis fechados (contratos), vendas fechadas e imóveis em oferta. Nada vem de portal. A Elora AI, se pedida, só escreve o comentário.
+const RM_MIN = 3; // comparáveis com área para mostrar a faixa
+const RM_MAX = 6;
+const rmModos = im => [paraLocacao(im) ? 'locacao' : null, aVenda(im) ? 'venda' : null].filter(Boolean);
+const rmTipo = im => im.tipo || 'residencial';
+const rmGrupoB = im => chaveBairro(bairro(im)) + '|' + chaveBairro(cidadeIm(im));
+const rmArred = (v, modo) => v == null ? null : modo === 'venda' ? Math.round(v / 1000) * 1000 : Math.round(v / 10) * 10;
+const rmMesAno = d => /^\d{4}-\d{2}/.test(d || '') ? `${MESES_PT[+d.slice(5, 7) - 1]}/${d.slice(0, 4)}` : '';
+const rmTrim = d => `${d.slice(0, 4)}-T${Math.floor((+d.slice(5, 7) - 1) / 3) + 1}`;
+// Aluguel do início do contrato (antes dos reajustes), quando o contrato guarda os reajustes.
+const rmAluguelInicial = c => { const rs = (Array.isArray(c.reajustes) ? c.reajustes : []).filter(r => r && +r.de > 0).sort((a, b) => String(a.em).localeCompare(String(b.em))); return rs.length ? +rs[0].de : +c.aluguel; };
+// Valor do próprio imóvel no relatório.
+function rmValorDe(im, modo) {
+  if (modo === 'venda') return im.venda && +im.venda.valor > 0 ? { v: +im.venda.valor, rot: 'Vendido por' } : +im.precoVenda > 0 ? { v: +im.precoVenda, rot: 'Preço pedido' } : null;
+  const c = contratoAtivoDo(im.id); return c && +c.aluguel > 0 ? { v: +c.aluguel, rot: 'Aluguel atual' } : +im.pedido > 0 ? { v: +im.pedido, rot: 'Aluguel pedido' } : null;
+}
+// Todos os registros de preço da carteira para o modo: negócios fechados e ofertas de hoje.
+function rmRegistros(modo) {
+  const out = [];
+  for (const im of lista('imoveis')) {
+    if (modo === 'venda') {
+      if (im.venda && +im.venda.valor > 0 && im.venda.em) out.push({ im, k: 'fechado', v: +im.venda.valor, em: im.venda.em, pedido: +im.precoVenda > 0 ? +im.precoVenda : null, dias: im.origemEm ? Math.max(0, dias(im.origemEm, im.venda.em)) : null });
+      else if (aVenda(im) && im.vendaStatus !== 'vendido' && !im.suspenso && +im.precoVenda > 0 && !im.sobConsulta) out.push({ im, k: 'oferta', v: +im.precoVenda, em: REF });
+    } else {
+      const cs = lista('contratos').filter(c => c.imovelId === im.id && c.inicio && +c.aluguel > 0).sort((a, b) => String(a.inicio).localeCompare(String(b.inicio)));
+      cs.forEach((c, i) => { const ant = i ? cs[i - 1].encerradoEm || null : null, ini = ant || im.origemEm;
+        out.push({ im, k: 'fechado', v: rmAluguelInicial(c), em: c.inicio, pedido: +c.pedidoImovel > 0 ? +c.pedidoImovel : null, dias: ini && ini <= c.inicio ? dias(ini, c.inicio) : null, ativo: c.status === 'ativo' }); });
+      if (paraLocacao(im) && !contratoAtivoDo(im.id) && !im.suspenso && +im.pedido > 0 && !im.sobConsulta) out.push({ im, k: 'oferta', v: +im.pedido, em: REF });
+    }
+  }
+  return out.map(r => ({ ...r, modo, area: +r.im.area > 0 ? +r.im.area : null, m2: +r.im.area > 0 ? r.v / r.im.area : null }));
+}
+// Apartamento e casa não se comparam entre si; área fora de metade a o dobro também não.
+const rmCat = im => { const d = semAcento(im.descricao); return /apart|apto|studio|kitnet|kitinete|cobertura|flat|loft/.test(d) ? 'apto' : /casa|sobrado/.test(d) ? 'casa' : /galpao|armazem/.test(d) ? 'galpao' : /sala|conjunto/.test(d) ? 'sala' : /loja|ponto/.test(d) ? 'loja' : /terreno|area|lote/.test(d) ? 'terreno' : ''; };
+// Parecença com o imóvel do relatório: bairro, cidade, área e quartos. Precisa ser do mesmo uso e da mesma cidade.
+function rmNota(im, x) {
+  if (rmTipo(x) !== rmTipo(im) || chaveBairro(cidadeIm(x)) !== chaveBairro(cidadeIm(im))) return -1;
+  const ca = rmCat(im), cb = rmCat(x); if (ca && cb && ca !== cb) return -1;
+  if (+im.area > 0 && +x.area > 0 && (x.area / im.area < 0.5 || x.area / im.area > 2)) return -1;
+  let n = 20; const mot = [];
+  if (chaveBairro(bairro(x)) === chaveBairro(bairro(im))) { n += 40; mot.push('mesmo bairro'); }
+  if (+im.area > 0 && +x.area > 0) { const d = Math.abs(x.area - im.area) / im.area; n += Math.round(25 * Math.max(0, 1 - d)); if (d <= 0.25) mot.push('área parecida'); }
+  if (im.quartos != null && x.quartos != null) { const d = Math.abs(+x.quartos - +im.quartos); n += d === 0 ? 10 : d === 1 ? 5 : 0; if (d === 0) mot.push('mesmo número de quartos'); }
+  return { n, mot };
+}
+function relatorioMercado(im, modo, excl = []) {
+  const regs = rmRegistros(modo).filter(r => r.im.id !== im.id), porIm = new Map();
+  // Um comparável por imóvel: o negócio fechado mais recente; se não houver, a oferta de hoje.
+  for (const r of regs) { const a = porIm.get(r.im.id); if (!a || (r.k === 'fechado' && (a.k !== 'fechado' || r.em > a.em))) porIm.set(r.im.id, r); }
+  const cands = [...porIm.values()].map(r => { const s = rmNota(im, r.im); return s === -1 ? null : { ...r, nota: s.n + (r.k === 'fechado' ? 5 : 0), mot: s.mot }; }).filter(Boolean)
+    .sort((a, b) => b.nota - a.nota || String(b.em).localeCompare(String(a.em))).slice(0, RM_MAX + 4);
+  const comps = cands.filter(c => !excl.includes(c.im.id)).slice(0, RM_MAX), proprio = rmValorDe(im, modo), area = +im.area > 0 ? +im.area : null;
+  const m2s = comps.map(c => c.m2).filter(v => v > 0);
+  const faixa = area && m2s.length >= RM_MIN ? { min: rmArred(percentil(m2s, 0.25) * area, modo), ref: rmArred(mediana(m2s) * area, modo), max: rmArred(percentil(m2s, 0.75) * area, modo), m2: mediana(m2s), n: m2s.length } : null;
+  if (faixa && faixa.min === faixa.max) { faixa.min = rmArred(Math.min(...m2s) * area, modo); faixa.max = rmArred(Math.max(...m2s) * area, modo); }
+  const posicao = faixa && proprio ? (proprio.v < faixa.min ? 'abaixo' : proprio.v > faixa.max ? 'acima' : 'dentro') : null;
+  const fech = comps.filter(c => c.k === 'fechado'), ds = fech.map(c => c.dias).filter(v => v != null), descs = fech.filter(c => c.pedido > 0).map(c => (c.pedido - c.v) / c.pedido * 100);
+  // Histórico: mediana do m² dos negócios fechados por trimestre, mesmo uso e mesma cidade, últimos 24 meses.
+  const desde = somaDias(REF, -730), hist = {};
+  for (const r of rmRegistros(modo)) { if (r.k !== 'fechado' || !(r.m2 > 0) || r.em < desde || r.em > REF || rmTipo(r.im) !== rmTipo(im) || (rmCat(im) && rmCat(r.im) && rmCat(r.im) !== rmCat(im)) || chaveBairro(cidadeIm(r.im)) !== chaveBairro(cidadeIm(im))) continue; (hist[rmTrim(r.em)] = hist[rmTrim(r.em)] || []).push(r.m2); }
+  const serie = Object.entries(hist).sort((a, b) => a[0].localeCompare(b[0])).map(([t, xs]) => ({ t, rot: t.slice(5) + '/' + t.slice(2, 4), m2: mediana(xs), n: xs.length }));
+  return { im, modo, area, proprio, comps, cands, excluidos: cands.filter(c => excl.includes(c.im.id)), faixa, posicao, serie,
+    diasSair: ds.length >= 2 ? Math.round(mediana(ds)) : null, nDias: ds.length, desconto: descs.length >= 2 ? r1i(mediana(descs)) : null, nDesc: descs.length,
+    historicoProprio: historicoPreco(im).filter(p => p.campo === (modo === 'venda' ? 'venda' : 'pedido')).slice().reverse(),
+    reajustes: modo === 'locacao' && contratoAtivoDo(im.id) ? (contratoAtivoDo(im.id).reajustes || []).filter(r => r && r.em) : [] };
+}
+const RM_UN = { locacao: 'aluguel', venda: 'preço' };
+const rmM2 = (v, modo) => v == null ? '—' : modo === 'venda' ? 'R$ ' + Math.round(v).toLocaleString('pt-BR') + '/m²' : 'R$ ' + (Math.round(v * 100) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '/m²';
+const rmSit = c => c.k === 'oferta' ? 'Em oferta hoje' : (c.modo === 'venda' ? 'Vendido em ' : c.ativo ? 'Alugado desde ' : 'Alugado em ') + rmMesAno(c.em);
+// Frase principal, sem a IA: depende de quem vai ler.
+function rmManchete(r, persp) {
+  const un = r.modo === 'venda' ? 'preço de venda' : 'aluguel';
+  if (!r.faixa) return `Ainda não há ${RM_MIN} imóveis parecidos com área informada na carteira da Elora para calcular uma faixa de ${un}. Os comparáveis abaixo servem de referência.`;
+  const fx = `${reais(r.faixa.min)} a ${reais(r.faixa.max)}`;
+  if (persp === 'proprietario') return `Faixa de ${un} de imóveis parecidos: ${fx}. Referência para anunciar: ${reais(r.faixa.ref)}${r.proprio ? `; hoje o valor é ${reais(r.proprio.v)}, ${r.posicao === 'dentro' ? 'dentro da faixa' : r.posicao + ' da faixa'}` : ''}.`;
+  return r.proprio ? `O ${r.proprio.rot.toLowerCase()} de ${reais(r.proprio.v)} está ${r.posicao === 'dentro' ? 'dentro da faixa' : r.posicao + ' da faixa'} de imóveis parecidos: ${fx}.` : `Imóveis parecidos ficam entre ${fx}.`;
+}
+const rmBase = r => `Base: ${r.comps.length} imóvel(is) parecido(s) da carteira da Elora (${r.comps.filter(c => c.k === 'fechado').length} negócio(s) fechado(s) e ${r.comps.filter(c => c.k === 'oferta').length} em oferta), mesmo uso e mesma cidade.`;
+const RM_AVISO = 'Relatório informativo com dados de imóveis e negócios da Elora. Não é laudo de avaliação (PTAM). Os imóveis comparados aparecem sem endereço, código e nomes.';
+
+function abrirRelMercado(id, leadId, persp) {
+  const im = DB.imoveis[id]; if (!im) return; const ms = rmModos(im); if (!ms.length) return toast('Este imóvel não está para locação nem para venda.');
+  const st = estado.rm && estado.rm.id === id ? estado.rm : { id, modo: ms[0], persp: persp || (leadId ? 'cliente' : 'proprietario'), excl: [], comentario: '', lead: leadId || '' };
+  if (persp) st.persp = persp; if (!ms.includes(st.modo)) st.modo = ms[0]; estado.rm = st;
+  const r = relatorioMercado(im, st.modo, st.excl), opt = (k, v, t) => `<option value="${v}"${st[k] === v ? ' selected' : ''}>${t}</option>`;
+  const barra = rmBarraHTML(r), sc = estado.rmManter && $('dlg') && $('dlg').open ? $('dlg').scrollTop : 0; estado.rmManter = false;
+  abrirDlg(`<h2>Relatório de mercado</h2><p class="sub">${esc(im.descricao)}, ${esc(bairro(im))} (${esc(im.id)}) · só com dados da Elora</p>
+    <div class="fgrid"><div class="f"><label for="rm-modo">Negócio</label><select id="rm-modo" class="rm-sel" data-k="modo">${ms.map(m => opt('modo', m, m === 'venda' ? 'Venda' : 'Locação')).join('')}</select></div>
+      <div class="f"><label for="rm-persp">Para quem</label><select id="rm-persp" class="rm-sel" data-k="persp">${opt('persp', 'cliente', 'Cliente (o valor está justo?)')}${opt('persp', 'proprietario', 'Proprietário (por quanto anunciar?)')}</select></div></div>
+    <section class="rm-box"><p class="rm-man">${esc(rmManchete(r, st.persp))}</p>${barra}
+      <div class="rm-kpi"><div><span>Valor por m² (mediana)</span><b>${r.faixa ? rmM2(r.faixa.m2, r.modo) : '—'}</b></div>
+        <div><span>Tempo até ${r.modo === 'venda' ? 'vender' : 'alugar'}</span><b>${r.diasSair != null ? r.diasSair + ' dias' : '—'}</b><small>${r.diasSair != null ? `mediana de ${r.nDias} negócio(s)` : 'precisa de 2 negócios fechados'}</small></div>
+        <div><span>Desconto na negociação</span><b>${r.desconto != null ? String(r.desconto).replace('.', ',') + '%' : '—'}</b><small>${r.desconto != null ? `mediana de ${r.nDesc} negócio(s)` : 'precisa de 2 negócios com valor pedido'}</small></div></div>
+      <p class="sub">${esc(rmBase(r))}</p></section>
+    <h3>Imóveis comparados · ${r.comps.length}</h3>${r.cands.length ? `<div class="tbl"><table class="tight" id="rm-comps"><tr><th>Usar</th><th>Imóvel</th><th class="r">Área</th><th class="r">${r.modo === 'venda' ? 'Preço' : 'Aluguel'}</th><th class="r">Por m²</th><th>Situação</th></tr>
+      ${r.cands.map(c => { const on = !st.excl.includes(c.im.id), usa = r.comps.includes(c); return `<tr${usa ? '' : ' class="rm-off"'}><td><input type="checkbox" class="rm-usar" data-im="${esc(c.im.id)}" aria-label="Usar ${esc(c.im.id)}"${on ? ' checked' : ''}></td><td>${esc(c.im.descricao)}<br><small class="sub">${esc(bairro(c.im))} · ${esc(c.im.id)}${c.mot.length ? ' · ' + esc(c.mot.join(', ')) : ''}</small></td><td class="r">${c.area ? c.area + ' m²' : '—'}</td><td class="r">${reais(c.v)}</td><td class="r">${c.m2 ? rmM2(c.m2, r.modo) : '—'}</td><td>${esc(rmSit(c))}${on && !usa ? '<br><small class="sub">reserva: entra se desmarcar outro</small>' : ''}</td></tr>`; }).join('')}</table></div>
+      <p class="sub">Desmarque o que não serve como comparação (reforma, mobília, andar). Até ${RM_MAX} entram no relatório. O código e o motivo só aparecem aqui; no PDF vão só a descrição, o bairro e os números.</p>` : vazio('Ainda não há imóveis do mesmo uso na mesma cidade na carteira da Elora.')}
+    <h3>Histórico de preços na cidade</h3>${rmGraficoHTML(r)}
+    ${r.historicoProprio.length || r.reajustes.length ? `<ul class="regras">${r.historicoProprio.map(p => `<li>${fmtData(p.em)}: valor deste imóvel mudou de ${reais(p.de)} para ${reais(p.para)}.</li>`).join('')}${r.reajustes.map(x => `<li>${fmtData(x.em)}: reajuste pelo ${esc(x.indice || 'índice do contrato')}${x.pct != null ? ` (${String(x.pct).replace('.', ',')}%)` : ''}${x.de ? ` de ${reais(x.de)}` : ''}${x.para ? ` para ${reais(x.para)}` : ''}.</li>`).join('')}</ul>` : ''}
+    <div class="f"><label for="rm-com">Comentário do corretor (vai no relatório)</label><textarea id="rm-com" rows="4" maxlength="900" placeholder="O que explica o valor: estado do imóvel, vista, reforma, mobília, momento do bairro.">${esc(st.comentario)}</textarea>
+      <small>Os números acima são calculados pelo sistema. A Elora AI pode sugerir o texto, sem mudar nenhum número.</small></div>
+    <p class="law">${esc(RM_AVISO)}</p>
+    <div class="acts" style="margin-top:12px">${bt('fechar', 'Fechar')}${bt('rm-ia', estado.rmOc ? 'A Elora AI está escrevendo…' : 'Sugerir comentário com a Elora AI', {}, 'elora')}${bt('rm-pdf', 'Baixar PDF', {})}${bt('rm-enviar', 'Enviar ao cliente', {}, '')}</div>`, true);
+  if (sc) $('dlg').scrollTop = sc;
+}
+// Barra da faixa com o marcador do valor do imóvel.
+function rmBarraHTML(r) {
+  if (!r.faixa) return '';
+  const lo = Math.min(r.faixa.min, r.proprio ? r.proprio.v : r.faixa.min) * 0.92, hi = Math.max(r.faixa.max, r.proprio ? r.proprio.v : r.faixa.max) * 1.08, p = v => ((v - lo) / (hi - lo) * 100).toFixed(1);
+  return `<div class="rm-barra" role="img" aria-label="Faixa de ${reais(r.faixa.min)} a ${reais(r.faixa.max)}${r.proprio ? `; este imóvel: ${reais(r.proprio.v)}` : ''}"><div class="rm-fx" style="left:${p(r.faixa.min)}%;width:${(p(r.faixa.max) - p(r.faixa.min)).toFixed(1)}%"></div>
+    <div class="rm-ref" style="left:${p(r.faixa.ref)}%"></div>${r.proprio ? `<div class="rm-pt" style="left:${p(r.proprio.v)}%"><span>${r.proprio.rot}: ${reais(r.proprio.v)}</span></div>` : ''}</div>
+    <div class="rm-esc"><span>${reais(r.faixa.min)}</span><span>referência ${reais(r.faixa.ref)}</span><span>${reais(r.faixa.max)}</span></div>`;
+}
+function rmGraficoHTML(r) {
+  if (r.serie.length < 2) return `<p class="sub">O gráfico aparece quando houver negócios fechados de ${r.modo === 'venda' ? 'venda' : 'locação'} deste uso, nesta cidade, em pelo menos 2 trimestres dos últimos 24 meses (hoje: ${r.serie.length}).</p>`;
+  const max = Math.max(...r.serie.map(s => s.m2)), W = 560, H = 170, bw = Math.min(64, (W - 20) / r.serie.length - 12);
+  return `<figure class="rm-graf"><svg viewBox="0 0 ${W} ${H + 40}" role="img" aria-label="Valor mediano por m² por trimestre">${r.serie.map((s, i) => { const h = Math.max(4, s.m2 / max * H), x = 10 + i * ((W - 20) / r.serie.length) + 6;
+    return `<g><title>${s.rot}: ${rmM2(s.m2, r.modo)} (${s.n} negócio(s))</title><rect x="${x.toFixed(1)}" y="${(H - h + 18).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="4"/><text x="${(x + bw / 2).toFixed(1)}" y="${(H - h + 12).toFixed(1)}" text-anchor="middle" class="v">${esc(rmM2(s.m2, r.modo).replace('/m²', ''))}</text><text x="${(x + bw / 2).toFixed(1)}" y="${H + 36}" text-anchor="middle">${s.rot} · ${s.n}</text></g>`; }).join('')}</svg>
+    <figcaption class="sub">Mediana do ${RM_UN[r.modo]} por m² dos negócios fechados pela Elora em cada trimestre (${esc({ apto: 'apartamentos', casa: 'casas', galpao: 'galpões', sala: 'salas', loja: 'lojas', terreno: 'terrenos' }[rmCat(r.im)] || rmTipo(r.im))}, ${esc(cidadeIm(r.im) || 'mesma cidade')}). O número depois do trimestre é a quantidade de negócios.</figcaption></figure>`;
+}
+// ----- PDF (A4), desenhado na hora, no padrão visual do brochure -----
+const rmValTxt = (v, modo) => modo === 'venda' ? 'R$ ' + Math.round(v).toLocaleString('pt-BR') : reais(v);
+async function paginaRelMercado(r, persp, comentario, corretorId) {
+  await fontesProntas(); const W = 1240, H = 1754, m = 96, lw = W - 2 * m, [c, x] = tela(W, H), im = r.im, ct = contatoDoBrochure(im, corretorId);
+  x.fillStyle = BR.papel; x.fillRect(0, 0, W, H); marca(x, m, m + 40, BR.mata, true, BR.ouro, lw); x.fillStyle = BR.mata; x.fillRect(m, m + 66, lw, 2);
+  let y = m + 136; linhaTxt(x, '', 22, BR.ouro, 600); espacado(x, `RELATÓRIO DE MERCADO · ${r.modo === 'venda' ? 'VENDA' : 'LOCAÇÃO'}`, m, y, 5);
+  linhaTxt(x, '', 54, BR.tinta, 400, 'Marcellus, Georgia, serif'); y += 66; x.fillText(caberTxt(x, im.descricao, lw), m, y);
+  linhaTxt(x, '', 27, BR.suave); y += 44; x.fillText(caberTxt(x, `${bairro(im)}${cidadeIm(im) ? ', ' + cidadeIm(im) : ''}${r.area ? ' · ' + r.area + ' m²' : ''}${im.quartos != null ? ' · ' + im.quartos + ' quarto(s)' : ''}`, lw), m, y);
+  // Manchete e faixa
+  y += 34; linhaTxt(x, '', 30, BR.claro, 500); const ml = quebrar(x, rmManchete(r, persp), lw - 96).slice(0, 4), mh = 56 + ml.length * 42 + (r.faixa ? 120 : 10);
+  x.fillStyle = BR.mata; x.fillRect(m, y, lw, mh); linhaTxt(x, '', 30, BR.claro, 500); ml.forEach((l, i) => x.fillText(l, m + 48, y + 62 + i * 42));
+  if (r.faixa) { const bx = m + 48, bwid = lw - 96, by = y + mh - 88, lo = Math.min(r.faixa.min, r.proprio ? r.proprio.v : r.faixa.min) * 0.92, hi = Math.max(r.faixa.max, r.proprio ? r.proprio.v : r.faixa.max) * 1.08, px = v => bx + (v - lo) / (hi - lo) * bwid;
+    x.fillStyle = BR.mata2; x.fillRect(bx, by, bwid, 18); x.fillStyle = BR.areia; x.fillRect(px(r.faixa.min), by, px(r.faixa.max) - px(r.faixa.min), 18);
+    x.fillStyle = BR.claro; x.fillRect(px(r.faixa.ref) - 2, by - 8, 4, 34); if (r.proprio) { x.fillStyle = BR.ouro; x.beginPath(); x.arc(px(r.proprio.v), by + 9, 15, 0, 7); x.fill(); x.strokeStyle = BR.claro; x.lineWidth = 4; x.stroke(); }
+    linhaTxt(x, '', 22, BR.claro2); x.fillText(rmValTxt(r.faixa.min, r.modo), px(r.faixa.min), by + 56); x.textAlign = 'center'; if (px(r.faixa.ref) - px(r.faixa.min) > 190 && px(r.faixa.max) - px(r.faixa.ref) > 190) x.fillText('ref. ' + rmValTxt(r.faixa.ref, r.modo), px(r.faixa.ref), by + 56); x.textAlign = 'right'; x.fillText(rmValTxt(r.faixa.max, r.modo), px(r.faixa.max), by + 56); x.textAlign = 'left'; }
+  y += mh + 26;
+  // Números
+  const ks = [['Valor por m²', r.faixa ? rmM2(r.faixa.m2, r.modo) : '—'], [`Tempo até ${r.modo === 'venda' ? 'vender' : 'alugar'}`, r.diasSair != null ? r.diasSair + ' dias' : '—'], ['Desconto na negociação', r.desconto != null ? String(r.desconto).replace('.', ',') + '%' : '—']], kw = (lw - 40) / 3;
+  ks.forEach(([a, b], i) => { const kx = m + i * (kw + 20); x.fillStyle = BR.claro; x.fillRect(kx, y, kw, 112); linhaTxt(x, '', 17, BR.ouro, 600); espacado(x, a.toUpperCase(), kx + 22, y + 40, 2); linhaTxt(x, '', 33, BR.tinta, 600); x.fillText(caberTxt(x, b, kw - 44), kx + 22, y + 88); });
+  y += 112; linhaTxt(x, '', 20, BR.suave); for (const l of quebrar(x, rmBase(r), lw).slice(0, 2)) { y += 30; x.fillText(l, m, y); }
+  // Comparáveis: descrição e bairro em duas linhas
+  y += 52; linhaTxt(x, '', 34, BR.tinta, 400, 'Marcellus, Georgia, serif'); x.fillText('Imóveis parecidos', m, y);
+  const cols = [0, 0.42, 0.52, 0.67, 0.80], ws = [0.40, 0.09, 0.14, 0.12, 0.20];
+  const cel = (v, i, yy) => x.fillText(caberTxt(x, v, ws[i] * lw - 8), m + cols[i] * lw, yy);
+  y += 42; linhaTxt(x, '', 19, BR.ouro, 600); ['Imóvel', 'Área', r.modo === 'venda' ? 'Preço' : 'Aluguel', 'Por m²', 'Situação'].forEach((t, i) => cel(t, i, y)); y += 12; x.fillStyle = BR.linha; x.fillRect(m, y, lw, 2);
+  if (!r.comps.length) { y += 42; linhaTxt(x, '', 23, BR.suave); x.fillText('Ainda não há imóveis parecidos na carteira da Elora.', m, y); y += 14; }
+  for (const cp of r.comps) { y += 38; linhaTxt(x, '', 23, BR.tinta, 500); cel(cp.im.descricao, 0, y); linhaTxt(x, '', 23, BR.tinta); cel(cp.area ? cp.area + ' m²' : '—', 1, y); cel(rmValTxt(cp.v, r.modo), 2, y); cel(cp.m2 ? rmM2(cp.m2, r.modo).replace('/m²', '') : '—', 3, y);
+    const sit = rmSit(cp).split(/ (?=\w+\/\d{4}$)/); cel(sit[0], 4, y); linhaTxt(x, '', 19, BR.suave); cel(bairro(cp.im), 0, y + 28); if (sit[1]) cel(sit[1], 4, y + 28); y += 44; x.fillStyle = BR.linha; x.fillRect(m, y, lw, 1); }
+  // Histórico e comentário: na mesma página se couber; senão, numa segunda página.
+  const caixaY = H - m - 64 - 160, temG = r.serie.length >= 2;
+  const contato = xx => { xx.fillStyle = BR.mata; xx.fillRect(m, caixaY, lw, 160); linhaTxt(xx, '', 20, BR.areia, 600); espacado(xx, 'FALE COM', m + 40, caixaY + 48, 4);
+    linhaTxt(xx, '', 36, BR.claro, 400, 'Marcellus, Georgia, serif'); xx.fillText(caberTxt(xx, ct.nome, lw - 80), m + 40, caixaY + 96); linhaTxt(xx, '', 21, BR.claro2); xx.fillText(caberTxt(xx, [ct.cargo, ct.fone ? 'WhatsApp ' + ct.fone : ''].filter(Boolean).join(' · '), lw - 80), m + 40, caixaY + 132);
+    linhaTxt(xx, '', 18, BR.suave); quebrar(xx, `${RM_AVISO} Valores de ${fmtData(REF)}. ${rodapeFicha(im)}`, lw).slice(0, 3).forEach((l, i) => xx.fillText(l, m, caixaY + 160 + 32 + i * 24)); };
+  linhaTxt(x, '', 23, BR.tinta); const cl = comentario ? quebrar(x, 'Comentário do corretor: ' + comentario, lw).slice(0, 8) : [];
+  const precisa = 54 + (temG ? 26 + 170 + 92 + 52 : 70) + (cl.length ? 30 + cl.length * 32 : 0);
+  const fim = (xx, yy) => {
+    yy += 54; linhaTxt(xx, '', 34, BR.tinta, 400, 'Marcellus, Georgia, serif'); xx.fillText('Histórico na cidade', m, yy);
+    if (temG) { const gh = 170, gy = yy + 26, max = Math.max(...r.serie.map(s => s.m2)), slot = lw / r.serie.length, bwid = Math.min(110, slot - 30);
+      r.serie.forEach((s, i) => { const h = Math.max(6, s.m2 / max * gh), bx = m + i * slot + (slot - bwid) / 2; xx.fillStyle = BR.mata; xx.fillRect(bx, gy + gh - h + 30, bwid, h);
+        linhaTxt(xx, '', 19, BR.tinta, 600); xx.textAlign = 'center'; xx.fillText(rmM2(s.m2, r.modo).replace('/m²', ''), bx + bwid / 2, gy + gh - h + 20); linhaTxt(xx, '', 19, BR.suave); xx.fillText(`${s.rot} · ${s.n}`, bx + bwid / 2, gy + gh + 58); xx.textAlign = 'left'; });
+      yy = gy + gh + 92; linhaTxt(xx, '', 19, BR.suave); for (const l of quebrar(xx, `Mediana do ${RM_UN[r.modo]} por m² dos negócios fechados pela Elora por trimestre (mesmo tipo de imóvel). Depois do trimestre, a quantidade de negócios.`, lw).slice(0, 2)) { xx.fillText(l, m, yy); yy += 26; }
+    } else { yy += 40; linhaTxt(xx, '', 21, BR.suave); xx.fillText(caberTxt(xx, 'Ainda não há negócios fechados suficientes na cidade para mostrar a evolução por trimestre.', lw), m, yy); }
+    if (cl.length) { yy += 30; linhaTxt(xx, '', 23, BR.tinta); for (const l of cl) { yy += 32; xx.fillText(l, m, yy); } } };
+  if (y + precisa <= caixaY - 20) { fim(x, y); contato(x); return [c]; }
+  contato(x); linhaTxt(x, '', 20, BR.suave); x.fillText('Continua na próxima página.', m, caixaY - 24);
+  const [c2, x2] = tela(W, H); x2.fillStyle = BR.papel; x2.fillRect(0, 0, W, H); marca(x2, m, m + 40, BR.mata, true, BR.ouro, lw); x2.fillStyle = BR.mata; x2.fillRect(m, m + 66, lw, 2);
+  linhaTxt(x2, '', 22, BR.ouro, 600); espacado(x2, `RELATÓRIO DE MERCADO · ${im.descricao}`.toUpperCase().slice(0, 60), m, m + 136, 4);
+  fim(x2, m + 150); contato(x2); return [c, c2];
+}
+async function rmPDF(r, persp, comentario, corretorId) {
+  const [J, c] = await Promise.all([carregarJsPDF(), paginaRelMercado(r, persp, comentario, corretorId)]), doc = new J({ unit: 'mm', format: 'a4', compress: true });
+  doc.setProperties({ title: pdfTxt(`Relatório de mercado · ${r.im.descricao} · ${EMPRESA}`), author: pdfTxt(EMPRESA), subject: pdfTxt(`Valores de ${fmtData(REF)}`) });
+  c.forEach((p, i) => { if (i) doc.addPage(); doc.addImage(p.toDataURL('image/jpeg', 0.88), 'JPEG', 0, 0, 210, 297, undefined, 'FAST'); }); return doc.output('blob');
+}
+function rmAtual() {
+  const st = estado.rm, im = st && DB.imoveis[st.id]; if (!im) return null; if ($('rm-com')) st.comentario = $('rm-com').value.trim().slice(0, 900);
+  if (st.persp === 'cliente' && !im.autorizacaoEm) { toast('Para enviar a um cliente, falta a autorização escrita do proprietário (Lei 6.530/78, art. 20, III).'); return null; }
+  return { st, im, r: relatorioMercado(im, st.modo, st.excl), cor: estado.app ? corEu() : (DB.leads[st.lead] || {}).corretorId || im.corretorId || null };
+}
+async function rmGerar(enviar) {
+  const a = rmAtual(); if (!a) return; toast('Montando o relatório…'); let blob;
+  try { blob = await rmPDF(a.r, a.st.persp, a.st.comentario, a.cor); } catch (e) { return toast('Não foi possível montar o PDF agora. Verifique a conexão e tente de novo.'); }
+  const nome = `relatorio-mercado-${a.im.id}.pdf`; registrar('Comercial', `Relatório de mercado de ${a.im.id} (${a.st.modo === 'venda' ? 'venda' : 'locação'}, para ${a.st.persp === 'cliente' ? 'cliente' : 'proprietário'}) gerado.`);
+  if (enviar) { try { const f = new File([blob], nome, { type: 'application/pdf' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: 'Relatório de mercado' }); return toast('Relatório pronto para enviar.'); } } catch (e) { if (e && e.name === 'AbortError') return; } }
+  entregarBlob(nome, blob);
+}
+async function rmComentarioIA() {
+  const a = rmAtual(); if (!a) return; if (!amostra) return semIA(); if (estado.rmOc) return; const { r, st, im } = a;
+  const dados = { negocio: r.modo, para_quem: st.persp, imovel: { descricao: im.descricao, bairro: bairro(im), cidade: cidadeIm(im), area_m2: r.area, quartos: im.quartos ?? null, caracteristicas: im.caracteristicas || null, valor: r.proprio ? r.proprio.v : null },
+    faixa: r.faixa, posicao: r.posicao, dias_para_sair: r.diasSair, desconto_negociacao_pct: r.desconto, comparaveis: r.comps.map(c => ({ descricao: c.im.descricao, bairro: bairro(c.im), area_m2: c.area, valor: c.v, situacao: rmSit(c) })), historico_m2_trimestral: r.serie };
+  estado.rmOc = true; estado.rmManter = true; abrirRelMercado(st.id);
+  try { const { text } = await amostra(`Você é a Elora AI, da ${EMPRESA}. Escreva o comentário do corretor para um relatório de mercado que vai ao ${st.persp === 'cliente' ? 'cliente interessado no imóvel' : 'proprietário do imóvel'}.
+${REGRAS_IA}
+Regras: de 3 a 5 frases, tom profissional e honesto, em português do Brasil, sem markdown. Use somente os números dos dados, sem calcular números novos e sem prometer valorização. Se a base for pequena (menos de 3 comparáveis ou sem faixa), diga isso. Não cite endereço nem nomes de pessoas.
+Dados: ${JSON.stringify(dados)}`, { cache: false, modelTier: 'default' });
+    st.comentario = String(text || '').trim().slice(0, 900); }
+  catch (e) { toast(ERROS_IA[e && e.code] || 'A Elora AI não conseguiu escrever agora. Tente de novo.'); }
+  finally { estado.rmOc = false; if ($('dlg') && $('dlg').open && estado.rm === st) { estado.rmManter = true; abrirRelMercado(st.id); } }
+}
+document.addEventListener('change', e => { const t = e.target; if (!t.classList || !estado.rm) return;
+  if (t.classList.contains('rm-sel')) { if ($('rm-com')) estado.rm.comentario = $('rm-com').value; estado.rm[t.dataset.k] = t.value; estado.rmManter = true; abrirRelMercado(estado.rm.id); }
+  else if (t.classList.contains('rm-usar')) { if ($('rm-com')) estado.rm.comentario = $('rm-com').value; const s = new Set(estado.rm.excl); if (t.checked) s.delete(t.dataset.im); else s.add(t.dataset.im); estado.rm.excl = [...s]; estado.rmManter = true; abrirRelMercado(estado.rm.id); }
+});
 function abrirConfirmacao(id) {
   const im = DB.imoveis[id]; if (!im) return; const loc = paraLocacao(im) && !contratoAtivoDo(id), ven = aVenda(im) && im.vendaStatus !== 'vendido';
   abrirDlg(`<h2>Resposta do proprietário</h2><p class="sub">${esc(im.descricao)}, ${esc(im.local)} · ${im.id} · ${esc(nomeP(im.proprietarioId))}</p>
@@ -9075,6 +9292,7 @@ function axCorImovel(im) {
     <section class="ax-sec"><h2>Argumentos de venda · ${ar.fortes.length}</h2><div class="ax-card">${ar.fortes.length ? `<div class="ax-pend">${ar.fortes.map(x => `<div class="ok"><h3>${esc(x.t)}</h3><p>${esc(x.d)}</p></div>`).join('')}</div>` : vazio('O cadastro ainda não dá argumentos. Complete os dados do imóvel.')}</div>
       <h2>Conte ao cliente · ${ar.atencao.length}</h2><div class="ax-card">${ar.atencao.length ? `<div class="ax-pend">${ar.atencao.map(x => `<div class="${x.sev}"><h3>${esc(x.t)}</h3><p>${esc(x.d)}</p></div>`).join('')}</div>` : vazio('Nenhum ponto de atenção no cadastro.')}</div>
       <div class="ax-row2">${axBtn('cor-roteiro', ic('ia', 18) + 'Roteiro de venda', d, 'g')}${axBtn('cor-objecao', ic('chat', 18) + 'Responder a uma objeção', d, 'g ghost')}</div>
+      <div class="ax-row2">${axBtn('rel-mercado', 'Relatório de mercado', { id: im.id, persp: 'cliente' }, 'g ghost')}</div>
       <p class="sub">Os argumentos saem do cadastro e das inspeções da Elora. O roteiro e a resposta são escritos pela Elora AI só com esses dados; revise antes de usar.</p></section>
     <section class="ax-sec"><h2>Clientes seus que combinam · ${cl.meus.length}</h2>${cl.meus.length ? cl.meus.slice(0, 6).map(x => `<div class="ax-card rx-cli"><div class="top"><div><h3>${esc(x.l.nome)}</h3><small>${esc(x.l.quer || '')} · ${esc(ETAPAS[x.l.etapa] || x.l.etapa)}</small></div>${pill(x.pct >= 75 ? 'ok' : 'gold', x.pct + '%')}</div>
         <p class="sub">${esc(corCap(x.motivos.join('; ')))}.${jaTratado(x.l, im.id) ? ' Já conhece este imóvel.' : ''}</p><div class="acts">${axBtn('cor-enviar', 'Enviar', { ...d, lead: x.l.id }, 'sm')}${axBtn('cor-roteiro', 'Roteiro para ele', { ...d, lead: x.l.id }, 'sm ghost')}${axBtn('atendimento', 'Atendimento', { id: x.l.id }, 'sm ghost')}</div></div>`).join('')
@@ -9158,7 +9376,7 @@ function abrirEnvio(imId, modo, leadId) {
       <div class="f"><label for="env-txt">Mensagem</label><textarea id="env-txt" class="rx-msg" maxlength="1500">${esc(txt)}</textarea><small>Pode editar antes de enviar.${im.sobConsulta ? ' O valor ficou de fora: este imóvel é divulgado sob consulta.' : ''}${im.endereco && im.ocultarEndereco ? ' O endereço ficou de fora: no anúncio aparece só o bairro.' : ''}</small></div></div>
     ${url ? `<h3 class="ax-h">No WhatsApp do cliente</h3>${previaZap(im, url)}${env ? `<p class="sub">${esc(situacaoEnvio(env))}.</p>` : `<p class="sub">O link é só seu e deste cliente: quando ele abrir, você recebe o aviso nos Avisos do app.</p>`}`
       : axNota('Para mandar o link do imóvel com aviso de abertura, a Elora precisa informar o endereço do site em Jurídico, Dados da empresa.', 'sino')}
-    <div class="acts" style="justify-content:flex-start;margin-top:10px">${axBtn('br-img', 'Imagens para o WhatsApp', dEnv, 'sm ghost')}${axBtn('br-pdf', 'Brochure em PDF', dEnv, 'sm ghost')}</div>
+    <div class="acts" style="justify-content:flex-start;margin-top:10px">${axBtn('br-img', 'Imagens para o WhatsApp', dEnv, 'sm ghost')}${axBtn('br-pdf', 'Brochure em PDF', dEnv, 'sm ghost')}${axBtn('rel-mercado', 'Relatório de mercado', { id: im.id, lead: l ? l.id : '', persp: 'cliente' }, 'sm ghost')}</div>
     <p class="sub">Mande primeiro as imagens (no celular, escolha o WhatsApp e o cliente) e depois a mensagem com o link. Os valores saem com a data de hoje.</p>
     ${l && !u ? axNota('Este cliente não tem telefone com DDD no cadastro. Copie a mensagem e envie por onde vocês conversam.', 'fone') : ''}
     <div class="acts" style="margin-top:14px">${bt('fechar', 'Fechar')}${bt('env-copiar', 'Copiar', dEnv)}${l ? bt('cor-enviado', (l.hist || []).some(h => h.t === 'enviado' && h.im === im.id) ? 'Enviado ✓' : 'Marcar como enviado', { im: im.id, lead: l.id, tok }) : ''}${u ? `<a class="btn sm" id="env-zap" href="${esc(u)}" target="_blank" rel="noopener" data-act="env-zap" data-im="${esc(im.id)}" data-tok="${esc(tok)}" data-lead="${esc(l.id)}">Abrir o WhatsApp</a>` : ''}</div>`);
@@ -10586,6 +10804,8 @@ Object.assign(ACOES, {
   'inv-novo': () => abrirInovacao(), 'inv-ia': () => planoInovacaoIA(), 'inv-dec': d => anotarDecisaoInv(d.id), 'inv-ideia': d => invParaIdeia(d.id),
   'inv-st-f': d => { estado.invF = { ...(estado.invF || {}), st: d.v }; render(); },
   'inv-del': d => { if (!ehGestor || !(DB.inovacoes || {})[d.id]) return; if (estado.confirmar !== 'iv' + d.id) { estado.confirmar = 'iv' + d.id; return render(); } estado.confirmar = null; store.apagar('inovacoes', d.id); toast('Achado apagado.'); },
+  'rel-mercado': d => { if (!estado.rm || estado.rm.id !== d.id) estado.rm = null; else if (d.lead) estado.rm.lead = d.lead; abrirRelMercado(d.id, d.lead || '', d.persp || ''); },
+  'rm-pdf': () => rmGerar(false), 'rm-enviar': () => rmGerar(true), 'rm-ia': () => rmComentarioIA(),
   'gz-cmd': d => comandoGuerra(d), 'gz-nota': () => { if (ehGestor) abrirNotaElora(); },
 });
 document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm-qualif' && f.id !== 'frm-colar') return; e.preventDefault(); e.stopImmediatePropagation(); if (f.id === 'frm-qualif') salvarQualif(f); else lerConversa(f); });

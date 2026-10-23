@@ -122,3 +122,8 @@ decisao, em) e `config.guerra.inovacaoDia` (resumo da última varredura). A varr
 agendada (segunda e quinta, 6h47 de Brasília) que grava só achados com fonte https. Na plataforma, migrar para o módulo
 de inteligência de mercado: tabela `inovacao`, job agendado no backend e o mesmo fluxo de decisão (matriz impacto ×
 esforço, "Levar ao Projeto Boa Ideia", plano com IA usando só os achados registrados).
+
+## Relatório de mercado (protótipo v54)
+
+Ver `docs/funcionalidades/relatorio-de-mercado.md`. Só dados da Elora (contratos, vendas e ofertas); cálculo em função
+pura `relatorioMercado` no protótipo, a migrar para o domínio de imóveis.
