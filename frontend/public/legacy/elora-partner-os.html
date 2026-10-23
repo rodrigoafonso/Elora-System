@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 56). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 57). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -892,7 +892,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 /*ENGINE-START*/
 const pad = n => String(n).padStart(2, '0');
 const hojeISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes'];
+const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes', 'lotes'];
 const CONFIG_PADRAO = { custoDiretoPct: 25, participacaoPct: 40, gestaoPct: 5, margemMinPct: 55, vendaDeducaoPct: 0, vendaCaptPct: 40, vendaTetoPct: 50, divisaoCaptPct: 60, indicacaoMaxPct: 25, creciJ: '', responsavel: '', vendaPct: 6, vendaCorretorPct: 40, locCorretorPct: 20, pctLeadElora: 40, pctLeadProprio: 45, diaPagamento: 10, repasseDias: 5, soSeguroFianca: false,
   aceiteMin: 15, rodizioAuto: false, rodizioPausado: false, whatsapp: '', site: '',
   rodizioHorario: false, rodizioDias: [1, 2, 3, 4, 5], rodizioIni: '08:00', rodizioFim: '18:00', cubValor: 0, cubMes: '', funil: [], pixTipo: '', pixChave: '', pixNome: '', pixCidade: '', cartaoLink: '' };
@@ -932,9 +932,15 @@ const fmtData = s => /^\d{4}-\d{2}-\d{2}/.test(s || '') ? s.slice(8, 10) + '/' +
 const brl = cent => (cent / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const pct = n => (+n).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%';
 
-const CHAVE_MIN = { corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId' };
-const lista = col => Object.values(DB[col] || {}).filter(x => x && typeof x[CHAVE_MIN[col]] === 'string' && (col !== 'contratos' || (typeof x.fim === 'string' && x.aluguel > 0)))
-  .sort((a, b) => a.id < b.id ? -1 : 1);
+const CHAVE_MIN = { corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId', lotes: 'comp' };
+// Cache por identidade: toda gravação troca o objeto da coleção (DB[col] = {...}), então o cache nunca fica velho.
+const LISTA_CACHE = new Map(), IDX_CACHE = new Map();
+const listaBase = col => { const src = DB[col] || {}, c = LISTA_CACHE.get(col); if (c && c.src === src) return c.arr;
+  const arr = Object.values(src).filter(x => x && typeof x[CHAVE_MIN[col]] === 'string' && (col !== 'contratos' || (typeof x.fim === 'string' && x.aluguel > 0))).sort((a, b) => a.id < b.id ? -1 : 1);
+  LISTA_CACHE.set(col, { src, arr }); return arr; };
+const lista = col => listaBase(col).slice();
+// Índices derivados de uma coleção, refeitos só quando ela muda.
+const indice = (nome, col, montar) => { const src = DB[col], c = IDX_CACHE.get(nome); if (c && c.src === src) return c.v; const v = montar(listaBase(col)); IDX_CACHE.set(nome, { src, v }); return v; };
 const bairro = im => (im.local || '').split(',')[0];
 const nomeP = id => (DB.pessoas[id] || {}).nome || '—';
 const imovelDe = c => DB.imoveis[c.imovelId] || {};
@@ -942,7 +948,7 @@ const rot = id => { const c = DB.contratos[id] || {}, im = imovelDe(c); return `
 const apto = k => !!k && k.creciSit === 'ativo' && !!k.sindicato;
 const paraLocacao = im => ['locacao', 'ambos'].includes(im.finalidade || 'locacao');
 const aVenda = im => im.finalidade === 'venda' || im.finalidade === 'ambos';
-const contratoAtivoDo = imovelId => lista('contratos').find(c => c.imovelId === imovelId && c.status === 'ativo');
+const contratoAtivoDo = imovelId => indice('ativoPorImovel', 'contratos', cs => { const m = new Map(); for (const c of cs) if (c.status === 'ativo' && !m.has(c.imovelId)) m.set(c.imovelId, c); return m; }).get(imovelId);
 // Em oferta: autorizado ou não, é o imóvel que a Elora está tentando alugar ou vender agora.
 const emOferta = im => !im.suspenso && ((paraLocacao(im) && !contratoAtivoDo(im.id)) || (aVenda(im) && im.vendaStatus !== 'vendido'));
 const cent = v => Math.round((+v || 0) * 100);
@@ -1577,7 +1583,7 @@ function agenda(n = 120) {
   return ev.sort((a, b) => a.data < b.data ? -1 : 1);
 }
 
-const disponivelDesde = im => { const ult = lista('contratos').filter(c => c.imovelId === im.id && c.encerradoEm).map(c => c.encerradoEm).sort().pop(); return ult || im.origemEm || REF; };
+const disponivelDesde = im => indice('saidaPorImovel', 'contratos', cs => { const m = new Map(); for (const c of cs) if (c.encerradoEm && (!m.has(c.imovelId) || c.encerradoEm > m.get(c.imovelId))) m.set(c.imovelId, c.encerradoEm); return m; }).get(im.id) || im.origemEm || REF;
 
 // Boa Ideia: a ideia é de quem escreve; a avaliação fica em registro separado, que só os gestores gravam.
 const ideias = () => lista('ideias').map(i => ({ status: 'enviada', ...i, ...(DB.avaliacoes[i.id] || {}), id: i.id, exemplo: i.exemplo }));
@@ -1640,7 +1646,21 @@ function pontuacao() {
 }
 
 // Monitoramento: regras fixas que varrem todos os setores. sev: bloqueio | atencao | pendente.
+// Capacidade do banco desta página: o próprio banco recomenda coleções de centenas a poucos milhares de registros e
+// guarda no máximo 25.000 documentos. Avisa os gestores antes do limite; a operação grande vai para a plataforma.
+const CAP_COL = 2000, CAP_TOTAL = 25000;
+function avisoCapacidade() {
+  const ns = COLS.map(c => [c, Object.keys(DB[c] || {}).length]), tot = ns.reduce((s, x) => s + x[1], 0), cheias = ns.filter(x => x[1] >= CAP_COL * 0.8);
+  if (!cheias.length && tot < CAP_TOTAL * 0.8) return '';
+  return `<div class="banner" role="status"><span><b>Capacidade:</b> ${cheias.length ? cheias.map(([c, n]) => `${esc(c)} com ${n.toLocaleString('pt-BR')} registros`).join(', ') + '. ' : ''}${tot.toLocaleString('pt-BR')} de ${CAP_TOTAL.toLocaleString('pt-BR')} registros usados no banco desta página. Acima disso o sistema fica lento ou para de gravar: arquive o que é antigo em Dados e planeje a migração para a plataforma.</span></div>`;
+}
+let ALERTAS_MEMO = null;
 function alertas() {
+  const k = [REF, estado.perfil, eu(), ehGestor, DB.config, ...COLS.map(c => DB[c])], t = Date.now(), m = ALERTAS_MEMO;
+  if (m && t - m.t < 15000 && m.k.length === k.length && m.k.every((x, i) => x === k[i])) return m.v.slice();
+  const v = alertasCalc(); ALERTAS_MEMO = { k, v, t }; return v.slice();
+}
+function alertasCalc() {
   const a = [], add = (sev, setor, view, titulo, detalhe, lei = '', extra = {}) => a.push({ sev, setor, view, titulo, detalhe, lei, corretor: null, ...extra });
   for (const l of lista('leads')) if (ehComprador(l) && PROB[l.etapa]) { const c = l.comprador.credito || {};
     if (c.status === 'aprovado' && c.validade && c.validade < REF) add('pendente', 'Comercial', 'compradores', 'Aprovação de crédito vencida', `${l.nome}: a aprovação venceu em ${fmtData(c.validade)}. Peça a renovação ao banco ou correspondente.`, '', { corretor: l.corretorId || null });
@@ -3418,14 +3438,14 @@ const store = {
   async iniciar() {
     let db = null;
     try { if (window.claude && window.claude.use) { db = await window.claude.use('db'); window.claude.use('sample').then(s => { amostra = s || null; agendar(); }).catch(() => {}); window.claude.use('downloads').then(d => { baixar = d || null; }).catch(() => {}); window.claude.use('assets').then(a => { fotosCap = a || null; agendar(); }).catch(() => {});
-      window.claude.use('user').then(u => { if (u && u.isOwner) u.isOwner().then(v => { souDono = !!v; agendar(); }).catch(() => { souDono = false; agendar(); }); if (u && u.can) u.can('data.write').then(v => { podeGravar = v !== false; agendar(); }).catch(() => {}); return u ? u.canEdit() : true; }).then(v => { ehGestor = v !== false; agendar(); }).catch(() => {}); } } catch (e) {}
+      window.claude.use('user').then(u => { if (u && u.id) u.id().then(v => { meuIdConta = v || null; }).catch(() => {}); if (u && u.isOwner) u.isOwner().then(v => { souDono = !!v; agendar(); }).catch(() => { souDono = false; agendar(); }); if (u && u.can) u.can('data.write').then(v => { podeGravar = v !== false; agendar(); }).catch(() => {}); return u ? u.canEdit() : true; }).then(v => { ehGestor = v !== false; agendar(); }).catch(() => {}); } } catch (e) {}
     if (db) { this.modo = 'nuvem'; this.db = db; this.assinar(); }
     else { this.lerLocal(); estado.pronto = true; render(); }
   },
   assinar() {
     const falta = new Set([...COLS, 'sistema']);
     const ok = n => { falta.delete(n); if (!falta.size) estado.pronto = true; agendar(); };
-    for (const col of COLS) this.db.collection(col).limit(1000).onSnapshot(s => { const o = {}; for (const d of s.docs) o[d.id] = { ...d.data(), id: d.id }; DB[col] = o; ok(col); }, erroDb);
+    for (const col of COLS) this.db.collection(col).onSnapshot(s => { const o = {}; for (const d of s.docs) o[d.id] = { ...d.data(), id: d.id }; DB[col] = o; ok(col); }, erroDb);
     try { this.db.collection('chat').orderBy('q', 'desc').limit(400).onSnapshot(s => { const o = {}; for (const d of s.docs) o[d.id] = { ...d.data(), id: d.id }; DB.chat = o; agendar(); }, () => {}); } catch (e) {}
     this.db.collection('sistema').onSnapshot(s => { for (const d of s.docs) { const v = d.data() || {}; if (d.id === 'config') DB.config = { ...CONFIG_PADRAO, ...v }; if (d.id === 'log') DB.log = Array.isArray(v.itens) ? v.itens.slice() : []; } ok('sistema'); }, erroDb);
     setTimeout(() => { if (!estado.pronto) { estado.pronto = true; render(); } }, 7000);
@@ -3440,6 +3460,14 @@ const store = {
     for (const k of Object.keys(body)) if (body[k] === undefined) delete body[k];
     DB[col] = { ...DB[col], [id]: { ...body, id } }; agendar();
     if (this.modo === 'nuvem') { try { await this.db.doc(col + '/' + id).set(body); } catch (e) { erroDb(e); } } else this.gravarLocal();
+  },
+  // Várias gravações de uma vez: uma atualização da tela e, no modo local, uma escrita só.
+  async salvarVarios(col, itens) {
+    if (!podeGravar || !itens.length) return; const novo = { ...DB[col] };
+    for (const [id, obj] of itens) { const b = { ...obj }; delete b.id; for (const k of Object.keys(b)) if (b[k] === undefined) delete b[k]; novo[id] = { ...b, id }; }
+    DB[col] = novo; agendar();
+    if (this.modo !== 'nuvem') return this.gravarLocal();
+    for (let i = 0; i < itens.length; i += 8) await Promise.all(itens.slice(i, i + 8).map(([id]) => { const b = { ...novo[id] }; delete b.id; return this.db.doc(col + '/' + id).set(b).catch(erroDb); }));
   },
   async apagar(col, id) {
     if (!podeGravar) return erroDb({ code: 'invalid_argument' });
@@ -5569,6 +5597,71 @@ function viewLocacao() {
 
 // ---------- Financeiro ----------
 const CATEGORIAS = { aluguel_sede: 'Aluguel e condomínio da sede', pessoal: 'Pessoal e pró-labore', marketing: 'Marketing', sistemas: 'Sistemas e telefonia', contabilidade: 'Contabilidade e jurídico', impostos: 'Impostos e taxas', outras: 'Outras' };
+// ---------- Repasse em lote, com aprovação de duas pessoas ----------
+// Quem prepara não aprova. Na nuvem, a comparação usa o id da conta (capacidade "user"); no modo local, o nome informado.
+// O lote não guarda dados bancários: a planilha serve para conferência e para montar o pagamento no banco.
+let meuIdConta = null;
+const quemOpera = () => { const g = gestorAtual(); return g ? g.nome : souDono ? 'Dono da página' : ''; };
+const lotesDe = comp => lista('lotes').filter(x => !comp || x.comp === comp).sort((a, b) => String(b.preparadoEm || '').localeCompare(String(a.preparadoEm || '')));
+const LOTE_ST = { aguarda: ['gold', 'Aguarda aprovação'], pago: ['ok', 'Aprovado e pago'], cancelado: ['', 'Cancelado'] };
+function itensLote(comp) { return repasses(linhas([comp]), comp).filter(x => x.aPagarC > 0).map(x => ({ loc: x.locador, valorC: x.aPagarC, ate: x.ate, contratos: [...new Set(x.contratosAPagar)] })); }
+function abrirLoteNovo(comp) {
+  if (!ehGestor) return toast('Só os gestores preparam repasses.');
+  const its = itensLote(comp), sel = estado.loteSel && estado.loteSel.comp === comp ? estado.loteSel.fora : [];
+  if (!its.length) return toast('Não há repasses a pagar nesta competência.');
+  const dentro = its.filter(x => !sel.includes(x.loc)), tot = dentro.reduce((s, x) => s + x.valorC, 0);
+  abrirDlg(`<h2>Repasse em lote · ${fmtMes(comp)}</h2><p class="sub">${its.length} proprietário(s) com repasse a pagar. Gastos e créditos do proprietário continuam no repasse individual: quem tiver, tire do lote.</p>
+    <div class="tbl"><table class="tight" id="lote-tab"><tr><th>No lote</th><th>Proprietário</th><th class="r">Repasse</th><th>Prazo</th></tr>
+      ${its.map(x => `<tr${sel.includes(x.loc) ? ' class="rm-off"' : ''}><td><input type="checkbox" class="lote-ck" data-loc="${esc(x.loc)}" data-comp="${esc(comp)}" aria-label="Incluir ${esc(nomeP(x.loc))}"${sel.includes(x.loc) ? '' : ' checked'}></td><td>${esc(nomeP(x.loc))}<small>${x.contratos.length} contrato(s)</small></td><td class="r num">${brl(x.valorC)}</td><td>${x.ate ? (x.ate < REF ? pill('bad', 'Vencido ' + fmtData(x.ate).slice(0, 5)) : fmtData(x.ate)) : '—'}</td></tr>`).join('')}</table></div>
+    <div class="memo num"><div class="t"><span>Total do lote · ${dentro.length} proprietário(s)</span><span>${brl(tot)}</span></div></div>
+    <div class="fgrid"><div class="f"><label for="lote-quem">Quem prepara *</label><input id="lote-quem" type="text" maxlength="60" value="${esc(quemOpera())}" placeholder="Seu nome"></div></div>
+    <p class="sub">Depois de preparado, o lote precisa ser aprovado por <b>outra pessoa</b> antes de virar pagamento. Nada é transferido pelo sistema: a aprovação registra o pagamento feito no banco.</p>
+    <div class="acts">${bt('fechar', 'Cancelar')}${bt('lote-preparar', `Preparar o lote (${brl(tot)})`, { comp }, '')}</div>`, true);
+}
+async function prepararLote(comp) {
+  const nome = (($('lote-quem') || {}).value || '').trim().slice(0, 60); if (!nome) return toast('Informe quem está preparando o lote.');
+  const fora = estado.loteSel && estado.loteSel.comp === comp ? estado.loteSel.fora : [], its = itensLote(comp).filter(x => !fora.includes(x.loc)); if (!its.length) return toast('Escolha ao menos um proprietário.');
+  const id = 'LT-' + comp.replace('-', '') + '-' + Date.now().toString(36);
+  await store.salvar('lotes', id, { comp, itens: its, totalC: its.reduce((s, x) => s + x.valorC, 0), status: 'aguarda', preparadoPor: { nome, conta: meuIdConta || null }, preparadoEm: new Date(AGORA()).toISOString() });
+  registrar('Financeiro', `Lote de repasse de ${fmtMes(comp)} preparado por ${nome}: ${its.length} proprietário(s), ${brl(its.reduce((s, x) => s + x.valorC, 0))}. Aguarda aprovação de outra pessoa.`);
+  estado.loteSel = null; toast('Lote preparado. Falta a aprovação de outra pessoa.'); abrirLote(id);
+}
+function abrirLote(id) {
+  const lt = (DB.lotes || {})[id]; if (!lt) return; const st = LOTE_ST[lt.status] || LOTE_ST.aguarda, atuais = new Map(itensLote(lt.comp).map(x => [x.loc, x.valorC]));
+  const mesmaPessoa = lt.preparadoPor && ((meuIdConta && lt.preparadoPor.conta && meuIdConta === lt.preparadoPor.conta));
+  abrirDlg(`<h2>Lote de repasse · ${fmtMes(lt.comp)}</h2><p class="sub">${pill(st[0], st[1])} Preparado por ${esc((lt.preparadoPor || {}).nome || '—')} em ${fmtData(String(lt.preparadoEm).slice(0, 10))}${lt.aprovadoPor ? ` · aprovado por ${esc(lt.aprovadoPor.nome)} em ${fmtData(lt.pagoEm)}` : ''}</p>
+    <div class="tbl"><table class="tight"><tr><th>Proprietário</th><th class="r">No lote</th><th>Situação agora</th></tr>
+      ${lt.itens.map(x => { const ag = atuais.get(x.loc); return `<tr><td>${esc(nomeP(x.loc))}</td><td class="r num">${brl(x.valorC)}</td><td>${lt.status !== 'aguarda' ? '—' : ag == null ? pill('', 'Já pago ou sem repasse: fica fora') : ag !== x.valorC ? pill('bad', `Valor mudou para ${brl(ag)}: fica fora`) : pill('ok', 'Confere')}</td></tr>`; }).join('')}</table></div>
+    <div class="memo num"><div class="t"><span>Total preparado</span><span>${brl(lt.totalC)}</span></div></div>
+    ${lt.status === 'aguarda' ? `<div class="fgrid"><div class="f"><label for="lote-aprova">Quem aprova *</label><input id="lote-aprova" type="text" maxlength="60" value="${esc(quemOpera() !== (lt.preparadoPor || {}).nome ? quemOpera() : '')}" placeholder="Nome de quem aprova"></div>
+        <div class="f"><label for="lote-em">Data do pagamento no banco *</label><input id="lote-em" type="date" max="${REF}" value="${REF}"></div></div>
+      ${mesmaPessoa ? axNota('Você preparou este lote. A aprovação precisa ser feita por outra pessoa, com outra conta.', 'escudo') : ''}
+      <p class="sub">Confira a planilha com o pagamento feito no banco antes de aprovar. Só entram os itens que "conferem": o que mudou desde a preparação fica fora e volta para o repasse individual.</p>` : ''}
+    <div class="acts">${bt('fechar', 'Fechar')}${bt('lote-csv', 'Baixar a planilha do lote', { id })}${lt.status === 'aguarda' ? bt('lote-cancelar', estado.confirmar === 'lt' + id ? 'Confirmar: cancelar o lote' : 'Cancelar o lote', { id }, 'danger') + bt('lote-aprovar', 'Aprovar e registrar o pagamento', { id }, '') : ''}</div>`, true);
+}
+async function aprovarLote(id) {
+  const lt = (DB.lotes || {})[id]; if (!lt || lt.status !== 'aguarda' || !ehGestor) return;
+  const nome = (($('lote-aprova') || {}).value || '').trim().slice(0, 60), em = ($('lote-em') || {}).value || '';
+  if (!nome) return toast('Informe quem está aprovando.');
+  if ((meuIdConta && lt.preparadoPor && lt.preparadoPor.conta && meuIdConta === lt.preparadoPor.conta) || semAcento(nome) === semAcento((lt.preparadoPor || {}).nome || '')) return toast('Quem preparou o lote não pode aprovar. Peça a outra pessoa.');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(em) || em > REF) return toast('Informe a data do pagamento, que não pode ser futura.');
+  const ps = partesRepasse(linhas([lt.comp])).filter(x => !x.em && x.baseC > 0), atuais = new Map(itensLote(lt.comp).map(x => [x.loc, x.valorC]));
+  const ok = lt.itens.filter(x => atuais.get(x.loc) === x.valorC), porContrato = {};
+  for (const x of ok) for (const pt of ps.filter(p => p.dono === x.loc)) { if (pt.recebidoEm > em) return toast(`O pagamento não pode ser anterior ao recebimento do aluguel (${fmtData(pt.recebidoEm)}, ${nomeP(x.loc)}).`); (porContrato[pt.id] = porContrato[pt.id] || []).push(x.loc); }
+  const docs = Object.entries(porContrato).map(([cid, locs]) => { const c = DB.contratos[cid], p = c.pag[lt.comp], rep = { ...(p.rep || {}) }; for (const l of locs) rep[l] = { em, lote: id }; return [cid, { ...c, pag: { ...c.pag, [lt.comp]: { ...p, rep } } }]; });
+  await store.salvarVarios('contratos', docs);
+  const pagoC = ok.reduce((s, x) => s + x.valorC, 0);
+  await store.salvar('lotes', id, { ...lt, status: 'pago', aprovadoPor: { nome, conta: meuIdConta || null }, aprovadoEm: new Date(AGORA()).toISOString(), pagoEm: em, pagosC: pagoC, foraDoLote: lt.itens.filter(x => !ok.includes(x)).map(x => x.loc) });
+  registrar('Financeiro', `Lote de repasse de ${fmtMes(lt.comp)} aprovado por ${nome} (preparado por ${(lt.preparadoPor || {}).nome}): ${ok.length} proprietário(s), ${brl(pagoC)}, pagos em ${fmtData(em)}.${ok.length < lt.itens.length ? ` ${lt.itens.length - ok.length} item(ns) ficaram fora por mudança desde a preparação.` : ''}`);
+  toast(`Lote aprovado: ${ok.length} repasse(s) registrados.`); abrirLote(id);
+}
+function csvLote(id) {
+  const lt = (DB.lotes || {})[id]; if (!lt) return;
+  const rows = lt.itens.map(x => ({ competencia: lt.comp, proprietario: nomeP(x.loc), valor: +(x.valorC / 100).toFixed(2), contratos: x.contratos.map(c => (DB.contratos[c] || {}).imovelId || c).join(' '), prazo: x.ate || '', lote: id, situacao: (LOTE_ST[lt.status] || ['', ''])[1] }));
+  entregar(`elora-lote-repasse-${lt.comp}.csv`, csv(rows));
+}
+document.addEventListener('change', e => { const t = e.target; if (!t.classList || !t.classList.contains('lote-ck')) return; const comp = t.dataset.comp, s = estado.loteSel && estado.loteSel.comp === comp ? estado.loteSel : { comp, fora: [] };
+  s.fora = t.checked ? s.fora.filter(x => x !== t.dataset.loc) : [...new Set([...s.fora, t.dataset.loc])]; estado.loteSel = s; const sc = $('dlg').scrollTop; abrirLoteNovo(comp); $('dlg').scrollTop = sc; });
 function finCobranca() {
   const ms = meses(), mes = ms.includes(estado.mesFin) ? estado.mesFin : mesRef(), ls = linhas(), m = ls.filter(l => l.comp === mes), r = resumoMes(ls, mes), rp = repasses(ls, mes), rc = resumoComissoes(mes);
   const part = r.recebidaC + r.retidaC, comCor = rc.recebidaC + rc.retidaC, temInterm = rp.some(x => x.intermC), temDesc = rp.some(x => x.descC);
@@ -5586,7 +5679,7 @@ function finCobranca() {
       <td><div class="acts">${l.recebidoEm ? bt('doc', 'Recibo', { tipo: 'recibo', id: l.id, comp: l.comp }) + bt('estornar', estado.confirmar === 'est' + l.id + l.comp ? 'Confirmar estorno' : 'Estornar', { id: l.id, comp: l.comp }, estado.confirmar === 'est' + l.id + l.comp ? 'danger' : 'ghost')
         : bt('receber', 'Registrar recebimento', { id: l.id, comp: l.comp }, '') + bt('pg-abrir', 'PIX', { tipo: 'aluguel', id: l.id, comp: l.comp }) + (l.status === 'atraso' ? bt('ia-cobranca', 'Lembrete (IA)', { id: l.id, comp: l.comp }) : '') + zapBt((DB.pessoas[l.locatario] || {}).telefone, `Olá, ${tratar(nomeP(l.locatario))}! Aqui é a equipe da ${EMPRESA}. ${l.status === 'atraso' ? 'Lembrete: o aluguel' : 'O aluguel'} de ${fmtMes(l.comp)} do imóvel ${im.descricao || l.cod}, de ${brl(l.aluguelC)}, ${l.status === 'atraso' ? 'venceu em' : 'vence em'} ${fmtData(l.venc)}. Pode pagar por PIX pelo App Elora. Se já pagou, por favor desconsidere.`, l.status === 'atraso' ? 'Cobrar no WhatsApp' : 'WhatsApp')}</div></td></tr>`; }).join('')}
   </table></div>` : vazio('Nenhum contrato vigente nesta competência.')}</section>
-  <section class="panel"><h2>Repasses aos proprietários</h2>${rp.length ? `<div class="tbl"><table style="min-width:520px">
+  <section class="panel"><h2>Repasses aos proprietários</h2>${(lts => `<div class="acts" style="justify-content:flex-start">${rp.some(x => x.aPagarC > 0) && ehGestor ? bt('lote-novo', `Repasse em lote · ${rp.filter(x => x.aPagarC > 0).length} a pagar`, { comp: mes }, '') : ''}${lts.map(x => bt('lote-abrir', `Lote de ${fmtData(String(x.preparadoEm).slice(0, 10)).slice(0, 5)} · ${brl(x.totalC)} · ${(LOTE_ST[x.status] || LOTE_ST.aguarda)[1].toLowerCase()}`, { id: x.id }, x.status === 'aguarda' ? 'elora' : 'ghost')).join('')}</div>`)(lotesDe(mes).filter(x => x.status !== 'cancelado').slice(0, 4))}${rp.length ? `<div class="tbl"><table style="min-width:520px">
       <tr><th>Proprietário</th><th class="r">Recebido</th><th class="r">Taxa</th>${temInterm ? '<th class="r">Intermediação</th>' : ''}${temDesc ? '<th class="r">Outros descontos</th>' : ''}${rp.some(x => x.gastoC || x.creditoC) ? '<th class="r">Gastos e créditos</th>' : ''}<th class="r">Repasse</th><th>Pagamento</th><th></th></tr>
       ${rp.map(x => `<tr><td><b>${esc(nomeP(x.locador))}</b>${x.parcial ? '<small>imóvel com mais de um dono: recebe a sua parte</small>' : ''}${x.pendentes ? `<small>${x.pendentes} boleto(s) em aberto</small>` : ''}</td><td class="r num">${brl(x.aluguelC)}</td><td class="r num">${brl(x.taxaC)}</td>${temInterm ? `<td class="r num">${brl(x.intermC)}</td>` : ''}${temDesc ? `<td class="r num">${brl(x.descC)}</td>` : ''}${rp.some(y => y.gastoC || y.creditoC) ? `<td class="r num">${x.gastoC || x.creditoC ? (x.gastoC ? '− ' + brl(x.gastoC) : '') + (x.gastoC && x.creditoC ? '<br>' : '') + (x.creditoC ? '+ ' + brl(x.creditoC) : '') : '—'}</td>` : ''}<td class="r num"><b>${brl(x.repasseC)}</b></td>
         <td>${x.aPagarC > 0 ? pill(x.ate < REF ? 'bad' : x.ate === REF ? 'warn' : '', x.ate < REF ? `Vencido há ${dias(x.ate, REF)} ${dias(x.ate, REF) === 1 ? 'dia' : 'dias'}` : x.ate === REF ? 'Pagar hoje' : `Pagar até ${fmtData(x.ate).slice(0, 5)}`) + `<small>${brl(x.aPagarC)} a pagar</small>` : x.pagoC > 0 ? pill('ok', 'Pago') + `<small>em ${fmtData(x.pagoEm)}</small>` : '—'}</td>
@@ -6229,7 +6322,7 @@ function sincronizarTickets(forcar) {
   if (!estado.pronto || !ehGestor || estado.perfil !== 'equipe') return 0;
   const agora = performance.now(); if (!forcar && agora - tkSyncEm < 15000) return 0; tkSyncEm = agora;
   const pl = planoTickets(); if (!pl.length) return 0;
-  for (const m of pl) store.salvar('tickets', m.id, m.doc);
+  store.salvarVarios('tickets', pl.map(m => [m.id, m.doc]));
   const n = c => pl.filter(m => m.tipo === c).length;
   if (n('abrir') + n('resolver') + n('reabrir')) registrar('Tickets', `Monitoramento: ${n('abrir')} ticket(s) aberto(s), ${n('resolver')} concluído(s) pelo sistema, ${n('reabrir')} reaberto(s).`);
   return pl.length;
@@ -10530,7 +10623,7 @@ function render() {
     return `<div class="nav-area"><button type="button" class="grp" data-act="pasta" data-g="${esc(sc.t)}" aria-expanded="${aberta}">${ic}<span>${esc(sc.t)}</span>${icc('pasta', 11)}</button>${aberta ? sc.itens.map(item).join('') : ''}</div>`; }).join('');
   $('tabbar').innerHTML = secoes.flatMap(sc => sc.itens).map(item).join('');
   const nEx = COLS.reduce((s, c) => s + Object.values(DB[c]).filter(x => x.exemplo).length, 0);
-  $('main').innerHTML = (nEx && p === 'equipe' && estado.view !== 'dados' ? `<div class="banner"><span>Há ${nEx} registros fictícios de exemplo para você explorar. Cadastros novos já são seus.</span>${bt('ir', 'Gerenciar em Dados', { view: 'dados' })}</div>` : '') + RENDER[estado.view]() + (p === 'corretor' && estado.view !== 'ia' ? `<button type="button" class="fab-ia" data-act="elora" aria-label="Pergunte à Elora AI: dúvidas da empresa e do mercado imobiliário">${icc('ia', 18)}<span>Elora AI</span></button>` : '');
+  $('main').innerHTML = (p === 'equipe' && ehGestor ? avisoCapacidade() : '') + (nEx && p === 'equipe' && estado.view !== 'dados' ? `<div class="banner"><span>Há ${nEx} registros fictícios de exemplo para você explorar. Cadastros novos já são seus.</span>${bt('ir', 'Gerenciar em Dados', { view: 'dados' })}</div>` : '') + RENDER[estado.view]() + (p === 'corretor' && estado.view !== 'ia' ? `<button type="button" class="fab-ia" data-act="elora" aria-label="Pergunte à Elora AI: dúvidas da empresa e do mercado imobiliário">${icc('ia', 18)}<span>Elora AI</span></button>` : '');
   abasDoGrupo(p);
 }
 // Seções do menu: telas do mesmo grupo viram uma entrada; o chat sai do menu (fica no alto da tela).
@@ -11124,6 +11217,8 @@ Object.assign(ACOES, {
   'ap-pdf': () => apArquivo('pdf'), 'ap-img': () => apArquivo('img'), 'ap-enviar': () => apEnviar(),
   'ap-fb': d => apFeedback(d.id, d.im, d.fb), 'ap-ler': d => apLerResposta(d.id, ($('ap-colar') || {}).value), 'ap-visita': d => { fecharDlg(); abrirVisita(d.im, d.lead); },
   'faixa-pausa': d => { estado.faixaPausa = { ...(estado.faixaPausa || {}), [d.id]: !(estado.faixaPausa || {})[d.id] }; const el = $(d.id); if (el) { el.classList.toggle('parada'); const b = el.querySelector('.fx-p'); if (b) { const on = el.classList.contains('parada'); b.setAttribute('aria-pressed', on); b.innerHTML = (on ? '▶' : '❚❚') + `<span class="sr">${on ? 'Continuar' : 'Pausar'}</span>`; } } },
+  'lote-novo': d => { estado.loteSel = null; abrirLoteNovo(d.comp); }, 'lote-preparar': d => prepararLote(d.comp), 'lote-abrir': d => abrirLote(d.id), 'lote-aprovar': d => aprovarLote(d.id), 'lote-csv': d => csvLote(d.id),
+  'lote-cancelar': d => { const lt = (DB.lotes || {})[d.id]; if (!lt || lt.status !== 'aguarda' || !ehGestor) return; if (estado.confirmar !== 'lt' + d.id) { estado.confirmar = 'lt' + d.id; return abrirLote(d.id); } estado.confirmar = null; store.salvar('lotes', d.id, { ...lt, status: 'cancelado', canceladoEm: REF, canceladoPor: quemOpera() || null }); registrar('Financeiro', `Lote de repasse de ${fmtMes(lt.comp)} cancelado.`); toast('Lote cancelado.'); fecharDlg(); },
   'gz-cmd': d => comandoGuerra(d), 'gz-nota': () => { if (ehGestor) abrirNotaElora(); },
 });
 document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm-qualif' && f.id !== 'frm-colar') return; e.preventDefault(); e.stopImmediatePropagation(); if (f.id === 'frm-qualif') salvarQualif(f); else lerConversa(f); });
