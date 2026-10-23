@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 54). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 55). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -835,6 +835,12 @@ body.modo-app .fgrid{grid-template-columns:minmax(0,1fr)}
 #rm-comps .rm-off td{opacity:.5} #rm-comps td small{display:inline-block;margin-top:2px}
 .rm-graf{margin:6px 0}.rm-graf svg{width:100%;max-width:560px;height:auto}.rm-graf rect{fill:var(--gold)}.rm-graf text{font-size:12px;fill:var(--muted)}.rm-graf text.v{fill:currentColor;font-weight:600}
 @media (max-width:640px){.rm-kpi{grid-template-columns:1fr}.rm-pt span{display:none}}
+.ap-l{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:6px;background:var(--gold);color:#fff;font-size:14px;margin-right:4px;vertical-align:1px}
+.ap-ok{margin:4px 0} .ap-dif{margin:4px 0;color:var(--bad,#9b3b2f)} .ap-crit{margin:8px 0;border:1px solid var(--line);border-radius:10px;padding:8px 12px} .ap-crit summary{cursor:pointer;font-weight:600}
+.ap-aprova{margin:12px 0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sunken)}
+.ap-funil{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ap-funil div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}.ap-funil span,.ap-funil em{font-size:11.5px;color:var(--muted);font-style:normal}.ap-funil b{font-size:20px}
+@media (max-width:760px){.ap-funil{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 
 <div class="app" id="shell">
@@ -875,7 +881,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 /*ENGINE-START*/
 const pad = n => String(n).padStart(2, '0');
 const hojeISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes'];
+const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes'];
 const CONFIG_PADRAO = { custoDiretoPct: 25, participacaoPct: 40, gestaoPct: 5, margemMinPct: 55, vendaDeducaoPct: 0, vendaCaptPct: 40, vendaTetoPct: 50, divisaoCaptPct: 60, indicacaoMaxPct: 25, creciJ: '', responsavel: '', vendaPct: 6, vendaCorretorPct: 40, locCorretorPct: 20, pctLeadElora: 40, pctLeadProprio: 45, diaPagamento: 10, repasseDias: 5, soSeguroFianca: false,
   aceiteMin: 15, rodizioAuto: false, rodizioPausado: false, whatsapp: '', site: '',
   rodizioHorario: false, rodizioDias: [1, 2, 3, 4, 5], rodizioIni: '08:00', rodizioFim: '18:00', cubValor: 0, cubMes: '', funil: [], pixTipo: '', pixChave: '', pixNome: '', pixCidade: '', cartaoLink: '' };
@@ -915,7 +921,7 @@ const fmtData = s => /^\d{4}-\d{2}-\d{2}/.test(s || '') ? s.slice(8, 10) + '/' +
 const brl = cent => (cent / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const pct = n => (+n).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%';
 
-const CHAVE_MIN = { corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo' };
+const CHAVE_MIN = { corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId' };
 const lista = col => Object.values(DB[col] || {}).filter(x => x && typeof x[CHAVE_MIN[col]] === 'string' && (col !== 'contratos' || (typeof x.fim === 'string' && x.aluguel > 0)))
   .sort((a, b) => a.id < b.id ? -1 : 1);
 const bairro = im => (im.local || '').split(',')[0];
@@ -6270,6 +6276,7 @@ function viewResultados() {
     <div><span>Concluídos no mês</span><b class="num">${tot('feitosMes')}</b><em>em ${DEPTOS.length} departamentos</em></div>
     <div><span>Horas de trabalho no mês</span><b class="num">${(Math.round(tot('horasMes') * 10) / 10).toLocaleString('pt-BR')}</b><em>registradas nos tickets</em></div>
     <div><span>OKRs de ${tri.replace('-T', ', ')}º tri</span><b class="num">${oks.length}</b><em>${oks.length ? 'nota média ' + (Math.round(oks.reduce((s, o) => s + notaOkr(o), 0) / oks.length * 10) / 10).toLocaleString('pt-BR') : 'nenhum cadastrado'}</em></div></div>
+  <section class="panel"><h2>Apresentações consultivas · últimos 90 dias</h2>${funilApHTML()}<p class="sub">Do envio ao negócio, pelo histórico de cada lead: resposta registrada, visita pedida e feita, proposta e contrato ou venda com um dos imóveis apresentados. Cliques não contam como resultado.</p></section>
   <section class="panel"><h2>Resultado por departamento · ${fmtMes(isoMs(AGORA()).slice(0, 7))}</h2><div class="tbl"><table id="tab-result">
     <tr><th>Departamento</th><th class="r">Abertos</th><th class="r">Estourados</th><th class="r">Concluídos no mês</th><th>No prazo</th><th class="r">Tempo médio</th><th class="r">Horas no mês</th></tr>
     ${rs.map(r => `<tr><td><b>${nd(r.depto)}</b><small>${esc(r.head || 'head a definir')}${r.reincidentes ? ` · ${r.reincidentes} reincidente(s)` : ''}</small></td><td class="r num">${r.abertos}</td><td class="r num">${r.estourados ? `<b class="neg">${r.estourados}</b>` : 0}</td><td class="r num">${r.feitosMes}</td>
@@ -7715,7 +7722,7 @@ function viewAgenda(soCorretor) {
 }
 
 // ---------- Atendimento do lead: sugestões, histórico e aceite ----------
-const HIST = { ligacao: 'Ligação', mensagem: 'Mensagem', semresposta: 'Tentativa sem resposta', etapa: 'Etapa', distribuido: 'Distribuição', pronto: 'Pronto para o corretor', aceito: 'Aceite', recusado: 'Recusa', enviado: 'Imóvel enviado', visita: 'Visita', proposta: 'Proposta', aceita: 'Proposta aceita', recusada: 'Proposta recusada', favorito: 'Favorito', nota: 'Anotação', tarefa: 'Tarefa', venda: 'Venda', origem: 'Entrada', resp_prop: 'Resposta do proprietário', aviso_comp: 'Aviso ao comprador', abriu: 'Abriu o link' };
+const HIST = { ligacao: 'Ligação', mensagem: 'Mensagem', semresposta: 'Tentativa sem resposta', etapa: 'Etapa', distribuido: 'Distribuição', pronto: 'Pronto para o corretor', aceito: 'Aceite', recusado: 'Recusa', enviado: 'Imóvel enviado', visita: 'Visita', proposta: 'Proposta', aceita: 'Proposta aceita', recusada: 'Proposta recusada', favorito: 'Favorito', nota: 'Anotação', tarefa: 'Tarefa', venda: 'Venda', origem: 'Entrada', resp_prop: 'Resposta do proprietário', aviso_comp: 'Aviso ao comprador', abriu: 'Abriu o link', apresentacao: 'Apresentação enviada', retorno: 'Resposta do cliente' };
 function abrirAtendimento(id) {
   const l = DB.leads[id]; if (!l) return;
   const cor = DB.corretores[l.corretorId], compra = l.tipo === 'Compra', h = l.hist || [], n = t => new Set(h.filter(x => x.t === t && x.im).map(x => x.im)).size, camp = DB.campanhas[l.campanhaId];
@@ -7734,6 +7741,7 @@ function abrirAtendimento(id) {
     ${secaoQualif(l)}
     ${PROB[l.etapa] ? `<div class="acts rapido"><span class="sub">Registro rápido:</span>${bt('at-reg', 'Liguei', { id, t: 'ligacao' }, '')}${bt('at-reg', 'Mandei mensagem', { id, t: 'mensagem' })}${bt('at-reg', 'Não atendeu', { id, t: 'semresposta' })}${l.imovelId ? bt('at-reg', 'Visita feita', { id, im: l.imovelId, t: 'visita' }) : ''}</div>` : ''}
     ${l.ia ? `<p><b>Próximo passo:</b> ${esc(l.ia)}${l.prazo ? ' Até ' + fmtData(l.prazo) + '.' : ''}</p>` : ''}
+    ${(as => `<h3>Apresentações · ${as.length}</h3>${as.length ? `<div class="list">${as.slice(0, 4).map(a => { const s2 = AP_ST[a.status] || AP_ST.rascunho, rs = Object.values(apRespostas(a)); return `<div class="item"><h3>${a.imoveis.map(o => o.letra + ') ' + esc((DB.imoveis[o.id] || {}).descricao || o.id)).join(' · ')}</h3><p>${a.enviadaEm ? 'Enviada em ' + fmtData(a.enviadaEm) : 'Não enviada'}${rs.length ? ' · ' + rs.map(r => AP_FB[r.fb][1].toLowerCase()).join(', ') : ''}${a.proximo ? ' · próximo passo: ' + esc(a.proximo) : ''}</p><div class="acts">${bt('ap-abrir', 'Abrir', { id: a.id, lead: id })}</div><div class="side-r">${pill(s2[0], s2[1])}</div></div>`; }).join('')}</div>` : ''}${PROB[l.etapa] ? `<div class="acts" style="justify-content:flex-start">${bt('apres', 'Nova apresentação consultiva', { lead: id }, 'elora')}<span class="sub">Até 3 imóveis com o porquê de cada um, comparação e envio revisado por você.</span></div>` : ''}`)(apLista(id))}
     <h3>Imóveis que combinam · ${sg.length}</h3>
     <div class="list">${sg.length ? sg.map(x => { const im = x.im, feito = t => h.some(y => y.t === t && y.im === im.id); return `<div class="item"><h3>${esc(im.descricao)}, ${esc(bairro(im))} (${im.id})</h3>
       <p>${compra ? 'Venda por ' + reais(im.precoVenda) : 'Aluguel de ' + reais(im.pedido)} · ${esc(x.motivos.join('; '))}.</p>
@@ -8552,6 +8560,234 @@ document.addEventListener('change', e => { const t = e.target; if (!t.classList 
   if (t.classList.contains('rm-sel')) { if ($('rm-com')) estado.rm.comentario = $('rm-com').value; estado.rm[t.dataset.k] = t.value; estado.rmManter = true; abrirRelMercado(estado.rm.id); }
   else if (t.classList.contains('rm-usar')) { if ($('rm-com')) estado.rm.comentario = $('rm-com').value; const s = new Set(estado.rm.excl); if (t.checked) s.delete(t.dataset.im); else s.add(t.dataset.im); estado.rm.excl = [...s]; estado.rmManter = true; abrirRelMercado(estado.rm.id); }
 });
+// ---------- Apresentação consultiva: do lead a até 3 imóveis, comparação, envio aprovado pelo corretor, retorno do cliente e funil ----------
+// Só usa a carteira da Elora (imóveis com autorização e recebidos) e o que está no lead. Nada sai sem a aprovação do corretor.
+// Fase 1: o cliente recebe PDF/imagens e a mensagem no WhatsApp e responde por letra e número; o corretor registra a resposta.
+// Fase 2 (plataforma): página pública da apresentação com os botões de resposta, no mesmo esquema do link do imóvel.
+const AP_MAX = 3, AP_LETRAS = ['A', 'B', 'C'];
+const AP_FB = { gostei: ['ok', 'Gostei', 1], nao: ['bad', 'Não gostei', 2], info: ['gold', 'Quero saber mais', 3], visitar: ['ok', 'Quero visitar', 4] };
+const AP_ST = { rascunho: ['', 'Rascunho'], enviada: ['gold', 'Enviada'], respondida: ['ok', 'Respondida'] };
+// Motivos que são diferença em relação ao pedido (o resto é o que combina).
+const AP_DIF = /acima do orçamento|fora da região|diferente|a menos|a mais|próxima da faixa|fora da faixa|fora de oferta/;
+const apSepara = mot => ({ combina: (mot || []).filter(m => !AP_DIF.test(m)), difere: (mot || []).filter(m => AP_DIF.test(m)) });
+const apCompra = l => (l.tipo || 'Locação') === 'Compra';
+const apQuem = () => estado.app ? corEu() : estado.perfil === 'corretor' ? eu() : null;
+const apAutor = () => { const k = DB.corretores[apQuem() || '']; return k ? k.nome : 'Equipe Elora'; };
+const apPode = l => !!l && (!apQuem() || l.corretorId === apQuem());
+const apLista = leadId => lista('apresentacoes').filter(a => !leadId || a.leadId === leadId).sort((a, b) => String(b.criadaEm || '').localeCompare(String(a.criadaEm || '')));
+// Lead "efetivo": os critérios ajustados só para esta apresentação valem por cima dos do lead.
+const apLeadEf = (l, crit) => ({ ...l, ...Object.fromEntries(Object.entries(crit || {}).filter(([, v]) => v !== '' && v != null)) });
+function apCandidatos(l, crit) {
+  const le = apLeadEf(l, crit);
+  return lista('imoveis').map(im => ({ im, s: semelhanca(le, im) })).filter(x => x.s && x.s.pct >= 40).sort((a, b) => b.s.pct - a.s.pct || (a.im.id < b.im.id ? -1 : 1)).map(x => ({ im: x.im, pct: x.s.pct, ...apSepara(x.s.motivos) }));
+}
+// Dados verificados de cada imóvel, como estão no cadastro. O que falta aparece como "não informado".
+function apDados(im, compra) {
+  const cond = +im.condominio > 0 ? +im.condominio : null, iptu = +im.iptuAno > 0 ? Math.round(+im.iptuAno / 12 * 100) / 100 : null, preco = compra ? +im.precoVenda || null : +im.pedido || null;
+  const ocup = { desocupado: 'Desocupado', ocupado: 'Ocupado (consultar prazo)' }[im.ocupacao] || null;
+  return { preco, cond, iptu, mensal: !compra && preco ? Math.round((preco + (cond || 0) + (iptu || 0)) * 100) / 100 : null, completo: cond != null && iptu != null, area: +im.area > 0 ? +im.area : null,
+    quartos: im.quartos != null && im.quartos !== '' ? +im.quartos : null, vagas: im.vagas != null && im.vagas !== '' ? +im.vagas : null, local: `${bairro(im)}${cidadeIm(im) ? ', ' + cidadeIm(im) : ''}`,
+    disp: ocup || (compra ? null : 'Disponível para locação'), carac: tagsDe(im).slice(0, 6), mobilia: im.mobilia || null };
+}
+// Simulação de financiamento só com as premissas que o corretor digitar (nenhuma taxa vem pronta).
+function apFin(preco, fin) {
+  const e = +fin.entrada, ta = +fin.taxa, n = Math.round(+fin.prazo); if (!(preco > 0) || !(n > 0) || !(ta >= 0) || fin.taxa === '' || fin.taxa == null || !(e >= 0 && e < 100)) return null;
+  const pv = preco * (1 - e / 100), i = Math.pow(1 + ta / 100, 1 / 12) - 1, price = i > 0 ? pv * i / (1 - Math.pow(1 + i, -n)) : pv / n, am = pv / n;
+  return { entrada: preco - pv, financiado: pv, price: Math.round(price * 100) / 100, sac1: Math.round((am + pv * i) * 100) / 100, sacN: Math.round(am * (1 + i) * 100) / 100, n, ta, e };
+}
+const apFinTxt = f => `Premissas informadas pelo corretor: entrada de ${String(f.e).replace('.', ',')}%, juros de ${String(f.ta).replace('.', ',')}% ao ano, ${f.n} meses. Estimativa sem seguros, tarifas e correção. Não é proposta nem aprovação de crédito: as condições reais dependem da análise do banco.`;
+
+function apNova(l) {
+  const sug = apCandidatos(l, {}), lig = l.imovelId && sug.find(x => x.im.id === l.imovelId);
+  const ids = [...new Set([...(lig ? [lig.im.id] : []), ...sug.filter(x => x.pct >= 60).map(x => x.im.id)])].slice(0, AP_MAX);
+  return { id: null, lead: l.id, crit: {}, ids, fin: { entrada: 20, taxa: '', prazo: 360 }, msg: '', msgEditada: false, aprovado: false };
+}
+function apMensagem(l, st) {
+  const compra = apCompra(l), k = DB.corretores[l.corretorId], ims = st.ids.map(id => DB.imoveis[id]).filter(Boolean);
+  const linhas = ims.map((im, i) => { const d = apDados(im, compra), u = linkCompartilhar(im, tokenDoEnvio(im.id, l.id));
+    return `${AP_LETRAS[i]}) ${im.descricao}, ${d.local}: ${compra ? 'venda por ' + reais(d.preco) : `aluguel ${reais(d.preco)}${d.cond || d.iptu ? ` + condomínio e IPTU ${reais((d.cond || 0) + (d.iptu || 0))} = ${reais(d.mensal)} por mês` : ' por mês'}`} (cód. ${im.id})${u ? '\n' + u : ''}`; });
+  return `Olá, ${String(l.nome).split(' ')[0]}! Separei ${ims.length === 1 ? 'um imóvel que combina' : ims.length + ' imóveis que combinam'} com o que você me pediu. Mando junto um resumo com fotos, a comparação e o que difere do seu pedido.\n\n${linhas.join('\n\n')}\n\nPara me responder, mande a letra e o número: 1 gostei · 2 não gostei · 3 quero saber mais · 4 quero visitar. Exemplo: A4 B3.\n\n${k ? k.nome + ' · ' : ''}${EMPRESA}${DB.config.creciJ ? ' · ' + DB.config.creciJ : ''}`;
+}
+
+function abrirApresentacao(leadId, apId) {
+  const l = DB.leads[leadId]; if (!l) return; if (!apPode(l)) return toast('Este cliente é atendido por outro corretor.');
+  const ap0 = apId && DB.apresentacoes && DB.apresentacoes[apId];
+  if (ap0 && ap0.status !== 'rascunho') return abrirRespostasAp(apId);
+  if (ap0) estado.ap = { id: null, lead: leadId, crit: ap0.criterios || {}, ids: ap0.imoveis.map(o => o.id), fin: ap0.fin || { entrada: 20, taxa: '', prazo: 360 }, msg: ap0.mensagem || '', msgEditada: !!ap0.mensagem, aprovado: false, salvoId: apId };
+  else if (!estado.ap || estado.ap.lead !== leadId) estado.ap = apNova(l);
+  const st = estado.ap, compra = apCompra(l), cands = apCandidatos(l, st.crit), ok = new Set(cands.map(x => x.im.id));
+  st.ids = st.ids.filter(id => ok.has(id)).slice(0, AP_MAX); if (!st.msgEditada) st.msg = apMensagem(l, st);
+  const sel = st.ids.map(id => cands.find(x => x.im.id === id)), outros = cands.filter(x => !st.ids.includes(x.im.id));
+  const le = apLeadEf(l, st.crit), teto = +le.valorMax || 0, faltam = [!(+l.valorMax > 0) && 'orçamento', !l.regiao && 'região', !(+l.quartosMin > 0) && 'dormitórios'].filter(Boolean);
+  const sc = estado.apManter && $('dlg') && $('dlg').open ? $('dlg').scrollTop : 0; estado.apManter = false;
+  const card = (x, i) => { const im = x.im, d = apDados(im, compra), caro = teto > 0 && d.preco > teto * 1.1;
+    return `<div class="item ap-im"><h3><span class="ap-l">${AP_LETRAS[i]}</span> ${esc(im.descricao)}, ${esc(bairro(im))} <small class="sub">(${im.id})</small></h3>
+      <p>${compra ? 'Venda por ' + reais(d.preco) : `Aluguel ${reais(d.preco)} · custo mensal ${reais(d.mensal)}`} · ${pill(x.pct >= 75 ? 'ok' : x.pct >= 60 ? 'gold' : '', x.pct + '% de aderência')}</p>
+      ${x.combina.length ? `<p class="ap-ok"><b>Combina:</b> ${esc(x.combina.join('; '))}.</p>` : ''}${x.difere.length ? `<p class="ap-dif"><b>Diferente do pedido:</b> ${esc(x.difere.join('; '))}.</p>` : ''}
+      ${caro ? `<p class="sub neg">Mais de 10% acima do orçamento. Mantenha só se o cliente aceitou ver opções acima: a apresentação não deve usar uma opção cara para empurrar outra.</p>` : ''}
+      <div class="acts"><label class="sr" for="ap-tr-${esc(im.id)}">Trocar</label><select class="ap-troca" id="ap-tr-${esc(im.id)}" data-de="${esc(im.id)}"><option value="">Trocar por…</option>${outros.map(o => `<option value="${esc(o.im.id)}">${esc(o.im.descricao)}, ${esc(bairro(o.im))} · ${o.pct}%</option>`).join('')}</select>${bt('ap-tirar', 'Tirar', { im: im.id })}${bt('cor-raiox', 'Ver o imóvel', { id: im.id })}</div></div>`; };
+  const finOk = compra && sel.length ? sel.map(x => apFin(apDados(x.im, true).preco, st.fin)) : [];
+  abrirDlg(`<h2>Apresentação consultiva · ${esc(l.nome)}</h2><p class="sub">${esc(l.tipo || 'Locação')} · ${esc(l.quer || 'sem descrição do pedido')}</p>
+    <details class="ap-crit"${Object.keys(st.crit).length ? ' open' : ''}><summary>Critérios da busca${Object.keys(st.crit).length ? ' (ajustados nesta apresentação)' : ''}</summary>
+      <div class="fgrid"><div class="f"><label for="ap-c-reg">Região (bairros ou cidade)</label><input id="ap-c-reg" class="ap-crit-in" data-k="regiao" type="text" maxlength="120" value="${esc(st.crit.regiao ?? l.regiao ?? '')}"></div>
+        <div class="f"><label for="ap-c-val">${compra ? 'Valor máximo de compra' : 'Aluguel máximo'} (R$)</label><input id="ap-c-val" class="ap-crit-in" data-k="valorMax" type="number" min="0" step="${compra ? 10000 : 100}" value="${esc(st.crit.valorMax ?? l.valorMax ?? '')}"></div>
+        <div class="f"><label for="ap-c-q">Dormitórios (mínimo)</label><input id="ap-c-q" class="ap-crit-in" data-k="quartosMin" type="number" min="0" max="10" value="${esc(st.crit.quartosMin ?? l.quartosMin ?? '')}"></div></div>
+      <p class="sub">Mudar aqui vale só para esta apresentação. Para gravar no lead, use "Salvar no lead" depois de confirmar com o cliente.</p>
+      <div class="acts" style="justify-content:flex-start">${bt('ap-crit-ok', 'Buscar de novo')}${Object.keys(st.crit).length ? bt('ap-crit-lead', 'Salvar no lead (confirmado com o cliente)') : ''}</div></details>
+    ${faltam.length ? axNota(`O lead não tem ${faltam.join(', ')}. A aderência fica menos precisa: pergunte ao cliente e ajuste os critérios.`, 'ia') : ''}
+    <h3>Imóveis da apresentação · ${sel.length} de ${AP_MAX}</h3>
+    ${sel.length ? `<div class="list" id="ap-lista">${sel.map(card).join('')}</div>` : vazio(cands.length ? 'Escolha imóveis abaixo.' : 'Nenhum imóvel em oferta combina com estes critérios. Ajuste os critérios ou aguarde: o sistema avisa quando um imóvel compatível entrar.')}
+    ${sel.length < AP_MAX && outros.length ? `<div class="acts" style="justify-content:flex-start"><label class="sr" for="ap-add">Incluir imóvel</label><select id="ap-add"><option value="">Incluir imóvel…</option>${outros.map(o => `<option value="${esc(o.im.id)}">${esc(o.im.descricao)}, ${esc(bairro(o.im))} · ${o.pct}%</option>`).join('')}</select></div>` : ''}
+    ${sel.length ? `<h3>Comparação</h3>${apTabelaHTML(sel.map(x => x.im), compra)}` : ''}
+    ${compra && sel.length ? `<h3>Simulação de financiamento (opcional)</h3><div class="fgrid">
+      <div class="f"><label for="ap-f-e">Entrada (%)</label><input id="ap-f-e" class="ap-fin" data-k="entrada" type="number" min="0" max="99" step="1" value="${esc(st.fin.entrada)}"></div>
+      <div class="f"><label for="ap-f-t">Juros ao ano (%)</label><input id="ap-f-t" class="ap-fin" data-k="taxa" type="number" min="0" max="40" step="0.01" placeholder="Taxa do banco do cliente" value="${esc(st.fin.taxa)}"></div>
+      <div class="f"><label for="ap-f-p">Prazo (meses)</label><input id="ap-f-p" class="ap-fin" data-k="prazo" type="number" min="12" max="420" step="12" value="${esc(st.fin.prazo)}"></div></div>
+      ${finOk.some(Boolean) ? `<div class="tbl"><table class="tight"><tr><th></th>${sel.map((x, i) => `<th class="r">${AP_LETRAS[i]}</th>`).join('')}</tr><tr><td>Preço total</td>${sel.map(x => `<td class="r">${reais(apDados(x.im, true).preco)}</td>`).join('')}</tr><tr><td>Entrada</td>${finOk.map(f => `<td class="r">${f ? reais(f.entrada) : '—'}</td>`).join('')}</tr><tr><td>Parcela fixa (Price)</td>${finOk.map(f => `<td class="r">${f ? reais(f.price) : '—'}</td>`).join('')}</tr><tr><td>SAC: primeira e última</td>${finOk.map(f => `<td class="r">${f ? reais(f.sac1) + ' a ' + reais(f.sacN) : '—'}</td>`).join('')}</tr></table></div><p class="sub">${esc(apFinTxt(finOk.find(Boolean)))}</p>` : '<p class="sub">Preencha a taxa de juros que o banco do cliente informou. Sem taxa, a simulação não entra na apresentação.</p>'}` : ''}
+    ${sel.length ? `<h3>Mensagem ao cliente</h3><div class="f"><label for="ap-msg" class="sr">Mensagem</label><textarea id="ap-msg" rows="10" maxlength="3000">${esc(st.msg)}</textarea><small>Pode editar. ${st.msgEditada ? bt('ap-msg-refazer', 'Refazer a mensagem a partir dos imóveis') : ''}</small></div>
+      <div class="f ck ap-aprova"><input type="checkbox" id="ap-ok"${st.aprovado ? ' checked' : ''}><label for="ap-ok"><b>Revisei os imóveis, os números e a mensagem.</b> Nada aqui é urgência, desconto ou reserva que não existam.</label></div>
+      <div class="acts">${bt('fechar', 'Fechar')}${bt('ap-pdf', 'Baixar PDF', {})}${bt('ap-img', 'Imagens para o WhatsApp', {})}${l.telefone && zap(l.telefone, 'x') ? `<a class="btn zap" id="ap-zap" href="${esc(zap(l.telefone, st.msg))}" target="_blank" rel="noopener" data-act="ap-enviar">${ZAP_IC}Enviar no WhatsApp</a>` : bt('ap-enviar', 'Registrar que enviei', {}, '')}</div>
+      <p class="sub">Primeiro as imagens ou o PDF (no celular, escolha o WhatsApp e o cliente), depois a mensagem. Ao enviar, a apresentação vai para o histórico do lead e as respostas são registradas nela.</p>` : `<div class="acts">${bt('fechar', 'Fechar')}</div>`}`, true);
+  if (sc) $('dlg').scrollTop = sc;
+}
+function apTabelaHTML(ims, compra) {
+  const ds = ims.map(im => apDados(im, compra)), lin = (rot, f, sempre) => { if (!sempre && ds.every(d => f(d) == null)) return ''; return `<tr><td>${rot}</td>${ds.map(d => { const v = f(d); return `<td class="r">${v == null ? '<span class="sub">não informado</span>' : esc(v)}</td>`; }).join('')}</tr>`; };
+  return `<div class="tbl"><table class="tight" id="ap-cmp"><tr><th></th>${ims.map((im, i) => `<th class="r">${AP_LETRAS[i]} · ${esc(im.descricao)} <small>${esc(bairro(im))}</small></th>`).join('')}</tr>
+    ${lin(compra ? 'Preço total' : 'Aluguel', d => d.preco ? reais(d.preco) : null, true)}${lin('Condomínio por mês', d => d.cond ? reais(d.cond) : null, true)}${lin('IPTU por mês', d => d.iptu ? reais(d.iptu) : null, true)}
+    ${compra ? '' : lin('Custo mensal total', d => d.mensal ? reais(d.mensal) + (d.completo ? '' : ' (parcial)') : null, true)}${lin('Localização', d => d.local, true)}${lin('Área', d => d.area ? d.area.toLocaleString('pt-BR') + ' m²' : null, true)}
+    ${lin('Dormitórios', d => d.quartos, true)}${lin('Vagas', d => d.vagas, true)}${lin('Disponibilidade', d => d.disp, true)}${lin('Características', d => d.carac.length ? d.carac.join(', ') : null, true)}</table></div>
+    <p class="sub">Dados do cadastro de cada imóvel em ${fmtData(REF)}. O que não está cadastrado aparece como "não informado": confirme antes de responder ao cliente.</p>`;
+}
+// Grava a apresentação (uma vez aprovada) e, no envio, o histórico do lead.
+async function apSalvar(enviar) {
+  const st = estado.ap, l = st && DB.leads[st.lead]; if (!l || !apPode(l)) return null;
+  if ($('ap-msg')) st.msg = $('ap-msg').value; if (!st.ids.length) { toast('Escolha ao menos um imóvel.'); return null; }
+  if (!st.aprovado) { toast('Marque que revisou a apresentação antes de enviar ou baixar.'); return null; }
+  const compra = apCompra(l), id = st.salvoId || ('AP-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5)), antes = DB.apresentacoes && DB.apresentacoes[id];
+  const ims = st.ids.map(x => DB.imoveis[x]).filter(Boolean), cands = apCandidatos(l, st.crit);
+  const doc = { leadId: l.id, corretorId: l.corretorId || null, negocio: compra ? 'compra' : 'locacao', criterios: st.crit, criadaEm: antes ? antes.criadaEm : new Date(AGORA()).toISOString(), aprovadaEm: REF, aprovadaPor: apAutor(),
+    imoveis: ims.map((im, i) => { const c = cands.find(x => x.im.id === im.id) || { pct: null, combina: [], difere: [] }; return { id: im.id, letra: AP_LETRAS[i], pct: c.pct, combina: c.combina, difere: c.difere, preco: apDados(im, compra).preco }; }),
+    fin: compra && st.fin.taxa !== '' ? { ...st.fin } : null, mensagem: String(st.msg || '').slice(0, 3000), status: antes ? antes.status : 'rascunho', respostas: antes ? antes.respostas || {} : {} };
+  if (enviar && (!antes || antes.status === 'rascunho')) { doc.status = 'enviada'; doc.enviadaEm = REF;
+    let x = histLead(l, 'apresentacao', ims.map((im, i) => `${AP_LETRAS[i]}) ${im.descricao}, ${bairro(im)} (${im.id})`).join(' · '));
+    for (const im of ims) { gravarEnvio(tokenDoEnvio(im.id, l.id), im.id, l.id, l.corretorId || null, estado.app || estado.perfil === 'corretor' ? 'corretor' : 'equipe'); if (!(l.hist || []).some(h => h.t === 'enviado' && h.im === im.id)) x = histLead(x, 'enviado', `${im.descricao}, ${bairro(im)} (apresentação)`, im.id); }
+    await store.salvar('leads', l.id, { ...x, contatoEm: REF }); registrar('Comercial', `Apresentação com ${ims.length} imóvel(is) enviada a ${l.nome}: ${ims.map(i => i.id).join(', ')}.`); }
+  await store.salvar('apresentacoes', id, doc); st.salvoId = id; return id;
+}
+async function apEnviar() { const id = await apSalvar(true); if (!id) return; toast('Apresentação registrada no histórico do lead.'); const l = DB.leads[estado.ap.lead]; estado.ap = null; setTimeout(() => abrirRespostasAp(id), 300); return l; }
+async function apArquivo(tipo) {
+  const id = await apSalvar(false); if (!id) return; const a = DB.apresentacoes[id], l = DB.leads[a.leadId]; toast('Montando a apresentação…'); let pags;
+  try { pags = await paginasApresentacao(a); } catch (e) { return toast('Não foi possível montar agora. Verifique a conexão e tente de novo.'); }
+  const base = `apresentacao-${String(l.nome).split(' ')[0].toLowerCase().normalize('NFD').replace(/[^a-z]/g, '') || 'cliente'}`;
+  if (tipo === 'pdf') { try { const J = await carregarJsPDF(), doc = new J({ unit: 'mm', format: [160, 200], compress: true }); doc.setProperties({ title: pdfTxt(`Seleção de imóveis · ${EMPRESA}`), author: pdfTxt(EMPRESA) });
+    pags.forEach((c, i) => { if (i) doc.addPage([160, 200]); doc.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', 0, 0, 160, 200, undefined, 'FAST'); }); return entregarBlob(base + '.pdf', doc.output('blob')); } catch (e) { return toast('Não foi possível montar o PDF agora.'); } }
+  const blobs = await Promise.all(pags.map(c => new Promise(ok => c.toBlob(ok, 'image/jpeg', 0.88)))), nomes = blobs.map((_, i) => `${base}-${i + 1}.jpg`);
+  try { const files = blobs.map((b, i) => new File([b], nomes[i], { type: 'image/jpeg' })); if (navigator.canShare && navigator.canShare({ files })) { await navigator.share({ files }); return toast('Imagens prontas. Depois, envie a mensagem.'); } } catch (e) { if (e && e.name === 'AbortError') return; }
+  entregarBlob(base + '.zip', zipArquivos(await Promise.all(blobs.map(async (b, i) => ({ nome: nomes[i], bytes: new Uint8Array(await b.arrayBuffer()) })))));
+}
+// Páginas 4:5 (1080 × 1350): boas no celular, viram álbum no WhatsApp e o mesmo PDF.
+async function paginasApresentacao(a) {
+  await fontesProntas(); const W = 1080, H = 1350, m = 72, lw = W - 2 * m, l = DB.leads[a.leadId], compra = a.negocio === 'compra', ct = contatoDoBrochure({}, a.corretorId), pags = [];
+  const ims = a.imoveis.map(x => ({ ...x, im: DB.imoveis[x.id] })).filter(x => x.im), total = ims.length + 2;
+  const fundo = (x, escuro) => { x.fillStyle = escuro ? BR.mata : BR.papel; x.fillRect(0, 0, W, H); };
+  const pe = (x, n, cor) => { linhaTxt(x, '', 18, cor || BR.suave); x.fillText(caberTxt(x, `${EMPRESA}${DB.config.creciJ ? ' · ' + DB.config.creciJ : ''} · valores de ${fmtData(a.aprovadaEm || REF)}`, lw - 80), m, H - 40); x.textAlign = 'right'; x.fillText(`${n}/${total}`, W - m, H - 40); x.textAlign = 'left'; };
+  const lista2 = (x, itens, y, cor, max) => { linhaTxt(x, '', 26, cor); for (const t of itens) { for (const [j, s] of quebrar(x, t, lw - 30).entries()) { if (y > max) return y; x.fillText((j ? '  ' : '• ') + s, m, y); y += 36; } } return y; };
+  // Capa
+  { const [c, x] = tela(W, H); fundo(x, true); marca(x, m, 110, BR.claro, true, BR.claro2, lw); x.fillStyle = BR.mata2; x.fillRect(m, 136, lw, 2);
+    linhaTxt(x, '', 24, BR.areia, 600); espacado(x, compra ? 'SELEÇÃO PARA COMPRA' : 'SELEÇÃO PARA LOCAÇÃO', m, 250, 5);
+    linhaTxt(x, '', 70, BR.claro, 400, 'Marcellus, Georgia, serif'); x.fillText(caberTxt(x, `Para ${String(l ? l.nome : 'você').split(' ')[0]}`, lw), m, 340);
+    linhaTxt(x, '', 28, BR.claro2); x.fillText(caberTxt(x, `${ims.length} imóve${ims.length === 1 ? 'l escolhido' : 'is escolhidos'} pelo que você pediu`, lw), m, 396);
+    let y = 480; ims.forEach(o => { const d = apDados(o.im, compra); x.fillStyle = BR.mata2; x.fillRect(m, y, lw, 150); linhaTxt(x, '', 64, BR.areia, 400, 'Marcellus, Georgia, serif'); x.fillText(o.letra, m + 30, y + 98);
+      linhaTxt(x, '', 32, BR.claro, 600); x.fillText(caberTxt(x, o.im.descricao, lw - 150), m + 120, y + 62); linhaTxt(x, '', 25, BR.claro2); x.fillText(caberTxt(x, `${d.local} · ${compra ? reais(d.preco) : reais(d.mensal || d.preco) + ' por mês'}`, lw - 150), m + 120, y + 108); y += 170; });
+    linhaTxt(x, '', 24, BR.claro2); x.fillText(caberTxt(x, `Preparada por ${ct.nome}`, lw), m, H - 110); pe(x, 1, BR.claro2); pags.push(c); }
+  // Uma página por imóvel
+  for (const [k, o] of ims.entries()) { const [c, x] = tela(W, H), d = apDados(o.im, compra); fundo(x, false); const f = fotosDe(o.im)[0]; let img = null; try { if (f) img = await carregarImg(urlFoto(f)); } catch (e) {}
+    let y = 0; if (img) { cobrir(x, img, 0, 0, W, 470); y = 470; } else { x.fillStyle = BR.mata; x.fillRect(0, 0, W, 200); marca(x, m, 120, BR.claro, false); y = 200; }
+    x.fillStyle = BR.ouro; x.fillRect(m, y - 50, 100, 100); linhaTxt(x, '', 64, BR.claro, 400, 'Marcellus, Georgia, serif'); x.textAlign = 'center'; x.fillText(o.letra, m + 50, y + 22); x.textAlign = 'left';
+    y += 100; linhaTxt(x, '', 44, BR.tinta, 400, 'Marcellus, Georgia, serif'); x.fillText(caberTxt(x, o.im.descricao, lw), m, y); linhaTxt(x, '', 26, BR.suave); y += 42; x.fillText(caberTxt(x, `${d.local} · cód. ${o.im.id}`, lw), m, y);
+    y += 62; linhaTxt(x, '', 20, BR.ouro, 600); espacado(x, compra ? 'PREÇO TOTAL' : d.completo ? 'CUSTO MENSAL TOTAL' : 'POR MÊS, SEM OS ITENS NÃO INFORMADOS', m, y, 3); linhaTxt(x, '', 52, BR.mata, 600); y += 58; x.fillText(reais(compra ? d.preco : d.mensal || d.preco), m, y);
+    linhaTxt(x, '', 23, BR.suave); y += 38; x.fillText(caberTxt(x, compra ? [d.cond ? 'condomínio ' + reais(d.cond) + '/mês' : '', d.iptu ? 'IPTU ' + reais(d.iptu) + '/mês' : ''].filter(Boolean).join(' · ') || 'Condomínio e IPTU: não informados' : `aluguel ${reais(d.preco)} + condomínio ${d.cond ? reais(d.cond) : 'não informado'} + IPTU ${d.iptu ? reais(d.iptu) : 'não informado'}`, lw), m, y);
+    y += 46; linhaTxt(x, '', 25, BR.tinta, 500); x.fillText(caberTxt(x, [d.area ? d.area + ' m²' : '', d.quartos != null ? d.quartos + ' dorm.' : '', d.vagas != null ? d.vagas + ' vaga(s)' : '', d.disp || ''].filter(Boolean).join(' · ') || 'Área e dormitórios: consulte o corretor', lw), m, y);
+    y += 56; linhaTxt(x, '', 22, BR.ouro, 600); espacado(x, 'POR QUE COMBINA COM VOCÊ', m, y, 3); y += 42; y = lista2(x, o.combina.length ? o.combina.map(s => s[0].toUpperCase() + s.slice(1)) : ['Escolhido pelo corretor para você conhecer'], y, BR.tinta, H - 260);
+    if (o.difere.length) { y += 10; linhaTxt(x, '', 22, BR.ouro, 600); espacado(x, 'O QUE É DIFERENTE DO SEU PEDIDO', m, y, 3); y += 42; y = lista2(x, o.difere.map(s => s[0].toUpperCase() + s.slice(1)), y, BR.tinta, H - 200); }
+    if (d.carac.length && y < H - 190) { y += 6; linhaTxt(x, '', 22, BR.suave); x.fillText(caberTxt(x, 'Destaques: ' + d.carac.join(', '), lw), m, y); }
+    linhaTxt(x, '', 22, BR.suave); x.fillText(caberTxt(x, `Para responder: ${o.letra}1 gostei · ${o.letra}2 não gostei · ${o.letra}3 saber mais · ${o.letra}4 visitar`, lw), m, H - 92); pe(x, k + 2); pags.push(c); }
+  // Comparação, simulação e contato
+  { const [c, x] = tela(W, H); fundo(x, false); marca(x, m, 100, BR.mata, true, BR.ouro, lw); x.fillStyle = BR.mata; x.fillRect(m, 126, lw, 2);
+    linhaTxt(x, '', 50, BR.tinta, 400, 'Marcellus, Georgia, serif'); x.fillText('Lado a lado', m, 220); const ds = ims.map(o => apDados(o.im, compra)), cw = (lw - 260) / Math.max(1, ims.length);
+    let y = 280; linhaTxt(x, '', 30, BR.ouro, 600); ims.forEach((o, i) => x.fillText(o.letra, m + 260 + i * cw, y));
+    const rows = [[compra ? 'Preço total' : 'Aluguel', d => d.preco ? reais(d.preco) : '—'], ...(compra ? [] : [['Custo mensal', d => d.mensal ? reais(d.mensal) + (d.completo ? '' : '*') : '—']]), ['Condomínio', d => d.cond ? reais(d.cond) : '—'], ['IPTU/mês', d => d.iptu ? reais(d.iptu) : '—'], ['Área', d => d.area ? d.area + ' m²' : '—'], ['Dormitórios', d => d.quartos ?? '—'], ['Vagas', d => d.vagas ?? '—']];
+    for (const [rot, f] of rows) { y += 16; x.fillStyle = BR.linha; x.fillRect(m, y, lw, 1); y += 42; linhaTxt(x, '', 22, BR.suave, 500); x.fillText(rot, m, y); linhaTxt(x, '', 23, BR.tinta); ds.forEach((d, i) => x.fillText(caberTxt(x, String(f(d)), cw - 14), m + 260 + i * cw, y)); }
+    y += 52; linhaTxt(x, '', 19, BR.suave); x.fillText(caberTxt(x, '"—" quer dizer não informado no cadastro: pergunte ao corretor.' + (compra ? '' : ' * Sem os itens não informados.'), lw), m, y);
+    if (compra && a.fin) { const fs = ims.map(o => apFin(apDados(o.im, true).preco, a.fin)); if (fs.some(Boolean)) { y += 56; linhaTxt(x, '', 22, BR.ouro, 600); espacado(x, 'SIMULAÇÃO (ESTIMATIVA)', m, y, 3);
+      y += 44; linhaTxt(x, '', 22, BR.suave, 500); x.fillText('Parcela Price', m, y); linhaTxt(x, '', 23, BR.tinta); fs.forEach((f, i) => x.fillText(f ? reais(f.price) : '—', m + 260 + i * cw, y));
+      y += 40; linhaTxt(x, '', 22, BR.suave, 500); x.fillText('Entrada', m, y); linhaTxt(x, '', 23, BR.tinta); fs.forEach((f, i) => x.fillText(f ? reais(f.entrada) : '—', m + 260 + i * cw, y));
+      y += 34; linhaTxt(x, '', 18, BR.suave); for (const s of quebrar(x, apFinTxt(fs.find(Boolean)), lw).slice(0, 4)) { x.fillText(s, m, y); y += 26; } } }
+    const cy = H - 72 - 300; x.fillStyle = BR.mata; x.fillRect(m, cy, lw, 260); linhaTxt(x, '', 22, BR.areia, 600); espacado(x, 'COMO RESPONDER', m + 40, cy + 54, 4);
+    linhaTxt(x, '', 26, BR.claro); quebrar(x, 'Mande a letra e o número: 1 gostei · 2 não gostei · 3 quero saber mais · 4 quero visitar. Exemplo: A4 B3.', lw - 80).slice(0, 2).forEach((s, i) => x.fillText(s, m + 40, cy + 100 + i * 36));
+    linhaTxt(x, '', 34, BR.claro, 400, 'Marcellus, Georgia, serif'); x.fillText(caberTxt(x, ct.nome, lw - 80), m + 40, cy + 200); linhaTxt(x, '', 21, BR.claro2); x.fillText(caberTxt(x, [ct.cargo, ct.fone ? 'WhatsApp ' + ct.fone : ''].filter(Boolean).join(' · '), lw - 80), m + 40, cy + 236);
+    pe(x, total); pags.push(c); }
+  return pags;
+}
+// ----- Respostas do cliente, próximo passo e preferências -----
+function apRespostas(a) { return a && a.respostas && typeof a.respostas === 'object' ? a.respostas : {}; }
+function abrirRespostasAp(id) {
+  const a = DB.apresentacoes && DB.apresentacoes[id], l = a && DB.leads[a.leadId]; if (!a || !l) return; if (!apPode(l)) return toast('Este cliente é atendido por outro corretor.');
+  const rs = apRespostas(a), st = AP_ST[a.status] || AP_ST.rascunho, compra = a.negocio === 'compra';
+  abrirDlg(`<h2>Apresentação · ${esc(l.nome)}</h2><p class="sub">${pill(st[0], st[1])} ${a.enviadaEm ? 'enviada em ' + fmtData(a.enviadaEm) : 'ainda não enviada'} · ${a.imoveis.length} imóvel(is) · aprovada por ${esc(a.aprovadaPor || '—')}</p>
+    <div class="f"><label for="ap-colar">Colar a resposta do cliente (opcional)</label><div class="ask"><input id="ap-colar" type="text" maxlength="300" placeholder="Ex.: A4 B2 ou 'gostei do A, quero visitar'"><button class="btn" type="button" data-act="ap-ler" data-id="${esc(id)}">Ler</button></div><small>O sistema só entende letra e número (A1 a C4). Confira antes de gravar.</small></div>
+    <div class="list" id="ap-resp">${a.imoveis.map(o => { const im = DB.imoveis[o.id], r = rs[o.id], prop = (estado.apProp || {})[o.id];
+      return `<div class="item"><h3><span class="ap-l">${o.letra}</span> ${im ? esc(im.descricao) + ', ' + esc(bairro(im)) : esc(o.id)} <small class="sub">(${esc(o.id)})</small></h3>
+        <p>${compra ? 'Venda por ' : 'Aluguel de '}${reais(o.preco)}${o.pct != null ? ` · ${o.pct}% de aderência` : ''}${r ? ` · resposta: <b>${esc(AP_FB[r.fb][1])}</b> em ${fmtData(r.em)}` : ''}${prop && prop !== (r || {}).fb ? ` · lido na resposta: ${pill('gold', AP_FB[prop][1])}` : ''}</p>
+        <div class="chips" role="group" aria-label="Resposta do cliente">${Object.entries(AP_FB).map(([k, f]) => `<button type="button" data-act="ap-fb" data-id="${esc(id)}" data-im="${esc(o.id)}" data-fb="${k}" aria-pressed="${!!r && r.fb === k}">${f[2]} · ${f[1]}</button>`).join('')}</div>
+        ${r && r.fb === 'visitar' && im ? `<div class="acts">${bt('ap-visita', 'Agendar a visita', { im: o.id, lead: l.id }, '')}</div>` : ''}</div>`; }).join('')}</div>
+    <h3>Próximo passo</h3><form id="frm-ap-prox" data-id="${esc(id)}" class="fgrid"><div class="f w"><label for="ap-prox">O que foi combinado</label><input id="ap-prox" type="text" maxlength="200" required value="${esc(a.proximo || '')}" placeholder="Ex.: visita ao A no sábado às 10h"></div>
+      <div class="f"><label for="ap-prazo">Até</label><input id="ap-prazo" type="date" value="${esc(a.prazo || somaDias(REF, 2))}"></div><div class="acts"><button class="btn" type="submit">Salvar o próximo passo</button></div></form>
+    ${a.respostas && Object.values(rs).some(r => r.fb === 'nao') ? axNota('O cliente não gostou de alguma opção. Pergunte o motivo e, se ele confirmar uma mudança (região, valor, dormitórios), atualize o lead em "Nova apresentação", nos critérios, com "Salvar no lead".', 'ia') : ''}
+    <div class="acts" style="margin-top:12px">${bt('fechar', 'Fechar')}${bt('ap-nova', 'Nova apresentação', { lead: l.id })}${bt('atendimento', 'Atendimento do cliente', { id: l.id })}</div>`, true);
+}
+async function apFeedback(id, imId, fb) {
+  const a = DB.apresentacoes && DB.apresentacoes[id], l = a && DB.leads[a.leadId], im = DB.imoveis[imId]; if (!a || !l || !AP_FB[fb] || !apPode(l) || !a.imoveis.some(o => o.id === imId)) return;
+  const rs = { ...apRespostas(a), [imId]: { fb, em: REF, por: apAutor() } };
+  await store.salvar('apresentacoes', id, { ...a, respostas: rs, status: 'respondida', respondidaEm: a.respondidaEm || REF });
+  await store.salvar('leads', l.id, { ...histLead(l, 'retorno', `${AP_FB[fb][1]}: ${im ? im.descricao + ', ' + bairro(im) : imId}`, imId), contatoEm: REF });
+  if (estado.apProp) delete estado.apProp[imId]; registrar('Comercial', `${l.nome} respondeu à apresentação: ${AP_FB[fb][1].toLowerCase()} (${imId}).`); abrirRespostasAp(id);
+}
+// Lê "A4 B2" na resposta colada. Só propõe: o corretor confirma tocando no botão.
+function apLerResposta(id, txt) {
+  const a = DB.apresentacoes && DB.apresentacoes[id]; if (!a) return; const prop = {}, k = Object.entries(AP_FB);
+  for (const mm of String(txt || '').toUpperCase().matchAll(/\b([ABC])\s*-?\s*([1-4])\b/g)) { const o = a.imoveis.find(x => x.letra === mm[1]); const f = k.find(([, v]) => v[2] === +mm[2]); if (o && f) prop[o.id] = f[0]; }
+  estado.apProp = prop; if (!Object.keys(prop).length) toast('Não achei letra e número (A1 a C4). Registre tocando nos botões.'); else toast('Confira o que foi lido e toque no botão para gravar.'); abrirRespostasAp(id);
+}
+// Funil das apresentações: do envio ao negócio. Não mede cliques.
+function funilApresentacoes(dias90 = 90, corretorId) {
+  const desde = somaDias(REF, -dias90), as = lista('apresentacoes').filter(a => a.enviadaEm && a.enviadaEm >= desde && (!corretorId || a.corretorId === corretorId));
+  const f = { enviadas: as.length, respondidas: 0, pediuVisita: 0, visitas: 0, propostas: 0, negocios: 0 };
+  for (const a of as) { const l = DB.leads[a.leadId], ids = a.imoveis.map(o => o.id), rs = Object.values(apRespostas(a)), h = (l && l.hist) || [], depois = t => h.some(x => x.t === t && ids.includes(x.im) && x.em >= a.enviadaEm);
+    if (rs.length) f.respondidas++; if (rs.some(r => r.fb === 'visitar')) f.pediuVisita++; if (depois('visita')) f.visitas++; if (depois('proposta')) f.propostas++;
+    if (l && (l.etapa === 'contrato' && ids.includes(l.imovelId) || ids.some(i => { const im = DB.imoveis[i]; return im && im.venda && im.venda.leadId === l.id; }))) f.negocios++; }
+  return f;
+}
+function funilApHTML(corretorId) {
+  const f = funilApresentacoes(90, corretorId), pc = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+  const et = [['Enviadas', f.enviadas, ''], ['Respondidas', f.respondidas, pc(f.respondidas, f.enviadas)], ['Pediram visita', f.pediuVisita, pc(f.pediuVisita, f.enviadas)], ['Visitas feitas', f.visitas, pc(f.visitas, f.enviadas)], ['Propostas', f.propostas, pc(f.propostas, f.enviadas)], ['Negócios', f.negocios, pc(f.negocios, f.enviadas)]];
+  return `<div class="ap-funil" id="ap-funil">${et.map(([t, n, p]) => `<div><span>${t}</span><b class="num">${n}</b><em>${p ? p + ' das enviadas' : 'últimos 90 dias'}</em></div>`).join('')}</div>`;
+}
+document.addEventListener('change', e => { const t = e.target; if (!t || !estado.ap) return;
+  const st = estado.ap; if ($('ap-msg')) st.msg = $('ap-msg').value;
+  if (t.classList && t.classList.contains('ap-troca') && t.value) { st.ids = st.ids.map(x => x === t.dataset.de ? t.value : x); st.aprovado = false; estado.apManter = true; return abrirApresentacao(st.lead); }
+  if (t.id === 'ap-add' && t.value) { st.ids = [...st.ids, t.value].slice(0, AP_MAX); st.aprovado = false; estado.apManter = true; return abrirApresentacao(st.lead); }
+  if (t.classList && t.classList.contains('ap-fin')) { st.fin[t.dataset.k] = t.value; st.aprovado = false; estado.apManter = true; return setTimeout(() => abrirApresentacao(st.lead), 0); }
+  if (t.id === 'ap-ok') { st.aprovado = t.checked; return; }
+});
+document.addEventListener('input', e => { const t = e.target; if (!t || t.id !== 'ap-msg' || !estado.ap) return; estado.ap.msg = t.value; estado.ap.msgEditada = true; estado.ap.aprovado = false; const ck = $('ap-ok'); if (ck) ck.checked = false;
+  const z = $('ap-zap'), l = DB.leads[estado.ap.lead]; if (z && l) z.href = zap(l.telefone, t.value) || z.href; });
+document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm-ap-prox') return; e.preventDefault(); e.stopImmediatePropagation();
+  const a = DB.apresentacoes[f.dataset.id], l = a && DB.leads[a.leadId]; if (!a || !l || !apPode(l)) return; const txt = $('ap-prox').value.trim().slice(0, 200), pz = /^\d{4}-\d{2}-\d{2}$/.test($('ap-prazo').value) ? $('ap-prazo').value : null; if (!txt) return;
+  store.salvar('apresentacoes', a.id, { ...a, proximo: txt, prazo: pz }); store.salvar('leads', l.id, { ...histLead(l, 'nota', 'Próximo passo da apresentação: ' + txt), ia: txt, prazo: pz || l.prazo }); toast('Próximo passo salvo no lead.'); });
+// Sem a revisão marcada, o botão do WhatsApp não abre a conversa.
+document.addEventListener('click', e => { const z = e.target.closest && e.target.closest('#ap-zap'); if (!z || !estado.ap) return; if ($('ap-msg')) estado.ap.msg = $('ap-msg').value;
+  if (!estado.ap.aprovado) { e.preventDefault(); e.stopImmediatePropagation(); toast('Marque que revisou a apresentação antes de enviar.'); } }, true);
 function abrirConfirmacao(id) {
   const im = DB.imoveis[id]; if (!im) return; const loc = paraLocacao(im) && !contratoAtivoDo(id), ven = aVenda(im) && im.vendaStatus !== 'vendido';
   abrirDlg(`<h2>Resposta do proprietário</h2><p class="sub">${esc(im.descricao)}, ${esc(im.local)} · ${im.id} · ${esc(nomeP(im.proprietarioId))}</p>
@@ -9331,12 +9567,13 @@ function axCorClientes(feed) {
   const fech = todos.filter(l => l.etapa === 'contrato').length, perd = todos.filter(l => l.etapa === 'perdido').length;
   return `<div class="ax-tit"><h1>Seus clientes</h1><p>${ab.length} em andamento · ${fech} com negócio fechado · ${perd} perdido${perd === 1 ? '' : 's'}</p></div>
     ${axPendencias({ pend: feed.pend.filter(x => x.act === 'lead-aceitar') })}
+    ${funilApresentacoes(90, id).enviadas ? `<section class="ax-sec"><h2>Suas apresentações · 90 dias</h2><div class="ax-card">${funilApHTML(id)}</div></section>` : ''}
     <section class="ax-sec">${ab.length ? ab.map(l => { const d = l.contatoEm ? dias(l.contatoEm, REF) : null, sg = sugestoes(l, 1, 50)[0], c = comissaoLead(l), modo = l.tipo === 'Compra' ? 'venda' : 'locacao', lig = DB.imoveis[l.imovelId];
       return `<div class="ax-card rx-cli"><div class="top"><div><h3>${esc(l.nome)}</h3><small>${esc(l.tipo || 'Locação')} · ${esc(l.quer || 'sem descrição')}</small></div>${pill(l.etapa === 'proposta' ? 'ok' : 'gold', ETAPAS[l.etapa] || l.etapa)}</div>
         <div class="facts"><div><span>Último contato</span>${d == null ? 'sem registro' : d === 0 ? 'hoje' : `há ${d} ${d === 1 ? 'dia' : 'dias'}`}</div><div><span>Vale para você</span>${c.tipo ? brl(c.valorC) + ' se fechar' : 'sem imóvel ligado'}</div>
           ${lig ? `<div><span>Imóvel de interesse</span>${axOnde(lig)} (${esc(lig.id)})</div>` : ''}${sg && (!lig || sg.im.id !== lig.id) ? `<div><span>Melhor opção em oferta</span>${axOnde(sg.im)} · ${sg.pct}%</div>` : ''}</div>
         ${l.ia ? `<p class="sub">Próximo passo: ${esc(l.ia)}${l.prazo ? ' Até ' + fmtData(l.prazo) + '.' : ''}</p>` : ''}
-        <div class="acts">${axBtn('atendimento', 'Atendimento', { id: l.id }, 'sm')}${axBtn('cor-cli', 'Imóveis para ele', { id: l.id }, 'sm ghost')}${axBtn('at-rapido', 'Liguei', { id: l.id }, 'sm ghost')}${linkZap(l.telefone, '')}</div></div>`; }).join('') : vazio('Nenhum cliente em andamento com você. Os leads chegam pelo rodízio da Elora ou pelo registro que você faz no imóvel.')}</section>`;
+        <div class="acts">${axBtn('atendimento', 'Atendimento', { id: l.id }, 'sm')}${axBtn('apres', 'Apresentação', { lead: l.id }, 'sm ghost')}${axBtn('cor-cli', 'Imóveis para ele', { id: l.id }, 'sm ghost')}${axBtn('at-rapido', 'Liguei', { id: l.id }, 'sm ghost')}${linkZap(l.telefone, '')}</div></div>`; }).join('') : vazio('Nenhum cliente em andamento com você. Os leads chegam pelo rodízio da Elora ou pelo registro que você faz no imóvel.')}</section>`;
 }
 function abrirImoveisCliente(leadId) {
   const l = DB.leads[leadId]; if (!l) return; const sg = sugestoes(l, 8, 40), modo = l.tipo === 'Compra' ? 'venda' : 'locacao';
@@ -10806,6 +11043,15 @@ Object.assign(ACOES, {
   'inv-del': d => { if (!ehGestor || !(DB.inovacoes || {})[d.id]) return; if (estado.confirmar !== 'iv' + d.id) { estado.confirmar = 'iv' + d.id; return render(); } estado.confirmar = null; store.apagar('inovacoes', d.id); toast('Achado apagado.'); },
   'rel-mercado': d => { if (!estado.rm || estado.rm.id !== d.id) estado.rm = null; else if (d.lead) estado.rm.lead = d.lead; abrirRelMercado(d.id, d.lead || '', d.persp || ''); },
   'rm-pdf': () => rmGerar(false), 'rm-enviar': () => rmGerar(true), 'rm-ia': () => rmComentarioIA(),
+  apres: d => { const l = DB.leads[d.lead]; if (!l) return; if (!apPode(l)) return toast('Este cliente é atendido por outro corretor.'); if (!estado.ap || estado.ap.lead !== d.lead || estado.ap.salvoId) estado.ap = apNova(l); abrirApresentacao(d.lead); },
+  'ap-abrir': d => abrirApresentacao(d.lead, d.id), 'ap-nova': d => { estado.ap = null; abrirApresentacao(d.lead); },
+  'ap-tirar': d => { const st = estado.ap; if (!st) return; if ($('ap-msg')) st.msg = $('ap-msg').value; st.ids = st.ids.filter(x => x !== d.im); st.aprovado = false; estado.apManter = true; abrirApresentacao(st.lead); },
+  'ap-crit-ok': () => { const st = estado.ap, l = st && DB.leads[st.lead]; if (!l) return; const c = {}; for (const el of document.querySelectorAll('.ap-crit-in')) { const k = el.dataset.k, v = el.type === 'number' ? (el.value === '' ? '' : +el.value) : el.value.trim(); if (String(v) !== String(l[k] ?? '')) c[k] = v; } st.crit = c; st.aprovado = false; if (!st.msgEditada) st.msg = ''; estado.apManter = true; abrirApresentacao(st.lead); },
+  'ap-crit-lead': () => { const st = estado.ap, l = st && DB.leads[st.lead]; if (!l || !Object.keys(st.crit).length || !apPode(l)) return; const mud = Object.entries(st.crit).map(([k, v]) => `${{ regiao: 'região', valorMax: 'valor máximo', quartosMin: 'dormitórios' }[k] || k}: ${v === '' ? 'apagado' : v}`).join('; ');
+    store.salvar('leads', l.id, { ...histLead(l, 'nota', 'Preferências atualizadas, confirmadas com o cliente: ' + mud), ...st.crit }); st.crit = {}; toast('Preferências gravadas no lead.'); estado.apManter = true; setTimeout(() => abrirApresentacao(st.lead), 150); },
+  'ap-msg-refazer': () => { const st = estado.ap; if (!st) return; st.msgEditada = false; st.aprovado = false; estado.apManter = true; abrirApresentacao(st.lead); },
+  'ap-pdf': () => apArquivo('pdf'), 'ap-img': () => apArquivo('img'), 'ap-enviar': () => apEnviar(),
+  'ap-fb': d => apFeedback(d.id, d.im, d.fb), 'ap-ler': d => apLerResposta(d.id, ($('ap-colar') || {}).value), 'ap-visita': d => { fecharDlg(); abrirVisita(d.im, d.lead); },
   'gz-cmd': d => comandoGuerra(d), 'gz-nota': () => { if (ehGestor) abrirNotaElora(); },
 });
 document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm-qualif' && f.id !== 'frm-colar') return; e.preventDefault(); e.stopImmediatePropagation(); if (f.id === 'frm-qualif') salvarQualif(f); else lerConversa(f); });

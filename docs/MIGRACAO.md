@@ -127,3 +127,8 @@ esforço, "Levar ao Projeto Boa Ideia", plano com IA usando só os achados regis
 
 Ver `docs/funcionalidades/relatorio-de-mercado.md`. Só dados da Elora (contratos, vendas e ofertas); cálculo em função
 pura `relatorioMercado` no protótipo, a migrar para o domínio de imóveis.
+
+## Apresentação consultiva (protótipo v55)
+
+Ver `docs/funcionalidades/apresentacao-consultiva.md`. Coleção nova `apresentacoes`; tipos novos no histórico do lead:
+`apresentacao` e `retorno`. Fase 2 (página pública com respostas) fica para a plataforma.
