@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 52). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 53). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -816,6 +816,13 @@ body.modo-app .fgrid{grid-template-columns:minmax(0,1fr)}
 .zp>p{margin:0;border-radius:0 0 10px 10px;padding:6px 10px 8px;font-size:12.5px;color:#027EB5;word-break:break-all}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .zp{--zp:#005C4B;--zp-c:#0B3B32;--zp-t:#E9EDEF;--zp-s:#AEBAC1;background:#0B141A}:root:not([data-theme=light]) .zp>p{color:#53BDEB}}
 :root[data-theme=dark] .zp{--zp:#005C4B;--zp-c:#0B3B32;--zp-t:#E9EDEF;--zp-s:#AEBAC1;background:#0B141A}:root[data-theme=dark] .zp>p{color:#53BDEB}
+.inv-mat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.inv-q{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface);min-width:0}
+.inv-q h3{margin:0 0 2px;font-size:14px} .inv-q ul{margin:8px 0 0;padding-left:18px;font-size:13px} .inv-q li{margin:3px 0} .inv-q a{color:inherit}
+.inv-q-fazer{border-left:3px solid var(--ok,#2f7d4f)} .inv-q-apostar{border-left:3px solid var(--gold)}
+.inv-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center} .inv-ideia{background:var(--sunken);border-radius:8px;padding:8px 10px}
+.inv-item{scroll-margin-top:80px}
+@media (max-width:640px){.inv-mat{grid-template-columns:1fr}}
 </style>
 
 <div class="app" id="shell">
@@ -856,7 +863,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 /*ENGINE-START*/
 const pad = n => String(n).padStart(2, '0');
 const hojeISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos'];
+const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes'];
 const CONFIG_PADRAO = { custoDiretoPct: 25, participacaoPct: 40, gestaoPct: 5, margemMinPct: 55, vendaDeducaoPct: 0, vendaCaptPct: 40, vendaTetoPct: 50, divisaoCaptPct: 60, indicacaoMaxPct: 25, creciJ: '', responsavel: '', vendaPct: 6, vendaCorretorPct: 40, locCorretorPct: 20, pctLeadElora: 40, pctLeadProprio: 45, diaPagamento: 10, repasseDias: 5, soSeguroFianca: false,
   aceiteMin: 15, rodizioAuto: false, rodizioPausado: false, whatsapp: '', site: '',
   rodizioHorario: false, rodizioDias: [1, 2, 3, 4, 5], rodizioIni: '08:00', rodizioFim: '18:00', cubValor: 0, cubMes: '', funil: [], pixTipo: '', pixChave: '', pixNome: '', pixCidade: '', cartaoLink: '' };
@@ -896,7 +903,7 @@ const fmtData = s => /^\d{4}-\d{2}-\d{2}/.test(s || '') ? s.slice(8, 10) + '/' +
 const brl = cent => (cent / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const pct = n => (+n).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%';
 
-const CHAVE_MIN = { corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status' };
+const CHAVE_MIN = { corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo' };
 const lista = col => Object.values(DB[col] || {}).filter(x => x && typeof x[CHAVE_MIN[col]] === 'string' && (col !== 'contratos' || (typeof x.fim === 'string' && x.aluguel > 0)))
   .sort((a, b) => a.id < b.id ? -1 : 1);
 const bairro = im => (im.local || '').split(',')[0];
@@ -4222,13 +4229,13 @@ setInterval(() => { const box = $('gz-radar'); if (!box || estado.gzPausa || box
 function viewGuerra() {
   if (!ehGestor) return cab('Sala de guerra', 'Acesso restrito aos gestores.') + vazio('Esta tela é só dos gestores da Elora.');
   const r = guerraResumo(), g = gzCfg(), tab = estado.gzTab || 'geral', atras = r.atras.length;
-  const corpo = { geral: gzGeral, cc: gzConcorrentes, dores: gzDores, bench: gzBench, radar: gzNovidades, cmd: gzComandos }[tab] || gzGeral;
+  const corpo = { geral: gzGeral, cc: gzConcorrentes, dores: gzDores, bench: gzBench, radar: gzNovidades, inov: gzInovacao, cmd: gzComandos }[tab] || gzGeral;
   return cab('Sala de guerra', 'O que os concorrentes fazem, onde os clientes deles sofrem e onde a Elora ganha ou perde. Acesso restrito aos gestores.', bt('gz-cc-novo', 'Novo concorrente', {}, '')) + radarGz() + `
   <div class="kpis"><div><span>Concorrentes monitorados</span><b class="num">${r.ccs.length}</b><em>${r.velhos.length ? r.velhos.length + ' ficha(s) sem atualização há 30 dias' : r.ccs.length ? 'fichas em dia' : 'cadastre os principais'}</em></div>
     <div><span>Nota no Google</span><b class="num">${nota1(r.eloraNota)} <small>Elora</small></b><em>média dos concorrentes ${nota1(r.mediaNota)} · ${bt('gz-nota', 'Atualizar a nossa')}</em></div>
     <div><span>Dores registradas</span><b class="num">${r.dores.length}</b><em>${r.porCat[0] ? 'mais citada: ' + esc(r.porCat[0].nome.toLowerCase()) : 'nos últimos 12 meses'}</em></div>
     <div><span>Onde estamos atrás</span><b class="num${atras ? ' neg' : ''}">${atras}</b><em>${atras ? 'item(ns) que concorrentes têm e a Elora não' : 'no comparativo marcado'}</em></div></div>
-  ${abas('gz-tab', tab, [['geral', 'Visão geral'], ['cc', `Concorrentes · ${r.ccs.length}`], ['dores', `Dores dos clientes · ${r.dores.length}`], ['bench', 'Comparativo'], ['radar', `Novidades · ${r.novidades.length}`], ['cmd', 'Comandos da Elora AI']])}
+  ${abas('gz-tab', tab, [['geral', 'Visão geral'], ['cc', `Concorrentes · ${r.ccs.length}`], ['dores', `Dores dos clientes · ${r.dores.length}`], ['bench', 'Comparativo'], ['radar', `Novidades · ${r.novidades.length}`], ['inov', `Agente especial · ${lista('inovacoes').filter(x => x && x.titulo && x.status === 'nova').length} nova(s)`], ['cmd', 'Comandos da Elora AI']])}
   ${corpo(r, g)}`;
 }
 function mapaDores(r, comAcoes = true) {
@@ -4332,6 +4339,113 @@ function gzComandos(r, g) {
       <li>Cliente oculto pergunta e observa como um cliente comum: sem documento falso e sem gravar a conversa.</li></ul>
       <p class="sub">Orientação geral: o jurídico deve revisar antes das campanhas.</p></section></div>`;
 }
+// ---------- Sala de guerra: Agente especial (radar de inovação e benchmark) ----------
+// Cada achado é um registro da coleção "inovacoes". A varredura da web é feita pela tarefa agendada "Radar de inovação Elora";
+// a página só lê, filtra, prioriza e deixa o gestor decidir. A Elora AI daqui não pesquisa a internet.
+const INV_TIPO = { benchmark: 'Benchmark', inovacao: 'Inovação', tendencia: 'Tendência', regulacao: 'Lei e regulação', tecnologia: 'Tecnologia e IA', modelo: 'Modelo de negócio' };
+const INV_AREA = { captacao: 'Captação', locacao: 'Locação e administração', venda: 'Venda', corretores: 'Corretores e rede', cliente: 'Experiência do cliente', marketing: 'Marketing', tecnologia: 'Tecnologia', financeiro: 'Financeiro', expansao: 'Expansão' };
+const INV_ST = { nova: ['gold', 'Nova'], analise: ['', 'Em análise'], aprovada: ['ok', 'Aprovada'], testando: ['ok', 'Testando'], feita: ['ok', 'Implantada'], descartada: ['', 'Descartada'] };
+const INV_POR = { agente: 'Agente especial (varredura na web)', gestor: 'Registrado por um gestor', ia: 'Ideia da Elora AI (sem fonte externa)' };
+const INV_Q = { fazer: ['ok', 'Fazer já', 'Impacto alto, esforço baixo'], apostar: ['gold', 'Grande aposta', 'Impacto alto, esforço alto: planejar'], rapida: ['', 'Ganho rápido', 'Impacto menor, esforço baixo'], depois: ['', 'Depois', 'Impacto menor, esforço alto'] };
+const invNota = v => Math.min(5, Math.max(1, Math.round(+v) || 3));
+const invQuad = x => { const i = invNota(x.impacto), e = invNota(x.esforco); return i >= 4 ? (e <= 2 ? 'fazer' : 'apostar') : (e <= 2 ? 'rapida' : 'depois'); };
+const invAberta = x => !['descartada', 'feita'].includes(x.status);
+const invLista = () => lista('inovacoes').filter(x => x && x.titulo).sort((a, b) => String(b.em || '').localeCompare(String(a.em || '')) || invNota(b.impacto) - invNota(a.impacto));
+function invFiltradas() {
+  const f = estado.invF || {}, st = f.st || 'abertas';
+  return invLista().filter(x => (st === 'abertas' ? invAberta(x) : st === 'todas' ? true : x.status === st) && (!f.tipo || x.tipo === f.tipo) && (!f.area || x.area === f.area));
+}
+function invCard(x) {
+  const st = INV_ST[x.status] || INV_ST.nova, q = INV_Q[invQuad(x)], id = esc(x.id);
+  return `<div class="item inv-item" id="inv-${id}"><h3>${esc(x.titulo)}</h3>
+    <p class="inv-tags">${pill(st[0], st[1])}${pill(q[0], q[1])}<span class="sub">${esc(INV_TIPO[x.tipo] || 'Inovação')} · ${esc(INV_AREA[x.area] || 'Geral')}${x.quem ? ' · ' + esc(x.quem) : ''}</span></p>
+    ${x.resumo ? `<p>${esc(x.resumo)}</p>` : ''}
+    ${x.ideiaElora ? `<p class="inv-ideia"><b>Para a Elora:</b> ${esc(x.ideiaElora)}</p>` : ''}
+    <p class="sub">Impacto ${invNota(x.impacto)}/5 · esforço ${invNota(x.esforco)}/5 · ${esc(INV_POR[x.por] || INV_POR.gestor)} · ${fmtData(x.em)}${urlOk(x.fonte) ? ` · <a href="${esc(x.fonte)}" target="_blank" rel="noopener">fonte</a>` : x.por === 'ia' ? '' : ' · <span class="neg">sem fonte</span>'}</p>
+    ${x.decisao ? `<p class="sub"><b>Decisão:</b> ${esc(x.decisao)}</p>` : ''}
+    <div class="acts"><label class="sr" for="inv-st-${id}">Situação</label><select class="inv-st" id="inv-st-${id}" data-id="${id}">${Object.entries(INV_ST).map(([k, s]) => `<option value="${k}"${k === (x.status || 'nova') ? ' selected' : ''}>${s[1]}</option>`).join('')}</select>
+      ${bt('inv-dec', 'Anotar decisão', { id: x.id })}${bt('inv-ideia', 'Levar ao Projeto Boa Ideia', { id: x.id })}${bt('inv-del', estado.confirmar === 'iv' + x.id ? 'Confirmar: apagar' : 'Apagar', { id: x.id }, 'danger')}</div></div>`;
+}
+function gzInovacao() {
+  const todas = invLista(), abertas = todas.filter(invAberta), d = gzCfg().inovacaoDia, f = estado.invF || {}, xs = invFiltradas();
+  const cont = k => abertas.filter(x => invQuad(x) === k);
+  const sel = (id, k, obj, rot) => `<div class="f"><label for="${id}">${rot}</label><select id="${id}" class="inv-f" data-k="${k}"><option value="">Todos</option>${Object.entries(obj).map(([v, t]) => `<option value="${v}"${f[k] === v ? ' selected' : ''}>${t}</option>`).join('')}</select></div>`;
+  return `<section class="panel ia-c" id="inv-agente"><div class="ia-c-h"><span class="ia-ic">${icc('ia', 22)}</span><div><h2>Agente especial da Elora</h2>
+      <p>${d && d.em ? `Última varredura na web em ${fmtData(d.em)}${d.hora ? ' às ' + esc(d.hora) : ''} · ${(d.fontes || []).length} fonte(s) · ${+d.novos || 0} achado(s) novo(s)` : 'Ainda sem varredura registrada.'}</p></div></div>
+    ${d && d.texto ? `<div class="memo pre">${esc(d.texto)}</div>` : ''}
+    ${d && (d.fontes || []).filter(urlOk).length ? `<details><summary>Fontes da última varredura</summary><ul class="regras">${d.fontes.filter(urlOk).slice(0, 30).map(u => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https:\/\//, '').slice(0, 80))}</a></li>`).join('')}</ul></details>` : ''}
+    <p class="sub">O agente pesquisa a web duas vezes por semana (tarefa agendada): proptechs, grandes redes e franquias, imobiliárias que crescem, tecnologia e IA, leis e regras que mudam o jogo. Só entra aqui o que tem fonte; o que é ideia da Elora AI vem marcado. Nada é implantado sozinho: quem decide é o gestor.</p>
+    <div class="acts" style="justify-content:flex-start">${bt('inv-ia', estado.gzOc === 'inv' ? 'A Elora AI está pensando…' : 'Transformar em plano com a Elora AI', {}, 'elora')}${bt('inv-novo', 'Registrar achado')}</div></section>
+  <div class="kpis"><div><span>Achados em aberto</span><b class="num">${abertas.length}</b><em>${todas.filter(x => x.status === 'nova').length} nova(s) para ler</em></div>
+    <div><span>Fazer já</span><b class="num">${cont('fazer').length}</b><em>impacto alto, esforço baixo</em></div>
+    <div><span>Grandes apostas</span><b class="num">${cont('apostar').length}</b><em>impacto alto, exigem plano</em></div>
+    <div><span>Testando ou implantadas</span><b class="num">${todas.filter(x => ['testando', 'feita'].includes(x.status)).length}</b><em>ideias que viraram ação</em></div></div>
+  <section class="panel"><h2>Matriz impacto × esforço</h2><div class="inv-mat" id="inv-mat">${Object.entries(INV_Q).map(([k, q]) => { const ys = cont(k);
+    return `<div class="inv-q inv-q-${k}"><h3>${q[1]} · ${ys.length}</h3><p class="sub">${q[2]}</p>${ys.length ? `<ul>${ys.slice(0, 5).map(y => `<li><a href="#inv-${esc(y.id)}">${esc(y.titulo)}</a></li>`).join('')}</ul>${ys.length > 5 ? `<p class="sub">e mais ${ys.length - 5}</p>` : ''}` : '<p class="sub">Nada aqui.</p>'}</div>`; }).join('')}</div></section>
+  <section class="panel"><h2>Achados · ${xs.length}</h2>
+    <div class="chips" role="group" aria-label="Situação">${[['abertas', 'Em aberto'], ['nova', 'Novas'], ['aprovada', 'Aprovadas'], ['testando', 'Testando'], ['feita', 'Implantadas'], ['descartada', 'Descartadas'], ['todas', 'Todas']].map(([k, t]) => `<button type="button" data-act="inv-st-f" data-v="${k}" aria-pressed="${(f.st || 'abertas') === k}">${t}</button>`).join('')}</div>
+    <div class="fgrid">${sel('inv-f-tipo', 'tipo', INV_TIPO, 'Tipo')}${sel('inv-f-area', 'area', INV_AREA, 'Área da Elora')}</div>
+    ${xs.length ? `<div class="list" id="inv-lista">${xs.slice(0, 80).map(invCard).join('')}</div>` : vazio(todas.length ? 'Nenhum achado com esses filtros.' : 'Nenhum achado ainda. A próxima varredura do agente preenche esta lista; você também pode registrar um achado.')}</section>
+  ${(gzCfg().inovacaoPlanos || [])[0] ? `<section class="panel ia-c"><div class="ia-c-h"><span class="ia-ic">${icc('ia', 22)}</span><div><h2>Plano da Elora AI</h2><p>${fmtData(gzCfg().inovacaoPlanos[0].em)} · feito só com os achados desta aba</p></div></div><div class="memo pre" id="inv-plano">${esc(gzCfg().inovacaoPlanos[0].texto)}</div></section>` : ''}`;
+}
+function abrirInovacao() {
+  if (!ehGestor) return;
+  const op = (obj, v) => Object.entries(obj).map(([k, t]) => `<option value="${k}"${k === v ? ' selected' : ''}>${t}</option>`).join('');
+  const n5 = id => `<select id="${id}">${[1, 2, 3, 4, 5].map(n => `<option${n === 3 ? ' selected' : ''}>${n}</option>`).join('')}</select>`;
+  abrirDlg(`<h2>Registrar achado</h2><p class="sub">Uma inovação, um benchmark ou uma mudança de regra que pode ajudar ou ameaçar a Elora. Com fonte sempre que houver.</p>
+    <form id="frm-gz-inv"><div class="f"><label for="iv-tit">Título *</label><input id="iv-tit" type="text" maxlength="140" required placeholder="Ex.: rede X lançou vistoria por vídeo com laudo em 24 horas"></div>
+      <div class="fgrid"><div class="f"><label for="iv-tipo">Tipo</label><select id="iv-tipo">${op(INV_TIPO, 'benchmark')}</select></div>
+        <div class="f"><label for="iv-area">Área da Elora</label><select id="iv-area">${op(INV_AREA, 'locacao')}</select></div>
+        <div class="f"><label for="iv-quem">Quem faz (empresa, órgão)</label><input id="iv-quem" type="text" maxlength="80"></div>
+        <div class="f"><label for="iv-imp">Impacto para a Elora (1 a 5)</label>${n5('iv-imp')}</div>
+        <div class="f"><label for="iv-esf">Esforço para fazer (1 a 5)</label>${n5('iv-esf')}</div></div>
+      <div class="f"><label for="iv-res">O que é *</label><textarea id="iv-res" rows="3" maxlength="800" required></textarea></div>
+      <div class="f"><label for="iv-ide">Como a Elora pode usar</label><textarea id="iv-ide" rows="3" maxlength="800"></textarea></div>
+      <div class="f"><label for="iv-fonte">Fonte (link)</label><input id="iv-fonte" type="url" maxlength="400" placeholder="https://"></div>
+      <div class="acts" style="margin-top:14px">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Registrar</button></div></form>`);
+}
+function salvarInovacao() {
+  const tit = $('iv-tit').value.trim(), res = $('iv-res').value.trim(); if (!tit || !res) return toast('Preencha o título e o que é.');
+  const fonte = $('iv-fonte').value.trim(); if (fonte && !urlOk(fonte)) return toast('A fonte precisa ser um link https://.');
+  const id = gzId('IV');
+  store.salvar('inovacoes', id, { id, titulo: tit.slice(0, 140), tipo: INV_TIPO[$('iv-tipo').value] ? $('iv-tipo').value : 'inovacao', area: INV_AREA[$('iv-area').value] ? $('iv-area').value : 'tecnologia', quem: $('iv-quem').value.trim().slice(0, 80),
+    resumo: res.slice(0, 800), ideiaElora: $('iv-ide').value.trim().slice(0, 800), fonte: fonte.slice(0, 400), impacto: invNota($('iv-imp').value), esforco: invNota($('iv-esf').value), status: 'nova', por: 'gestor', em: REF });
+  registrar('Gestão', `Achado registrado no radar de inovação: ${tit.slice(0, 80)}.`); fecharDlg(); toast('Achado registrado.');
+}
+function anotarDecisaoInv(id) {
+  const x = DB.inovacoes && DB.inovacoes[id]; if (!x || !ehGestor) return;
+  abrirDlg(`<h2>Decisão sobre o achado</h2><p class="sub">${esc(x.titulo)}</p><form id="frm-gz-invdec" data-id="${esc(id)}"><div class="f"><label for="iv-dec">O que foi decidido, por quem e até quando</label><textarea id="iv-dec" rows="4" maxlength="600">${esc(x.decisao || '')}</textarea></div>
+    <div class="acts" style="margin-top:14px">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Salvar</button></div></form>`);
+}
+function invParaIdeia(id) {
+  const x = DB.inovacoes && DB.inovacoes[id]; if (!x || !ehGestor) return;
+  const iid = 'I-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const area = { captacao: 'Imóveis', locacao: 'Locação', venda: 'Comercial', corretores: 'Corretores', cliente: 'Pós-venda', marketing: 'Comercial', tecnologia: 'Tecnologia', financeiro: 'Financeiro', expansao: 'Outra' }[x.area] || 'Outra';
+  store.salvar('ideias', iid, { titulo: x.titulo.slice(0, 120), descricao: [x.resumo, x.ideiaElora ? 'Para a Elora: ' + x.ideiaElora : '', urlOk(x.fonte) ? 'Fonte: ' + x.fonte : ''].filter(Boolean).join(' ').slice(0, 2000), area, autor: 'Sala de guerra (radar de inovação)', em: REF });
+  store.salvar('inovacoes', id, { ...x, status: x.status === 'nova' ? 'analise' : x.status, decisao: x.decisao || `Levado ao Projeto Boa Ideia em ${fmtData(REF)}.` });
+  registrar('Gestão', `Achado do radar de inovação levado ao Projeto Boa Ideia: ${x.titulo.slice(0, 80)}.`); toast('Levado ao Projeto Boa Ideia.');
+}
+async function planoInovacaoIA() {
+  if (!ehGestor) return; if (!amostra) return semIA(); if (estado.gzOc) return;
+  const xs = invLista().filter(invAberta).slice(0, 40); if (!xs.length) return toast('Ainda não há achados em aberto para a Elora AI ler.');
+  estado.gzOc = 'inv'; render();
+  try {
+    const dados = { elora: dadosGuerraIA().elora, achados: xs.map(x => ({ titulo: x.titulo, tipo: INV_TIPO[x.tipo], area: INV_AREA[x.area], quem: x.quem || null, resumo: String(x.resumo || '').slice(0, 400), ideia: String(x.ideiaElora || '').slice(0, 300), impacto: invNota(x.impacto), esforco: invNota(x.esforco), situacao: (INV_ST[x.status] || INV_ST.nova)[1], tem_fonte: urlOk(x.fonte) })) };
+    const { text } = await amostra(`Você é a Elora AI, estrategista da ${EMPRESA}, imobiliária de locação e venda no Vale do Paraíba (SP) que quer ser a número 1 da região. Os gestores pediram um plano a partir do radar de inovação.
+${REGRAS_IA}${GZ_REGRAS}
+Pedido: leia os achados e escreva: 1) as 3 apostas que mais aproximam a Elora da liderança, com primeiro passo, responsável sugerido (cargo), prazo e indicador; 2) 3 ganhos rápidos para os próximos 30 dias; 3) o que ignorar agora e por quê; 4) riscos ou mudanças de regra que exigem atenção. Use só os achados e os dados da Elora; não invente números, empresas nem fatos. Achado sem fonte é hipótese: diga isso.
+Formato: texto simples, itens começando com "- ", no máximo 35 linhas.
+Dados: ${JSON.stringify(dados)}`, { cache: false, modelTier: 'complex', onText: ({ text }) => { const o = $('inv-plano'); if (o) o.textContent = text; } });
+    const t = String(text || '').trim().slice(0, 6000); if (!t) throw { code: 'vazio' };
+    await salvarGz({ inovacaoPlanos: [{ em: REF, texto: t }, ...(gzCfg().inovacaoPlanos || [])].slice(0, 6) }); registrar('Gestão', 'Elora AI escreveu um plano a partir do radar de inovação.'); toast('Plano pronto, no fim da aba.');
+  } catch (e) { toast(ERROS_IA[e && e.code] || 'A Elora AI não conseguiu responder agora. Tente de novo.'); }
+  finally { estado.gzOc = null; render(); }
+}
+document.addEventListener('change', e => { const t = e.target; if (!t.classList) return;
+  if (t.classList.contains('inv-f')) { estado.invF = { ...(estado.invF || {}), [t.dataset.k]: t.value }; return render(); }
+  if (t.classList.contains('inv-st') && ehGestor) { const x = DB.inovacoes && DB.inovacoes[t.dataset.id]; if (!x || !INV_ST[t.value]) return;
+    store.salvar('inovacoes', x.id, { ...x, status: t.value }); registrar('Gestão', `Radar de inovação: "${x.titulo.slice(0, 60)}" agora está ${INV_ST[t.value][1].toLowerCase()}.`); toast('Situação atualizada.'); }
+});
 function abrirConcorrente(id) {
   const c = id ? DB.concorrentes[id] : {}; if (id && !c) return; const n = c && ultimaNota(c);
   abrirDlg(`<h2>${id ? 'Ficha de ' + esc(c.nome) : 'Novo concorrente'}</h2><p class="sub">O que a equipe sabe do concorrente, com base no que é público e no que os clientes contam.</p>
@@ -10469,6 +10583,9 @@ Object.assign(ACOES, {
   'gz-bench': d => { if (!ehGestor) return; const ciclo = ['', 'sim', 'parcial', 'nao'];
     if (!d.cc) { const man = { ...(gzCfg().eloraBench || {}) }, atual = BENCH_V[man[d.k]] ? man[d.k] : ''; const prox = atual === '' ? 'sim' : ciclo[(ciclo.indexOf(atual) + 1) % 4]; if (prox) man[d.k] = prox; else delete man[d.k]; salvarGz({ eloraBench: man }); return; }
     const cc = DB.concorrentes[d.cc]; if (!cc) return; const b = { ...(cc.bench || {}) }, prox = ciclo[(ciclo.indexOf(b[d.k] || '') + 1) % 4]; if (prox) b[d.k] = prox; else delete b[d.k]; store.salvar('concorrentes', cc.id, { ...cc, bench: b, atualizadoEm: REF }); },
+  'inv-novo': () => abrirInovacao(), 'inv-ia': () => planoInovacaoIA(), 'inv-dec': d => anotarDecisaoInv(d.id), 'inv-ideia': d => invParaIdeia(d.id),
+  'inv-st-f': d => { estado.invF = { ...(estado.invF || {}), st: d.v }; render(); },
+  'inv-del': d => { if (!ehGestor || !(DB.inovacoes || {})[d.id]) return; if (estado.confirmar !== 'iv' + d.id) { estado.confirmar = 'iv' + d.id; return render(); } estado.confirmar = null; store.apagar('inovacoes', d.id); toast('Achado apagado.'); },
   'gz-cmd': d => comandoGuerra(d), 'gz-nota': () => { if (ehGestor) abrirNotaElora(); },
 });
 document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm-qualif' && f.id !== 'frm-colar') return; e.preventDefault(); e.stopImmediatePropagation(); if (f.id === 'frm-qualif') salvarQualif(f); else lerConversa(f); });
@@ -10476,6 +10593,8 @@ document.addEventListener('submit', e => { const f = e.target; if (!/^frm-gz-/.t
   if (f.id === 'frm-gz-cc') salvarConcorrente(f);
   else if (f.id === 'frm-gz-dor') salvarDores(f);
   else if (f.id === 'frm-gz-nov') salvarNovidade();
+  else if (f.id === 'frm-gz-inv') salvarInovacao();
+  else if (f.id === 'frm-gz-invdec') { const x = (DB.inovacoes || {})[f.dataset.id]; if (x) { store.salvar('inovacoes', x.id, { ...x, decisao: $('iv-dec').value.trim().slice(0, 600) }); toast('Decisão anotada.'); } fecharDlg(); }
   else if (f.id === 'frm-gz-nota') { const n = parseFloat($('gz-en').value), na = parseInt($('gz-ena').value, 10); if (!(n >= 1 && n <= 5)) return toast('A nota vai de 1 a 5.'); const g = gzCfg(), o = { em: REF, nota: Math.round(n * 10) / 10, n: na >= 0 ? na : 0 };
     salvarGz({ eloraNota: o.nota, eloraNAval: o.n, eloraNotas: [...(g.eloraNotas || []).filter(x => x.em !== REF), o].slice(-36) }); registrar('Gestão', `Nota da Elora no Google atualizada: ${nota1(o.nota)}.`); fecharDlg(); toast('Nota salva.'); }
 });
@@ -10727,6 +10846,4 @@ store.iniciar();
   const t = setInterval(async () => { if (!estado.pronto) return; clearInterval(t); const e = DB.envios[tok]; if (!e) return; await registrarAbertura(tok, navigator.userAgent); if (DB.imoveis[e.imovelId]) abrirAnuncio(e.imovelId); }, 300); })();
 </script>
 
-
-</body>
-</html>
+</body></html>

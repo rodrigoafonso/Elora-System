@@ -113,3 +113,12 @@ Ao migrar uma tela que faz parte de um grupo, a página React precisa mostrar as
 - Aba **Solicitações e contratos**: ainda abre o protótipo.
 - **Mudança Plug & Play**: as tarefas (procuração, desligamentos, ligações) e a cobrança da taxa ainda não foram portadas; o pedido segue o fluxo comum.
 - Perfis e permissões (gestor x equipe) aguardam o login (OIDC); hoje a equipe vê como gestora.
+
+## Sala de guerra: Agente especial (protótipo v53)
+
+Nova aba "Agente especial" na Sala de guerra (só gestores). Coleção `inovacoes` (titulo, tipo, area, quem, resumo,
+ideiaElora, fonte, impacto 1–5, esforco 1–5, status nova/analise/aprovada/testando/feita/descartada, por agente/gestor/ia,
+decisao, em) e `config.guerra.inovacaoDia` (resumo da última varredura). A varredura da web é feita por uma tarefa
+agendada (segunda e quinta, 6h47 de Brasília) que grava só achados com fonte https. Na plataforma, migrar para o módulo
+de inteligência de mercado: tabela `inovacao`, job agendado no backend e o mesmo fluxo de decisão (matriz impacto ×
+esforço, "Levar ao Projeto Boa Ideia", plano com IA usando só os achados registrados).
