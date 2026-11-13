@@ -7,7 +7,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { filtrosDisponiveis } from '../server/dominio/busca.js';
+import { filtrosDisponiveis, referenciaAlerta } from '../server/dominio/busca.js';
+import { calcularAlerta, NIVEIS } from '../server/dominio/alerta.js';
 import { LINKS_OFICIAIS } from '../server/config.js';
 import { RETENCAO } from '../server/relatos/repositorio.js';
 import { LIMITES, TIPOS_PROBLEMA } from '../server/relatos/validacao.js';
@@ -69,6 +70,7 @@ const status = {
   ufs: 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' '),
   linksOficiais: LINKS_OFICIAIS,
   relatos: { tiposProblema: TIPOS_PROBLEMA, limites: LIMITES, retencaoDias: RETENCAO },
+  alerta: { niveis: NIVEIS, referencia: referenciaAlerta(base) },
 };
 
 const json = (v) => JSON.stringify(v).replace(/</g, '\\u003c');
@@ -82,7 +84,8 @@ const corpoModulos = ordem
 const idxApp = corpoModulos.findIndex((c) => c.startsWith('// public/js/app.js'));
 const arquivosDados = new Map(); // caminho publicado -> conteúdo
 if (oficial) {
-  const CAMPOS = ['cnpj', 'razaoSocial', 'logradouro', 'complemento', 'bairro', 'cep', 'municipio', 'uf', 'bandeira', 'bandeiraDesde', 'autorizacaoNumero', 'autorizacaoData', 'totalFisc', 'ultimaFisc'];
+  const CAMPOS = ['cnpj', 'razaoSocial', 'logradouro', 'complemento', 'bairro', 'cep', 'municipio', 'uf', 'bandeira', 'bandeiraDesde', 'autorizacaoNumero', 'autorizacaoData', 'totalFisc', 'ultimaFisc', 'alertaNivel', 'alertaData', 'alertaMotivo'];
+  const ref = referenciaAlerta(base);
   const fiscPorPosto = new Map();
   for (const f of base.fiscalizacoes) {
     if (!fiscPorPosto.has(f.postoId)) fiscPorPosto.set(f.postoId, []);
@@ -97,9 +100,10 @@ if (oficial) {
       porUf.get(uf)[p.cnpj] = fisc.map((f) => [f.data, f.tipo, f.resultado, f.documento, f.ocorrencias.length ? f.ocorrencias.map((o) => o.descricao) : undefined]);
     }
     const e = p.endereco;
-    return [p.cnpj, p.razaoSocial, e.logradouro, e.complemento, e.bairro, e.cep, e.municipio, e.uf, p.bandeira, p.bandeiraDesde, p.autorizacao?.numero, p.autorizacao?.data, fisc.length, fisc[0]?.data ?? null];
+    const a = calcularAlerta(fisc, ref);
+    return [p.cnpj, p.razaoSocial, e.logradouro, e.complemento, e.bairro, e.cep, e.municipio, e.uf, p.bandeira, p.bandeiraDesde, p.autorizacao?.numero, p.autorizacao?.data, fisc.length, fisc[0]?.data ?? null, a.nivel, a.data, a.motivo];
   });
-  arquivosDados.set('dados/postos.json', JSON.stringify({ meta: base.meta, campos: CAMPOS, postos: linhas }));
+  arquivosDados.set('dados/postos.json', JSON.stringify({ meta: { ...base.meta, referenciaAlerta: ref }, campos: CAMPOS, postos: linhas }));
   for (const [uf, dados] of porUf) arquivosDados.set(`dados/fisc-${uf}.json`, JSON.stringify(dados));
   corpoModulos.splice(idxApp, 0, `__m["estatico/apiLocal.js"].instalarApiLocal({ status: ${json(status)}, dados: { postos: 'dados/postos.json', fiscalizacoes: 'dados/fisc-{uf}.json' } });`);
 } else {

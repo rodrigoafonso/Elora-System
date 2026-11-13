@@ -10,6 +10,7 @@ import { FonteIndisponivelError } from './fontes/fonteArquivo.js';
 import { ORDENACOES } from './dominio/busca.js';
 import { dataIsoValida, coordenadaValida } from './dominio/texto.js';
 import { RETENCAO } from './relatos/repositorio.js';
+import { NIVEIS } from './dominio/alerta.js';
 import { sanearTexto, TIPOS_PROBLEMA, validarNovoRelato, LIMITES } from './relatos/validacao.js';
 
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
@@ -87,6 +88,7 @@ export function criarApp({ fonte, relatos, config }) {
         ufs: UFS,
         linksOficiais: LINKS_OFICIAIS,
         relatos: { tiposProblema: TIPOS_PROBLEMA, limites: LIMITES, retencaoDias: RETENCAO },
+        alerta: info.disponivel ? { niveis: NIVEIS, referencia: info.referenciaAlerta } : null,
       };
     }],
 

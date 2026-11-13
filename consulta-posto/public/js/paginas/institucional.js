@@ -1,4 +1,4 @@
-import { AVISO_INFRACAO, caixaAviso, definirTitulo, formatarData, h, linhaFonte, linkExterno } from '../ui.js';
+import { AVISO_INFRACAO, caixaAviso, definirTitulo, formatarData, h, legendaAlertas, linhaFonte, linkExterno } from '../ui.js';
 
 const secao = (titulo, ...conteudo) => h('section', { class: 'texto' }, h('h2', {}, titulo), conteudo);
 const p = (...c) => h('p', {}, c);
@@ -32,9 +32,14 @@ export async function paginaSobre(raiz, ctx) {
         'Fiscalizações refletem a situação encontrada na data da ação. Problemas podem ter sido corrigidos depois.',
         'A falta de registros não significa que o posto nunca teve problemas: a base pode estar incompleta ou desatualizada.',
         'Um auto de infração pode ser contestado; consulte a situação do processo nos canais oficiais.',
-        'Este app não atribui notas, cores de “bom/ruim” ou selos de “seguro”. A ANP publica sua própria avaliação na consulta oficial, com regras definidas por ela.',
+        'O indicador colorido deste app não é uma nota nem um selo de “seguro”. A ANP publica sua própria avaliação na consulta oficial, com regras definidas por ela, que podem dar resultados diferentes.',
         'Relatos de usuários ficam em uma seção separada, não são verificados e não se misturam com os registros oficiais.',
       ),
+    ),
+    secao('Como funciona o indicador colorido',
+      p('Cada posto recebe uma bola colorida calculada automaticamente a partir dos registros oficiais de fiscalização, comparando os textos do campo “Resultado” publicados pela ANP. A janela de tempo conta a partir da fiscalização mais recente da base, não da data de hoje.'),
+      legendaAlertas(ctx.status?.alerta, { aberta: true }),
+      p('Termos considerados no nível “Alerta”: amostra reprovada, combustível fora das especificações, teor de metanol, presença de marcador/solvente, dispositivos que induzam a erro quanto à qualidade, bomba medidora com aferição irregular, alteração do volume comercializado, medida-padrão de 20 litros, venda sem passar pela bomba e interdições (desinterdições não contam).'),
     ),
     secao('Fontes oficiais que podem ser importadas',
       p('O projeto inclui um importador de arquivos CSV/JSON. Antes de publicar dados como reais, a equipe deve conferir nos metadados oficiais a origem, a licença, a data de atualização e os nomes das colunas.'),
@@ -95,7 +100,7 @@ export async function paginaTermos(raiz, ctx) {
     secao('O que o app não faz',
       ul(
         'Não afirma que um posto é seguro, confiável, adulterado ou fraudulento.',
-        'Não atribui notas ou cores de qualidade aos postos.',
+        'O indicador colorido resume registros oficiais segundo uma regra publicada no app; não é uma nota de qualidade nem uma garantia.',
         AVISO_INFRACAO,
         'Não recebe denúncias oficiais: o envio de relato aqui não substitui a denúncia aos órgãos competentes.',
       ),

@@ -1,5 +1,6 @@
 // Regras de busca, filtro e ordenação sobre uma base normalizada (ver docs/MODELO-DE-DADOS.md).
 import { apenasDigitos, distanciaKm, normalizar, pareceCnpj } from './texto.js';
+import { calcularAlerta, referenciaDaBase } from './alerta.js';
 
 export const ORDENACOES = ['relevancia', 'nome', 'distancia'];
 
@@ -28,6 +29,21 @@ export function filtrosDisponiveis(base) {
 // Caches por objeto: a base pode ter dezenas de milhares de postos.
 const cacheTexto = new WeakMap();
 const cacheGrupos = new WeakMap();
+const cacheReferencia = new WeakMap();
+
+/** Data de referência do indicador de alerta (fiscalização mais recente da base). */
+export function referenciaAlerta(base) {
+  if (base.meta?.referenciaAlerta) return base.meta.referenciaAlerta;
+  const lista = base.fiscalizacoes ?? [];
+  if (!cacheReferencia.has(lista)) cacheReferencia.set(lista, referenciaDaBase(lista));
+  return cacheReferencia.get(lista);
+}
+
+function alertaDo(base, p, fisc) {
+  if (p.alerta) return p.alerta; // versão estática: pré-calculado
+  const ref = referenciaAlerta(base);
+  return ref ? calcularAlerta(fisc, ref) : null;
+}
 
 function textoPesquisavel(p) {
   if (cacheTexto.has(p)) return cacheTexto.get(p);
@@ -82,7 +98,9 @@ export function buscarPostos(base, c) {
   });
 
   let resultado = itens.map((p) => {
-    const item = resumoPosto(p, fiscPorPosto.get(p.id) ?? []);
+    const fisc = fiscPorPosto.get(p.id) ?? [];
+    const item = resumoPosto(p, fisc);
+    item.alerta = alertaDo(base, p, fisc);
     if (c.origem && p.coordenadas) item.distanciaKm = Math.round(distanciaKm(c.origem, p.coordenadas) * 10) / 10;
     item._score = pontuacao(p, termoNorm);
     return item;
@@ -137,5 +155,5 @@ export function detalharPosto(base, id) {
   const fisc = (base.fiscalizacoes ?? [])
     .filter((f) => f.postoId === id)
     .sort((a, b) => String(b.data).localeCompare(String(a.data)));
-  return { posto: p, fiscalizacoes: fisc };
+  return { posto: p, fiscalizacoes: fisc, alerta: alertaDo(base, p, fisc) };
 }

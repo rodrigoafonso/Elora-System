@@ -100,7 +100,7 @@ export async function paginaBusca(raiz, ctx) {
         meta.tipo !== 'demo' && meta.fontes?.fiscalizacoes?.observacao ? h('li', {}, meta.fontes.fiscalizacoes.observacao) : null,
         h('li', {}, 'Os registros podem estar desatualizados em relação à fonte oficial. Confira sempre as datas.'),
         h('li', {}, 'A ausência de registros não significa que o posto nunca teve problemas.'),
-        h('li', {}, 'Este app é independente e não classifica postos como “bons”, “ruins” ou “seguros”.'),
+        h('li', {}, 'A bola colorida de cada posto resume os registros oficiais de fiscalização dos últimos 24 meses, com regra explicada no app. Ela não diz se um posto é seguro ou se o combustível está adulterado agora.'),
       ),
       h('p', {}, h('a', { href: '/sobre', 'data-link': true, class: 'link' }, 'Saiba mais sobre os dados')),
     ),

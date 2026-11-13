@@ -1,5 +1,5 @@
 import { buscarPostos } from '../api.js';
-import { caixaAviso, definirTitulo, enderecoEmLinha, estadoCarregando, estadoErro, formatarCnpj, formatarData, h, icone, selo } from '../ui.js';
+import { bolaAlerta, caixaAviso, definirTitulo, enderecoEmLinha, estadoCarregando, estadoErro, formatarCnpj, formatarData, h, icone, legendaAlertas, resumoAlerta, selo } from '../ui.js';
 import { formularioBusca } from './busca.js';
 
 // Localização autorizada fica só na memória da aba; vai à API arredondada (~1 km) apenas para calcular distância.
@@ -26,6 +26,7 @@ function cartaoPosto(p) {
   }
   return h('li', { class: 'cartao cartao--posto' },
     h('h3', {}, h('a', { href: `/posto/${p.id}`, 'data-link': true }, p.nome)),
+    p.alerta ? h('p', { class: 'linha-alerta' }, bolaAlerta(p.alerta), h('span', { class: 'secundario' }, resumoAlerta(p.alerta))) : null,
     p.razaoSocial && p.razaoSocial !== p.nome ? h('p', { class: 'secundario' }, p.razaoSocial) : null,
     h('p', { class: 'endereco' }, icone('pino'), h('span', {}, enderecoEmLinha(p.endereco), ' — ', h('strong', {}, `${p.endereco?.municipio ?? '?'}/${p.endereco?.uf ?? '?'}`))),
     detalhes.length ? h('p', { class: 'detalhes' }, detalhes) : null,
@@ -38,6 +39,8 @@ function cartaoPosto(p) {
     h('a', { href: `/posto/${p.id}`, 'data-link': true, class: 'link link--seta' }, 'Ver detalhes', h('span', { class: 'sr' }, ` de ${p.nome}`)),
   );
 }
+
+const COR_MAPA = { alerta: '#c62828', atencao: '#d97706', sem_alerta: '#7b8796', sem_registro: '#ffffff' };
 
 let leafletPromessa = null;
 function carregarLeaflet() {
@@ -88,12 +91,12 @@ async function montarMapa(container, itens, avisoMapa) {
     const ll = [p.coordenadas.lat, p.coordenadas.lon];
     limites.push(ll);
     const popup = h('div', { class: 'popup' },
-      h('strong', {}, p.nome), h('br'), enderecoEmLinha(p.endereco), h('br'),
+      h('strong', {}, p.nome), h('br'), bolaAlerta(p.alerta), h('br'), enderecoEmLinha(p.endereco), h('br'),
       h('a', { href: `/posto/${p.id}`, 'data-link': true, class: 'link' }, 'Ver detalhes'));
-    // Mesma cor para todos: a cor NÃO indica qualidade.
-    L.circleMarker(ll, { radius: 9, color: '#ffffff', weight: 2, fillColor: '#1d3a5f', fillOpacity: 1 })
+    // Cor = nível do indicador de alerta (regra explicada na legenda).
+    L.circleMarker(ll, { radius: 9, color: p.alerta?.nivel === 'sem_registro' ? '#7b8796' : '#ffffff', weight: 2, fillColor: COR_MAPA[p.alerta?.nivel] ?? '#1d3a5f', fillOpacity: 1 })
       .bindPopup(popup)
-      .bindTooltip(p.nome)
+      .bindTooltip(`${p.nome} — ${p.alerta?.rotulo ?? ''}`)
       .addTo(mapa);
   }
   if (localizacao) {
@@ -106,9 +109,9 @@ async function montarMapa(container, itens, avisoMapa) {
 
 function legendaMapa() {
   return h('div', { class: 'legenda', 'aria-label': 'Legenda do mapa' },
-    h('p', {}, h('span', { class: 'legenda__ponto', 'aria-hidden': 'true' }), 'Posto encontrado na busca'),
+    h('p', {}, 'A cor de cada ponto segue o indicador de alerta (veja “O que significam as cores”).'),
     localizacao ? h('p', {}, h('span', { class: 'legenda__ponto legenda__ponto--voce', 'aria-hidden': 'true' }), 'Sua localização aproximada') : null,
-    h('p', { class: 'ajuda' }, 'Todos os postos têm a mesma cor: o mapa não classifica postos como bons, ruins ou seguros. Clique em um ponto para ver o nome e abrir os detalhes.'),
+    h('p', { class: 'ajuda' }, 'Clique em um ponto para ver o nome, o indicador e abrir os detalhes.'),
   );
 }
 
@@ -228,6 +231,7 @@ export async function paginaResultados(raiz, ctx) {
       ? h('p', { class: 'ajuda' }, 'A localização é opcional, usada só para calcular distâncias de forma aproximada e não é armazenada.')
       : h('p', { class: 'ajuda' }, 'A base oficial da ANP não informa a localização geográfica (coordenadas) dos postos, por isso o mapa e a ordenação por distância não estão disponíveis. Use o endereço de cada posto.'),
     msgLocal,
+    legendaAlertas(ctx.status?.alerta),
     caixaAviso(),
     blocoLista,
     blocoMapa,

@@ -1,5 +1,6 @@
 import { obterPosto, obterRelatos } from '../api.js';
 import {
+  bolaAlerta, legendaAlertas, resumoAlerta,
   caixaAviso, definirTitulo, enderecoEmLinha, estadoErro, formatarCnpj, formatarData, h, icone, linhaFonte, linkExterno, selo,
 } from '../ui.js';
 
@@ -112,6 +113,19 @@ async function blocoRelatos(posto, ctx) {
   return secao;
 }
 
+function blocoAlerta(alerta, ctx) {
+  const regra = ctx.status?.alerta?.niveis?.[alerta.nivel]?.regra;
+  return h('section', { class: `cartao cartao--alerta cartao--alerta-${alerta.nivel}`, 'aria-labelledby': 'alerta-titulo' },
+    h('h2', { id: 'alerta-titulo' }, 'Indicador para o consumidor'),
+    h('p', { class: 'alerta-principal' }, bolaAlerta(alerta, { grande: true })),
+    regra ? h('p', {}, regra) : null,
+    alerta.nivel === 'alerta' || alerta.nivel === 'atencao'
+      ? h('p', {}, h('strong', {}, 'Registro que gerou o indicador: '), `${alerta.motivo ?? 'registro oficial'} (${formatarData(alerta.data)}). Veja o histórico completo abaixo.`)
+      : h('p', { class: 'secundario' }, resumoAlerta(alerta) + '.'),
+    legendaAlertas(ctx.status?.alerta),
+  );
+}
+
 export async function paginaPosto(raiz, ctx) {
   const [id] = ctx.params;
   let dados;
@@ -122,7 +136,7 @@ export async function paginaPosto(raiz, ctx) {
     raiz.append(h('h1', {}, e.status === 404 ? 'Posto não encontrado' : 'Não foi possível carregar o posto'), estadoErro(e.message, e.corpo?.linksOficiais ?? ctx.links));
     return;
   }
-  const { posto, fiscalizacoes, fonte, linksOficiais } = dados;
+  const { posto, fiscalizacoes, fonte, linksOficiais, alerta } = dados;
   const nome = posto.nomeFantasia || posto.razaoSocial || 'Posto sem nome informado';
   definirTitulo(nome);
 
@@ -137,6 +151,7 @@ export async function paginaPosto(raiz, ctx) {
       h('p', { class: 'ajuda' }, 'A consulta oficial é da ANP e pode ter dados mais recentes que os exibidos aqui. Para localizar o posto lá, use o CNPJ ',
         posto.cnpj ? h('strong', {}, formatarCnpj(posto.cnpj)) : '(não informado)', '.'),
     ),
+    alerta ? blocoAlerta(alerta, ctx) : null,
     caixaAviso(),
     blocoCadastro(posto, fonte),
     blocoFiscalizacoes(fiscalizacoes, fonte),

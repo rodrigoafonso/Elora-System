@@ -134,3 +134,40 @@ export function selo(texto, tipo = 'neutro') {
 export function definirTitulo(texto) {
   document.title = texto ? `${texto} · Consulta Posto` : 'Consulta Posto';
 }
+
+// --- Indicador de alerta ao consumidor ------------------------------------------------------------
+// A cor sempre vem acompanhada do rótulo em texto (não depende só da cor).
+
+export function bolaAlerta(alerta, { grande = false } = {}) {
+  if (!alerta) return null;
+  return h('span', { class: `indicador indicador--${alerta.nivel}${grande ? ' indicador--grande' : ''}` },
+    h('span', { class: 'bola', 'aria-hidden': 'true' }),
+    h('strong', {}, alerta.rotulo),
+  );
+}
+
+/** Frase curta com o motivo, para listas e cabeçalhos. */
+export function resumoAlerta(alerta) {
+  if (!alerta) return '';
+  if (alerta.nivel === 'alerta' || alerta.nivel === 'atencao') {
+    return `${alerta.motivo ?? 'Registro oficial'} — ${formatarData(alerta.data)}`;
+  }
+  if (alerta.nivel === 'sem_alerta') return `Última fiscalização em ${formatarData(alerta.data)}, sem os registros que geram alerta`;
+  return 'Nenhuma fiscalização registrada nos últimos 24 meses';
+}
+
+/** Legenda recolhível com a regra de cada cor. */
+export function legendaAlertas(config, { aberta = false } = {}) {
+  if (!config?.niveis) return null;
+  return h('details', { class: 'legenda-alertas', open: aberta },
+    h('summary', {}, 'O que significam as cores'),
+    h('ul', {},
+      Object.entries(config.niveis).map(([nivel, n]) =>
+        h('li', {}, bolaAlerta({ nivel, rotulo: n.rotulo }), h('span', {}, n.regra)),
+      ),
+    ),
+    h('p', { class: 'ajuda' },
+      `Regra deste app, calculada só com os registros oficiais de fiscalização da ANP (dados até ${formatarData(config.referencia)}). `,
+      'Não é a nota oficial da ANP, não indica que o combustível esteja adulterado agora e não substitui a consulta à fonte oficial. Autuações ainda podem ser contestadas pelo posto.'),
+  );
+}

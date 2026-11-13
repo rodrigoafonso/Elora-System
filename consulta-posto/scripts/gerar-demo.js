@@ -32,13 +32,13 @@ const BAIRROS = ['Centro', 'Bairro Exemplo', 'Jardim Demonstração', 'Vila Fict
 const BANDEIRAS = ['Bandeira Fictícia A', 'Bandeira Fictícia B', 'Bandeira Branca (DEMO)'];
 const COMBUSTIVEIS = ['Gasolina comum', 'Gasolina aditivada', 'Etanol hidratado', 'Diesel S10', 'Diesel S500', 'GNV'];
 const SITUACOES = ['Autorizado (DEMO)', 'Autorizado (DEMO)', 'Autorizado (DEMO)', 'Revogado (DEMO)'];
-const TIPOS_FISC = ['Fiscalização de rotina (DEMO)', 'Coleta de amostra para análise de qualidade (DEMO)', 'Apuração de denúncia (DEMO)'];
+// Vocabulário igual ao dos arquivos oficiais (para exercitar o indicador), sempre com a marca DEMO.
 const OCORRENCIAS = [
-  { categoria: 'Qualidade do combustível', descricao: 'Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório.' },
-  { categoria: 'Qualidade do combustível', descricao: 'Exemplo fictício: teor de etanol na gasolina diferente do especificado.' },
-  { categoria: 'Informação ao consumidor', descricao: 'Exemplo fictício: painel de preços sem as informações obrigatórias.' },
-  { categoria: 'Volume (bomba medidora)', descricao: 'Exemplo fictício: diferença de volume acima da tolerância em uma bomba.' },
-  { categoria: 'Documentação', descricao: 'Exemplo fictício: documento fiscal de aquisição não apresentado no momento da ação.' },
+  { tipo: 'Auto de Infração', descricao: 'Amostra Prova de Gasolina Reprovada - percentual de etanol (DEMO)' },
+  { tipo: 'Auto de Interdição', descricao: 'Interdição por Bomba Medidora com Aferição Irregular (DEMO)' },
+  { tipo: 'Auto de Infração', descricao: 'Painel de Preços - Ausência/Em desacordo com a legislação (DEMO)' },
+  { tipo: 'Auto de Infração', descricao: 'LMC - Não apresentação / Apresentação em desacordo (DEMO)' },
+  { tipo: 'Notificação', descricao: 'Notificação - Prazo 30 dias (DEMO)' },
 ];
 
 function cnpjFicticio() {
@@ -96,17 +96,15 @@ for (const m of MUNICIPIOS) {
     const qtdFisc = Math.floor(aleatorio() * 4); // 0 a 3 — alguns postos ficam sem registros
     for (let k = 0; k < qtdFisc; k++) {
       const comIrregularidade = aleatorio() < 0.35;
-      const ocorrencias = comIrregularidade
-        ? Array.from({ length: 1 + Math.floor(aleatorio() * 2) }, () => escolher(OCORRENCIAS))
-        : [];
+      const o = escolher(OCORRENCIAS);
       fiscalizacoes.push({
         id: `${id}-f${k + 1}`,
         postoId: id,
-        data: dataAleatoria(2019, 2026),
-        tipo: escolher(TIPOS_FISC),
-        resultado: comIrregularidade ? 'Auto de infração lavrado (DEMO)' : 'Sem irregularidade constatada (DEMO)',
-        ocorrencias,
-        documento: comIrregularidade ? `DEMO-AI-${1000 + fiscalizacoes.length}` : null,
+        data: dataAleatoria(2023, 2026),
+        tipo: comIrregularidade ? `${o.tipo}` : 'Boletim de Fiscalização',
+        resultado: comIrregularidade ? o.descricao : 'Sem Registro de Ocorrência (DEMO)',
+        ocorrencias: [],
+        documento: `DEMO-${1000 + fiscalizacoes.length}`,
       });
     }
   }

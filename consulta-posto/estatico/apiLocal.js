@@ -3,6 +3,7 @@
 // Relatos não são enviados a lugar nenhum: as respostas vêm marcadas com `simulado: true`.
 import { buscarPostos, detalharPosto, ORDENACOES } from '../server/dominio/busca.js';
 import { coordenadaValida, dataIsoValida } from '../server/dominio/texto.js';
+import { NIVEIS } from '../server/dominio/alerta.js';
 
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 
@@ -27,6 +28,9 @@ function desempacotarPostos(arquivo) {
       combustiveis: null,
       autorizacao: { numero: v[i.autorizacaoNumero], data: v[i.autorizacaoData] },
       resumoFiscalizacoes: { total: v[i.totalFisc], ultima: v[i.ultimaFisc] },
+      alerta: v[i.alertaNivel]
+        ? { nivel: v[i.alertaNivel], rotulo: NIVEIS[v[i.alertaNivel]].rotulo, data: v[i.alertaData], motivo: v[i.alertaMotivo], referencia: arquivo.meta.referenciaAlerta }
+        : null,
     })),
   };
 }
@@ -127,7 +131,8 @@ export function instalarApiLocal({ base: baseEmbutida, status, dados }) {
       } catch {
         return indisponivel();
       }
-      return [200, { posto, fiscalizacoes, fonte: resumoFonte, linksOficiais: status.linksOficiais }];
+      const alerta = baseEmbutida ? detalharPosto(base, posto.id).alerta : posto.alerta;
+      return [200, { posto, fiscalizacoes, alerta, fonte: resumoFonte, linksOficiais: status.linksOficiais }];
     }
     if (metodo === 'POST' && url.pathname === '/api/relatos') {
       const protocolo = `DEMO-${Math.random().toString(16).slice(2, 10).toUpperCase()}`;
