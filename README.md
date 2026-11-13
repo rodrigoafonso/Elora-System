@@ -9,6 +9,7 @@ marketplace **Elora Casa+**, com a Elora AI ligada a todos os setores.
 | `backend/` | Java 21 + Spring Boot 3.5 (monólito modular, Clean Architecture) + PostgreSQL/Flyway. |
 | `infra/` | `docker-compose.yml` com banco, API e front-end. |
 | `docs/` | Arquitetura, decisões (ADRs), plano de migração das telas e regras do sistema. |
+| `consulta-posto/` | **Projeto à parte:** MVP do app *Consulta Posto* (consulta pública de postos de combustíveis). Node.js 22, sem dependências. Ver [`consulta-posto/README.md`](consulta-posto/README.md). |
 
 ## Rodar localmente
 

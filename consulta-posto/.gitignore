@@ -1,0 +1,3 @@
+data/privado/
+data/importado/*
+!data/importado/.gitkeep

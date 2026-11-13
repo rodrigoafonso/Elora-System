@@ -1,0 +1,1840 @@
+{
+ "meta": {
+  "tipo": "demo",
+  "nome": "Base de demonstração",
+  "aviso": "DEMO — não são dados reais. Postos, CNPJs, endereços e fiscalizações são fictícios.",
+  "camposConfiaveis": {
+   "combustiveis": true,
+   "situacaoCadastral": true,
+   "fiscalizacoes": true
+  },
+  "fontes": {
+   "cadastro": {
+    "nome": "Dados de demonstração gerados pelo projeto Consulta Posto — DEMO, não são dados reais",
+    "url": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos",
+    "licenca": "Dados fictícios criados para teste da interface. Não representam postos, empresas ou fiscalizações reais.",
+    "obtidoEm": "2026-11-13",
+    "atualizadoEm": "2026-11-13",
+    "observacao": "O link aponta para o portal de dados abertos da ANP, onde estão as bases oficiais a importar."
+   },
+   "fiscalizacoes": {
+    "nome": "Dados de demonstração gerados pelo projeto Consulta Posto — DEMO, não são dados reais",
+    "url": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos",
+    "licenca": "Dados fictícios criados para teste da interface. Não representam postos, empresas ou fiscalizações reais.",
+    "obtidoEm": "2026-11-13",
+    "atualizadoEm": "2026-11-13",
+    "observacao": "O link aponta para o portal de dados abertos da ANP, onde estão as bases oficiais a importar."
+   }
+  },
+  "geradoEm": "2026-11-13"
+ },
+ "postos": [
+  {
+   "id": "demo-001",
+   "cnpj": "99665853468484",
+   "razaoSocial": "Empresa Fictícia 1 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 01",
+   "endereco": {
+    "logradouro": "Rua Fictícia",
+    "numero": "1299",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "São Paulo",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -23.56826,
+    "lon": -46.6783
+   },
+   "bandeira": "Bandeira Branca (DEMO)",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Diesel S10",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100001",
+    "data": "2018-12-14"
+   }
+  },
+  {
+   "id": "demo-002",
+   "cnpj": "99556237052135",
+   "razaoSocial": "Empresa Fictícia 2 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 02",
+   "endereco": {
+    "logradouro": "Rua Fictícia",
+    "numero": "1615",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "São Paulo",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -23.53558,
+    "lon": -46.59804
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100002",
+    "data": "2011-08-10"
+   }
+  },
+  {
+   "id": "demo-003",
+   "cnpj": "99640305219725",
+   "razaoSocial": "Empresa Fictícia 3 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 03",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "534",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "São Paulo",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -23.50497,
+    "lon": -46.61005
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Etanol hidratado",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100003",
+    "data": "2005-02-01"
+   }
+  },
+  {
+   "id": "demo-004",
+   "cnpj": "99814733248102",
+   "razaoSocial": "Empresa Fictícia 4 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 04",
+   "endereco": {
+    "logradouro": "Rua Fictícia",
+    "numero": "2672",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "São Paulo",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -23.58228,
+    "lon": -46.66034
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100004",
+    "data": "2007-08-18"
+   }
+  },
+  {
+   "id": "demo-005",
+   "cnpj": "99558337445418",
+   "razaoSocial": "Empresa Fictícia 5 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 05",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "1686",
+    "complemento": null,
+    "bairro": "Vila Fictícia",
+    "cep": null,
+    "municipio": "Campinas",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -22.87034,
+    "lon": -47.07327
+   },
+   "bandeira": "Bandeira Branca (DEMO)",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100005",
+    "data": "2010-02-22"
+   }
+  },
+  {
+   "id": "demo-006",
+   "cnpj": "99486214568997",
+   "razaoSocial": "Empresa Fictícia 6 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 06",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "181",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Campinas",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -22.86532,
+    "lon": -47.09353
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100006",
+    "data": "2014-07-14"
+   }
+  },
+  {
+   "id": "demo-007",
+   "cnpj": "99735558410353",
+   "razaoSocial": "Empresa Fictícia 7 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 07",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "1895",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "Campinas",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -22.90626,
+    "lon": -47.06266
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100007",
+    "data": "2009-01-02"
+   }
+  },
+  {
+   "id": "demo-008",
+   "cnpj": "99349517792115",
+   "razaoSocial": "Empresa Fictícia 8 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 08",
+   "endereco": {
+    "logradouro": "Avenida Exemplo",
+    "numero": "2425",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Campinas",
+    "uf": "SP"
+   },
+   "coordenadas": {
+    "lat": -22.8855,
+    "lon": -47.11009
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100008",
+    "data": "2009-10-03"
+   }
+  },
+  {
+   "id": "demo-009",
+   "cnpj": "99264274869842",
+   "razaoSocial": "Empresa Fictícia 9 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 09",
+   "endereco": {
+    "logradouro": "Rua Fictícia",
+    "numero": "1227",
+    "complemento": null,
+    "bairro": "Vila Fictícia",
+    "cep": null,
+    "municipio": "Campinas",
+    "uf": "SP"
+   },
+   "coordenadas": null,
+   "bandeira": "Bandeira Branca (DEMO)",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Etanol hidratado",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100009",
+    "data": "2017-10-11"
+   }
+  },
+  {
+   "id": "demo-010",
+   "cnpj": "99067721956959",
+   "razaoSocial": "Empresa Fictícia 10 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 10",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "750",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Rio de Janeiro",
+    "uf": "RJ"
+   },
+   "coordenadas": {
+    "lat": -22.93145,
+    "lon": -43.15295
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100010",
+    "data": "2019-06-13"
+   }
+  },
+  {
+   "id": "demo-011",
+   "cnpj": "99068551944659",
+   "razaoSocial": "Empresa Fictícia 11 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 11",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "1960",
+    "complemento": null,
+    "bairro": "Vila Fictícia",
+    "cep": null,
+    "municipio": "Rio de Janeiro",
+    "uf": "RJ"
+   },
+   "coordenadas": {
+    "lat": -22.93416,
+    "lon": -43.15447
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Diesel S10",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100011",
+    "data": "2008-03-22"
+   }
+  },
+  {
+   "id": "demo-012",
+   "cnpj": "99771336812100",
+   "razaoSocial": "Empresa Fictícia 12 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 12",
+   "endereco": {
+    "logradouro": "Avenida Modelo",
+    "numero": "1750",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Rio de Janeiro",
+    "uf": "RJ"
+   },
+   "coordenadas": {
+    "lat": -22.93243,
+    "lon": -43.1519
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100012",
+    "data": "2010-07-10"
+   }
+  },
+  {
+   "id": "demo-013",
+   "cnpj": "99135311998875",
+   "razaoSocial": "Empresa Fictícia 13 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 13",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "787",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Rio de Janeiro",
+    "uf": "RJ"
+   },
+   "coordenadas": {
+    "lat": -22.86586,
+    "lon": -43.17877
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100013",
+    "data": "2006-12-14"
+   }
+  },
+  {
+   "id": "demo-014",
+   "cnpj": "99238792360039",
+   "razaoSocial": "Empresa Fictícia 14 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 14",
+   "endereco": {
+    "logradouro": "Avenida Exemplo",
+    "numero": "2536",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Rio de Janeiro",
+    "uf": "RJ"
+   },
+   "coordenadas": {
+    "lat": -22.94133,
+    "lon": -43.12556
+   },
+   "bandeira": "Bandeira Branca (DEMO)",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100014",
+    "data": "2007-09-10"
+   }
+  },
+  {
+   "id": "demo-015",
+   "cnpj": "99799755172554",
+   "razaoSocial": "Empresa Fictícia 15 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 15",
+   "endereco": {
+    "logradouro": "Rua do Teste",
+    "numero": "860",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "Belo Horizonte",
+    "uf": "MG"
+   },
+   "coordenadas": {
+    "lat": -19.94356,
+    "lon": -43.94217
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100015",
+    "data": "2018-01-01"
+   }
+  },
+  {
+   "id": "demo-016",
+   "cnpj": "99281714469045",
+   "razaoSocial": "Empresa Fictícia 16 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 16",
+   "endereco": {
+    "logradouro": "Avenida Modelo",
+    "numero": "1434",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "Belo Horizonte",
+    "uf": "MG"
+   },
+   "coordenadas": {
+    "lat": -19.91584,
+    "lon": -43.96167
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100016",
+    "data": "2018-10-01"
+   }
+  },
+  {
+   "id": "demo-017",
+   "cnpj": "99099054993932",
+   "razaoSocial": "Empresa Fictícia 17 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 17",
+   "endereco": {
+    "logradouro": "Avenida Modelo",
+    "numero": "2215",
+    "complemento": null,
+    "bairro": "Vila Fictícia",
+    "cep": null,
+    "municipio": "Belo Horizonte",
+    "uf": "MG"
+   },
+   "coordenadas": {
+    "lat": -19.95151,
+    "lon": -43.89998
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100017",
+    "data": "2006-03-13"
+   }
+  },
+  {
+   "id": "demo-018",
+   "cnpj": "99053637943460",
+   "razaoSocial": "Empresa Fictícia 18 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 18",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "2211",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "Belo Horizonte",
+    "uf": "MG"
+   },
+   "coordenadas": null,
+   "bandeira": "Bandeira Branca (DEMO)",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100018",
+    "data": "2018-11-23"
+   }
+  },
+  {
+   "id": "demo-019",
+   "cnpj": "99137404333670",
+   "razaoSocial": "Empresa Fictícia 19 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 19",
+   "endereco": {
+    "logradouro": "Avenida Exemplo",
+    "numero": "2848",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Curitiba",
+    "uf": "PR"
+   },
+   "coordenadas": {
+    "lat": -25.47893,
+    "lon": -49.26575
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100019",
+    "data": "2012-06-15"
+   }
+  },
+  {
+   "id": "demo-020",
+   "cnpj": "99921238880183",
+   "razaoSocial": "Empresa Fictícia 20 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 20",
+   "endereco": {
+    "logradouro": "Avenida Modelo",
+    "numero": "777",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "Curitiba",
+    "uf": "PR"
+   },
+   "coordenadas": {
+    "lat": -25.37435,
+    "lon": -49.29751
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100020",
+    "data": "2012-09-24"
+   }
+  },
+  {
+   "id": "demo-021",
+   "cnpj": "99077959598566",
+   "razaoSocial": "Empresa Fictícia 21 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 21",
+   "endereco": {
+    "logradouro": "Avenida Exemplo",
+    "numero": "2726",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Curitiba",
+    "uf": "PR"
+   },
+   "coordenadas": {
+    "lat": -25.44365,
+    "lon": -49.23524
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100021",
+    "data": "2020-03-20"
+   }
+  },
+  {
+   "id": "demo-022",
+   "cnpj": "99790643664654",
+   "razaoSocial": "Empresa Fictícia 22 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 22",
+   "endereco": {
+    "logradouro": "Avenida Modelo",
+    "numero": "33",
+    "complemento": null,
+    "bairro": "Vila Fictícia",
+    "cep": null,
+    "municipio": "Curitiba",
+    "uf": "PR"
+   },
+   "coordenadas": {
+    "lat": -25.42545,
+    "lon": -49.26847
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100022",
+    "data": "2013-12-03"
+   }
+  },
+  {
+   "id": "demo-023",
+   "cnpj": "99784223544211",
+   "razaoSocial": "Empresa Fictícia 23 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 23",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "2530",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "Curitiba",
+    "uf": "PR"
+   },
+   "coordenadas": {
+    "lat": -25.47361,
+    "lon": -49.23597
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100023",
+    "data": "2011-02-23"
+   }
+  },
+  {
+   "id": "demo-024",
+   "cnpj": "99115637759261",
+   "razaoSocial": "Empresa Fictícia 24 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 24",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "1595",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Recife",
+    "uf": "PE"
+   },
+   "coordenadas": {
+    "lat": -8.09075,
+    "lon": -34.87692
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100024",
+    "data": "2005-10-01"
+   }
+  },
+  {
+   "id": "demo-025",
+   "cnpj": "99589213820107",
+   "razaoSocial": "Empresa Fictícia 25 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 25",
+   "endereco": {
+    "logradouro": "Avenida Modelo",
+    "numero": "873",
+    "complemento": null,
+    "bairro": "Vila Fictícia",
+    "cep": null,
+    "municipio": "Recife",
+    "uf": "PE"
+   },
+   "coordenadas": {
+    "lat": -8.07277,
+    "lon": -34.82142
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100025",
+    "data": "2007-09-17"
+   }
+  },
+  {
+   "id": "demo-026",
+   "cnpj": "99516979554751",
+   "razaoSocial": "Empresa Fictícia 26 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 26",
+   "endereco": {
+    "logradouro": "Avenida Exemplo",
+    "numero": "676",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Recife",
+    "uf": "PE"
+   },
+   "coordenadas": {
+    "lat": -8.08311,
+    "lon": -34.89137
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Etanol hidratado"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100026",
+    "data": "2017-02-11"
+   }
+  },
+  {
+   "id": "demo-027",
+   "cnpj": "99153792660995",
+   "razaoSocial": "Empresa Fictícia 27 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 27",
+   "endereco": {
+    "logradouro": "Avenida Exemplo",
+    "numero": "1008",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Recife",
+    "uf": "PE"
+   },
+   "coordenadas": null,
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100027",
+    "data": "2019-01-20"
+   }
+  },
+  {
+   "id": "demo-028",
+   "cnpj": "99528685655955",
+   "razaoSocial": "Empresa Fictícia 28 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 28",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "2311",
+    "complemento": null,
+    "bairro": "Vila Fictícia",
+    "cep": null,
+    "municipio": "Goiânia",
+    "uf": "GO"
+   },
+   "coordenadas": {
+    "lat": -16.68232,
+    "lon": -49.25512
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100028",
+    "data": "2010-12-09"
+   }
+  },
+  {
+   "id": "demo-029",
+   "cnpj": "99134559120844",
+   "razaoSocial": "Empresa Fictícia 29 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 29",
+   "endereco": {
+    "logradouro": "Avenida Modelo",
+    "numero": "1150",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Goiânia",
+    "uf": "GO"
+   },
+   "coordenadas": {
+    "lat": -16.67636,
+    "lon": -49.27914
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100029",
+    "data": "2007-05-19"
+   }
+  },
+  {
+   "id": "demo-030",
+   "cnpj": "99964315647316",
+   "razaoSocial": "Empresa Fictícia 30 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 30",
+   "endereco": {
+    "logradouro": "Rua do Teste",
+    "numero": "1800",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Goiânia",
+    "uf": "GO"
+   },
+   "coordenadas": {
+    "lat": -16.66771,
+    "lon": -49.27659
+   },
+   "bandeira": "Bandeira Branca (DEMO)",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100030",
+    "data": "2011-04-23"
+   }
+  },
+  {
+   "id": "demo-031",
+   "cnpj": "99920865638232",
+   "razaoSocial": "Empresa Fictícia 31 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 31",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "2552",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Goiânia",
+    "uf": "GO"
+   },
+   "coordenadas": {
+    "lat": -16.68246,
+    "lon": -49.27171
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100031",
+    "data": "2008-06-11"
+   }
+  },
+  {
+   "id": "demo-032",
+   "cnpj": "99512860981294",
+   "razaoSocial": "Empresa Fictícia 32 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 32",
+   "endereco": {
+    "logradouro": "Rua do Teste",
+    "numero": "129",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Goiânia",
+    "uf": "GO"
+   },
+   "coordenadas": {
+    "lat": -16.72819,
+    "lon": -49.29836
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100032",
+    "data": "2007-04-27"
+   }
+  },
+  {
+   "id": "demo-033",
+   "cnpj": "99389934918224",
+   "razaoSocial": "Empresa Fictícia 33 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 33",
+   "endereco": {
+    "logradouro": "Avenida Exemplo",
+    "numero": "2308",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Goiânia",
+    "uf": "GO"
+   },
+   "coordenadas": {
+    "lat": -16.7013,
+    "lon": -49.2713
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100033",
+    "data": "2012-05-14"
+   }
+  },
+  {
+   "id": "demo-034",
+   "cnpj": "99296178683155",
+   "razaoSocial": "Empresa Fictícia 34 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 34",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "2186",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Porto Alegre",
+    "uf": "RS"
+   },
+   "coordenadas": {
+    "lat": -30.08825,
+    "lon": -51.22878
+   },
+   "bandeira": "Bandeira Fictícia B",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100034",
+    "data": "2011-12-18"
+   }
+  },
+  {
+   "id": "demo-035",
+   "cnpj": "99798914630926",
+   "razaoSocial": "Empresa Fictícia 35 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 35",
+   "endereco": {
+    "logradouro": "Rua Fictícia",
+    "numero": "2913",
+    "complemento": null,
+    "bairro": "Centro",
+    "cep": null,
+    "municipio": "Porto Alegre",
+    "uf": "RS"
+   },
+   "coordenadas": {
+    "lat": -29.99752,
+    "lon": -51.22269
+   },
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina aditivada",
+    "Diesel S10"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100035",
+    "data": "2015-01-06"
+   }
+  },
+  {
+   "id": "demo-036",
+   "cnpj": "99153560521216",
+   "razaoSocial": "Empresa Fictícia 36 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 36",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "185",
+    "complemento": null,
+    "bairro": "Jardim Demonstração",
+    "cep": null,
+    "municipio": "Porto Alegre",
+    "uf": "RS"
+   },
+   "coordenadas": null,
+   "bandeira": "Bandeira Fictícia A",
+   "situacaoCadastral": "Revogado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500",
+    "GNV"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100036",
+    "data": "2015-12-03"
+   }
+  },
+  {
+   "id": "demo-037",
+   "cnpj": "99806321588292",
+   "razaoSocial": "Empresa Fictícia 37 Ltda (DEMO)",
+   "nomeFantasia": "Posto Demonstração 37",
+   "endereco": {
+    "logradouro": "Rodovia Demonstração",
+    "numero": "2666",
+    "complemento": null,
+    "bairro": "Bairro Exemplo",
+    "cep": null,
+    "municipio": "Porto Alegre",
+    "uf": "RS"
+   },
+   "coordenadas": {
+    "lat": -29.98937,
+    "lon": -51.26885
+   },
+   "bandeira": "Bandeira Branca (DEMO)",
+   "situacaoCadastral": "Autorizado (DEMO)",
+   "combustiveis": [
+    "Gasolina comum",
+    "Gasolina aditivada",
+    "Etanol hidratado",
+    "Diesel S10",
+    "Diesel S500"
+   ],
+   "autorizacao": {
+    "numero": "DEMO-100037",
+    "data": "2012-04-23"
+   }
+  }
+ ],
+ "fiscalizacoes": [
+  {
+   "id": "demo-001-f1",
+   "postoId": "demo-001",
+   "data": "2024-06-05",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-001-f2",
+   "postoId": "demo-001",
+   "data": "2020-11-18",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-001-f3",
+   "postoId": "demo-001",
+   "data": "2022-03-28",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Documentação",
+     "descricao": "Exemplo fictício: documento fiscal de aquisição não apresentado no momento da ação."
+    },
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1002"
+  },
+  {
+   "id": "demo-002-f1",
+   "postoId": "demo-002",
+   "data": "2022-12-03",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-002-f2",
+   "postoId": "demo-002",
+   "data": "2026-03-17",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-002-f3",
+   "postoId": "demo-002",
+   "data": "2022-09-05",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Documentação",
+     "descricao": "Exemplo fictício: documento fiscal de aquisição não apresentado no momento da ação."
+    }
+   ],
+   "documento": "DEMO-AI-1005"
+  },
+  {
+   "id": "demo-004-f1",
+   "postoId": "demo-004",
+   "data": "2026-07-05",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-004-f2",
+   "postoId": "demo-004",
+   "data": "2023-05-16",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-004-f3",
+   "postoId": "demo-004",
+   "data": "2021-01-18",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-006-f1",
+   "postoId": "demo-006",
+   "data": "2023-07-01",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-007-f1",
+   "postoId": "demo-007",
+   "data": "2026-04-10",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-007-f2",
+   "postoId": "demo-007",
+   "data": "2025-09-08",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Informação ao consumidor",
+     "descricao": "Exemplo fictício: painel de preços sem as informações obrigatórias."
+    },
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1011"
+  },
+  {
+   "id": "demo-007-f3",
+   "postoId": "demo-007",
+   "data": "2026-05-05",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-008-f1",
+   "postoId": "demo-008",
+   "data": "2026-06-06",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Volume (bomba medidora)",
+     "descricao": "Exemplo fictício: diferença de volume acima da tolerância em uma bomba."
+    },
+    {
+     "categoria": "Informação ao consumidor",
+     "descricao": "Exemplo fictício: painel de preços sem as informações obrigatórias."
+    }
+   ],
+   "documento": "DEMO-AI-1013"
+  },
+  {
+   "id": "demo-008-f2",
+   "postoId": "demo-008",
+   "data": "2020-12-14",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-009-f1",
+   "postoId": "demo-009",
+   "data": "2022-01-24",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    },
+    {
+     "categoria": "Informação ao consumidor",
+     "descricao": "Exemplo fictício: painel de preços sem as informações obrigatórias."
+    }
+   ],
+   "documento": "DEMO-AI-1015"
+  },
+  {
+   "id": "demo-009-f2",
+   "postoId": "demo-009",
+   "data": "2023-12-01",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Informação ao consumidor",
+     "descricao": "Exemplo fictício: painel de preços sem as informações obrigatórias."
+    }
+   ],
+   "documento": "DEMO-AI-1016"
+  },
+  {
+   "id": "demo-009-f3",
+   "postoId": "demo-009",
+   "data": "2024-06-03",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-010-f1",
+   "postoId": "demo-010",
+   "data": "2025-08-23",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Informação ao consumidor",
+     "descricao": "Exemplo fictício: painel de preços sem as informações obrigatórias."
+    },
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1018"
+  },
+  {
+   "id": "demo-010-f2",
+   "postoId": "demo-010",
+   "data": "2025-07-08",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Documentação",
+     "descricao": "Exemplo fictício: documento fiscal de aquisição não apresentado no momento da ação."
+    }
+   ],
+   "documento": "DEMO-AI-1019"
+  },
+  {
+   "id": "demo-010-f3",
+   "postoId": "demo-010",
+   "data": "2021-11-07",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-014-f1",
+   "postoId": "demo-014",
+   "data": "2025-04-25",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-014-f2",
+   "postoId": "demo-014",
+   "data": "2020-09-23",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-014-f3",
+   "postoId": "demo-014",
+   "data": "2019-07-07",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-015-f1",
+   "postoId": "demo-015",
+   "data": "2022-10-06",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-016-f1",
+   "postoId": "demo-016",
+   "data": "2021-11-06",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-016-f2",
+   "postoId": "demo-016",
+   "data": "2023-08-01",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Informação ao consumidor",
+     "descricao": "Exemplo fictício: painel de preços sem as informações obrigatórias."
+    }
+   ],
+   "documento": "DEMO-AI-1026"
+  },
+  {
+   "id": "demo-017-f1",
+   "postoId": "demo-017",
+   "data": "2024-06-15",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-019-f1",
+   "postoId": "demo-019",
+   "data": "2022-05-21",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Informação ao consumidor",
+     "descricao": "Exemplo fictício: painel de preços sem as informações obrigatórias."
+    },
+    {
+     "categoria": "Volume (bomba medidora)",
+     "descricao": "Exemplo fictício: diferença de volume acima da tolerância em uma bomba."
+    }
+   ],
+   "documento": "DEMO-AI-1028"
+  },
+  {
+   "id": "demo-019-f2",
+   "postoId": "demo-019",
+   "data": "2022-08-02",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-020-f1",
+   "postoId": "demo-020",
+   "data": "2019-12-16",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Volume (bomba medidora)",
+     "descricao": "Exemplo fictício: diferença de volume acima da tolerância em uma bomba."
+    },
+    {
+     "categoria": "Documentação",
+     "descricao": "Exemplo fictício: documento fiscal de aquisição não apresentado no momento da ação."
+    }
+   ],
+   "documento": "DEMO-AI-1030"
+  },
+  {
+   "id": "demo-020-f2",
+   "postoId": "demo-020",
+   "data": "2023-02-07",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    },
+    {
+     "categoria": "Documentação",
+     "descricao": "Exemplo fictício: documento fiscal de aquisição não apresentado no momento da ação."
+    }
+   ],
+   "documento": "DEMO-AI-1031"
+  },
+  {
+   "id": "demo-021-f1",
+   "postoId": "demo-021",
+   "data": "2023-02-25",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1032"
+  },
+  {
+   "id": "demo-023-f1",
+   "postoId": "demo-023",
+   "data": "2024-03-01",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Volume (bomba medidora)",
+     "descricao": "Exemplo fictício: diferença de volume acima da tolerância em uma bomba."
+    }
+   ],
+   "documento": "DEMO-AI-1033"
+  },
+  {
+   "id": "demo-023-f2",
+   "postoId": "demo-023",
+   "data": "2022-04-28",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-023-f3",
+   "postoId": "demo-023",
+   "data": "2022-07-20",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-024-f1",
+   "postoId": "demo-024",
+   "data": "2026-11-13",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-024-f2",
+   "postoId": "demo-024",
+   "data": "2019-04-27",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-024-f3",
+   "postoId": "demo-024",
+   "data": "2020-05-17",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1038"
+  },
+  {
+   "id": "demo-025-f1",
+   "postoId": "demo-025",
+   "data": "2022-02-16",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Volume (bomba medidora)",
+     "descricao": "Exemplo fictício: diferença de volume acima da tolerância em uma bomba."
+    },
+    {
+     "categoria": "Documentação",
+     "descricao": "Exemplo fictício: documento fiscal de aquisição não apresentado no momento da ação."
+    }
+   ],
+   "documento": "DEMO-AI-1039"
+  },
+  {
+   "id": "demo-025-f2",
+   "postoId": "demo-025",
+   "data": "2021-03-23",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-025-f3",
+   "postoId": "demo-025",
+   "data": "2020-07-03",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-026-f1",
+   "postoId": "demo-026",
+   "data": "2025-05-19",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-027-f1",
+   "postoId": "demo-027",
+   "data": "2019-08-09",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1043"
+  },
+  {
+   "id": "demo-027-f2",
+   "postoId": "demo-027",
+   "data": "2023-02-19",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-027-f3",
+   "postoId": "demo-027",
+   "data": "2024-10-10",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-029-f1",
+   "postoId": "demo-029",
+   "data": "2026-09-28",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: teor de etanol na gasolina diferente do especificado."
+    }
+   ],
+   "documento": "DEMO-AI-1046"
+  },
+  {
+   "id": "demo-029-f2",
+   "postoId": "demo-029",
+   "data": "2021-05-13",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-030-f1",
+   "postoId": "demo-030",
+   "data": "2020-02-04",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-030-f2",
+   "postoId": "demo-030",
+   "data": "2020-10-11",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1049"
+  },
+  {
+   "id": "demo-033-f1",
+   "postoId": "demo-033",
+   "data": "2021-12-13",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-033-f2",
+   "postoId": "demo-033",
+   "data": "2025-06-26",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-034-f1",
+   "postoId": "demo-034",
+   "data": "2022-02-01",
+   "tipo": "Apuração de denúncia (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Volume (bomba medidora)",
+     "descricao": "Exemplo fictício: diferença de volume acima da tolerância em uma bomba."
+    }
+   ],
+   "documento": "DEMO-AI-1052"
+  },
+  {
+   "id": "demo-034-f2",
+   "postoId": "demo-034",
+   "data": "2026-11-13",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-036-f1",
+   "postoId": "demo-036",
+   "data": "2022-07-04",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  },
+  {
+   "id": "demo-037-f1",
+   "postoId": "demo-037",
+   "data": "2022-07-01",
+   "tipo": "Fiscalização de rotina (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    },
+    {
+     "categoria": "Volume (bomba medidora)",
+     "descricao": "Exemplo fictício: diferença de volume acima da tolerância em uma bomba."
+    }
+   ],
+   "documento": "DEMO-AI-1055"
+  },
+  {
+   "id": "demo-037-f2",
+   "postoId": "demo-037",
+   "data": "2023-10-24",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Auto de infração lavrado (DEMO)",
+   "ocorrencias": [
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: teor de etanol na gasolina diferente do especificado."
+    },
+    {
+     "categoria": "Qualidade do combustível",
+     "descricao": "Exemplo fictício: amostra com parâmetro fora da especificação em ensaio de laboratório."
+    }
+   ],
+   "documento": "DEMO-AI-1056"
+  },
+  {
+   "id": "demo-037-f3",
+   "postoId": "demo-037",
+   "data": "2020-10-03",
+   "tipo": "Coleta de amostra para análise de qualidade (DEMO)",
+   "resultado": "Sem irregularidade constatada (DEMO)",
+   "ocorrencias": [],
+   "documento": null
+  }
+ ]
+}

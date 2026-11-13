@@ -1,0 +1,32 @@
+{
+  "_leia-me": "MODELO. Os nomes de coluna abaixo são CANDIDATOS e NÃO foram confirmados nos metadados oficiais da ANP. Antes de importar, abra o arquivo de metadados de cada conjunto no portal de dados abertos da ANP e ajuste cada lista com os nomes exatos. Cada campo aceita uma lista: vale a primeira coluna presente e preenchida.",
+  "separadorCombustiveis": ",",
+  "cadastro": {
+    "cnpj": ["CNPJ", "CNPJ da Revenda"],
+    "razaoSocial": ["RAZAO SOCIAL", "Razão Social", "Revenda"],
+    "nomeFantasia": ["NOME FANTASIA", "Nome Fantasia"],
+    "logradouro": ["ENDERECO", "Endereço", "Nome da Rua"],
+    "numero": ["NUMERO", "Número Rua"],
+    "complemento": ["COMPLEMENTO", "Complemento"],
+    "bairro": ["BAIRRO", "Bairro"],
+    "cep": ["CEP", "Cep"],
+    "municipio": ["MUNICIPIO", "Município"],
+    "uf": ["UF", "Estado - Sigla"],
+    "latitude": ["LATITUDE", "Latitude"],
+    "longitude": ["LONGITUDE", "Longitude"],
+    "bandeira": ["BANDEIRA", "Bandeira"],
+    "situacaoCadastral": ["SITUACAO", "Situação"],
+    "combustiveis": ["PRODUTOS", "Produtos"],
+    "autorizacaoNumero": ["AUTORIZACAO", "Número da Autorização"],
+    "autorizacaoData": ["DATA PUBLICACAO", "Data da Publicação"]
+  },
+  "fiscalizacoes": {
+    "cnpj": ["CNPJ", "CNPJ/CPF"],
+    "data": ["DATA DA ACAO", "Data", "Data da Ação"],
+    "tipo": ["TIPO DE ACAO", "Tipo de Ação", "Procedimento"],
+    "resultado": ["RESULTADO", "Resultado"],
+    "documento": ["DOCUMENTO", "Número do Documento", "Auto de Infração"],
+    "ocorrenciaCategoria": ["CATEGORIA", "Assunto"],
+    "ocorrenciaDescricao": ["INFRACAO", "Descrição da Infração", "Irregularidade"]
+  }
+}

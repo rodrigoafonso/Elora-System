@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Consulta Posto: projeto independente para consultar informações públicas sobre postos de combustíveis no Brasil." />
+    <meta name="theme-color" content="#1d3a5f" />
+    <title>Consulta Posto</title>
+    <link rel="icon" href="/img/icone.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="/css/app.css" />
+    <script type="module" src="/js/app.js"></script>
+  </head>
+  <body>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <header class="topo">
+      <div class="topo__interno">
+        <a class="marca" href="/" data-link>
+          <span class="marca__icone" aria-hidden="true"></span>
+          <span>
+            <span class="marca__nome">Consulta Posto</span>
+            <span class="marca__sub">Projeto independente · não é um serviço oficial da ANP</span>
+          </span>
+        </a>
+        <nav class="menu" aria-label="Principal">
+          <a href="/" data-link>Buscar</a>
+          <a href="/relatar" data-link>Relatar problema</a>
+          <a href="/sobre" data-link>Sobre os dados</a>
+        </nav>
+      </div>
+    </header>
+    <div id="faixa-demo" class="faixa-demo" hidden role="note"></div>
+    <main id="conteudo" class="conteudo" tabindex="-1">
+      <p class="carregando" role="status">Carregando…</p>
+      <noscript><p>Este app precisa de JavaScript. Para consultar sem ele, use a ferramenta oficial da ANP.</p></noscript>
+    </main>
+    <footer class="rodape">
+      <p>
+        <strong>Consulta Posto</strong> é um projeto independente, sem vínculo com a ANP ou com órgãos públicos.
+        As informações oficiais estão nos canais da ANP.
+      </p>
+      <nav aria-label="Rodapé" class="rodape__links">
+        <a href="/sobre" data-link>Sobre os dados</a>
+        <a href="/privacidade" data-link>Política de privacidade</a>
+        <a href="/termos" data-link>Termos de uso</a>
+        <a href="/remover" data-link>Remover um relato</a>
+      </nav>
+    </footer>
+  </body>
+</html>

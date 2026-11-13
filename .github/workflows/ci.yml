@@ -34,3 +34,12 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       # Inclui testes de domínio, regras de arquitetura (ArchUnit) e integração com PostgreSQL (Testcontainers).
       - run: ./gradlew build --no-daemon
+
+  consulta-posto:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: consulta-posto } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm test
