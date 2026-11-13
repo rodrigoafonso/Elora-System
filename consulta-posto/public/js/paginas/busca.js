@@ -96,7 +96,8 @@ export async function paginaBusca(raiz, ctx) {
       h('ul', { class: 'lista-pontos' },
         meta.tipo === 'demo'
           ? h('li', {}, h('strong', {}, 'Esta versão usa dados de DEMONSTRAÇÃO, que não são reais. '), 'Nenhum posto, CNPJ ou fiscalização mostrado aqui existe de verdade.')
-          : h('li', {}, 'Os dados vêm de arquivos públicos da ANP importados por este projeto. Cada tela informa a fonte e a data de obtenção.'),
+          : h('li', {}, `Os dados vêm de arquivos públicos da ANP (${meta.totalPostos.toLocaleString('pt-BR')} postos em operação), importados por este projeto. Cada tela informa a fonte e a data de obtenção.`),
+        meta.tipo !== 'demo' && meta.fontes?.fiscalizacoes?.observacao ? h('li', {}, meta.fontes.fiscalizacoes.observacao) : null,
         h('li', {}, 'Os registros podem estar desatualizados em relação à fonte oficial. Confira sempre as datas.'),
         h('li', {}, 'A ausência de registros não significa que o posto nunca teve problemas.'),
         h('li', {}, 'Este app é independente e não classifica postos como “bons”, “ruins” ou “seguros”.'),

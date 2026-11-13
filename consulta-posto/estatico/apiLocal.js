@@ -6,10 +6,71 @@ import { coordenadaValida, dataIsoValida } from '../server/dominio/texto.js';
 
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 
-export function instalarApiLocal({ base, status }) {
+// Formato compacto dos arquivos publicados (ver scripts/gerar-pagina-estatica.js):
+// postos.json -> { meta, campos: [...], postos: [[...valores na ordem de campos]] }
+// fisc-UF.json -> { [cnpj]: [[data, tipo, resultado, documento, [descrições...]]] }
+function desempacotarPostos(arquivo) {
+  const i = Object.fromEntries(arquivo.campos.map((c, n) => [c, n]));
+  return {
+    meta: arquivo.meta,
+    fiscalizacoes: [],
+    postos: arquivo.postos.map((v) => ({
+      id: v[i.cnpj],
+      cnpj: v[i.cnpj],
+      razaoSocial: v[i.razaoSocial],
+      nomeFantasia: null,
+      endereco: { logradouro: v[i.logradouro], numero: null, complemento: v[i.complemento], bairro: v[i.bairro], cep: v[i.cep], municipio: v[i.municipio], uf: v[i.uf] },
+      coordenadas: null,
+      bandeira: v[i.bandeira],
+      bandeiraDesde: v[i.bandeiraDesde],
+      situacaoCadastral: null,
+      combustiveis: null,
+      autorizacao: { numero: v[i.autorizacaoNumero], data: v[i.autorizacaoData] },
+      resumoFiscalizacoes: { total: v[i.totalFisc], ultima: v[i.ultimaFisc] },
+    })),
+  };
+}
+
+export function instalarApiLocal({ base: baseEmbutida, status, dados }) {
   const relatos = [];
-  const resumoFonte = { tipo: base.meta.tipo, aviso: base.meta.aviso, fontes: base.meta.fontes };
   const erro = (s, msg, extra = {}) => [s, { erro: msg, ...extra }];
+  const indisponivel = () =>
+    erro(503, 'Os dados não puderam ser carregados no momento. Consulte a ferramenta oficial da ANP.', { linksOficiais: status.linksOficiais });
+
+  let promessaBase = baseEmbutida ? Promise.resolve(baseEmbutida) : null;
+  const obterBase = () =>
+    (promessaBase ??= fetch(dados.postos)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then(desempacotarPostos)
+      .catch((e) => {
+        promessaBase = null;
+        throw e;
+      }));
+
+  const fiscPorUf = new Map();
+  async function fiscalizacoesDoPosto(base, posto) {
+    if (baseEmbutida) return detalharPosto(base, posto.id).fiscalizacoes;
+    const uf = posto.endereco.uf;
+    if (!fiscPorUf.has(uf)) {
+      fiscPorUf.set(uf, fetch(dados.fiscalizacoes.replace('{uf}', uf)).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))));
+    }
+    let porCnpj;
+    try {
+      porCnpj = await fiscPorUf.get(uf);
+    } catch (e) {
+      fiscPorUf.delete(uf);
+      throw e;
+    }
+    return (porCnpj[posto.cnpj] ?? []).map(([data, tipo, resultado, documento, descricoes], n) => ({
+      id: `${posto.id}-${n}`,
+      postoId: posto.id,
+      data,
+      tipo,
+      resultado,
+      documento,
+      ocorrencias: (descricoes ?? []).map((d) => ({ categoria: null, descricao: d })),
+    }));
+  }
 
   function criterios(p) {
     const q = String(p.get('q') ?? '').trim().slice(0, 120);
@@ -39,6 +100,15 @@ export function instalarApiLocal({ base, status }) {
     const corpo = opcoes.body ? JSON.parse(opcoes.body) : null;
     let m;
     if (metodo === 'GET' && url.pathname === '/api/status') return [200, status];
+    let base;
+    if (metodo === 'GET' && url.pathname.startsWith('/api/postos')) {
+      try {
+        base = await obterBase();
+      } catch {
+        return indisponivel();
+      }
+    }
+    const resumoFonte = { tipo: status.fonte.tipo, aviso: status.fonte.aviso, fontes: status.fonte.fontes };
     if (metodo === 'GET' && url.pathname === '/api/postos') {
       const c = criterios(url.searchParams);
       if (c.erro) return erro(400, c.erro);
@@ -49,9 +119,15 @@ export function instalarApiLocal({ base, status }) {
       return [200, { itens: [], aguardandoModeracao: doPosto.length }];
     }
     if (metodo === 'GET' && (m = url.pathname.match(/^\/api\/postos\/([\w-]{1,80})$/))) {
-      const d = detalharPosto(base, m[1]);
-      if (!d) return erro(404, 'Posto não encontrado nesta base.');
-      return [200, { ...d, fonte: resumoFonte, linksOficiais: status.linksOficiais }];
+      const posto = base.postos.find((p) => p.id === m[1]);
+      if (!posto) return erro(404, 'Posto não encontrado nesta base.');
+      let fiscalizacoes;
+      try {
+        fiscalizacoes = await fiscalizacoesDoPosto(base, posto);
+      } catch {
+        return indisponivel();
+      }
+      return [200, { posto, fiscalizacoes, fonte: resumoFonte, linksOficiais: status.linksOficiais }];
     }
     if (metodo === 'POST' && url.pathname === '/api/relatos') {
       const protocolo = `DEMO-${Math.random().toString(16).slice(2, 10).toUpperCase()}`;

@@ -5,13 +5,14 @@
 //     --mapeamento caminho/mapeamento.json \
 //     --fonte-cadastro-nome "..." --fonte-cadastro-url https://... --fonte-cadastro-licenca "..." --fonte-cadastro-obtido-em AAAA-MM-DD \
 //     [--fonte-fisc-nome ... --fonte-fisc-url ... --fonte-fisc-licenca ... --fonte-fisc-obtido-em ...] \
-//     [--encoding latin1] [--saida data/importado/base.json]
+//     [--fonte-cadastro-observacao ...] [--fonte-fisc-observacao ...] [--encoding latin1] [--saida data/importado/base.json]
 //
 // A importação é recusada sem origem, licença e data de obtenção de cada arquivo.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, extname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { lerCsv } from './csv.js';
+import { lerXlsx } from './xlsx.js';
 import { importar } from './importar.js';
 import { validarBase } from '../fontes/validarBase.js';
 
@@ -28,15 +29,18 @@ const { values: a } = parseArgs({
     'fonte-cadastro-licenca': { type: 'string' },
     'fonte-cadastro-obtido-em': { type: 'string' },
     'fonte-cadastro-atualizado-em': { type: 'string' },
+    'fonte-cadastro-observacao': { type: 'string' },
     'fonte-fisc-nome': { type: 'string' },
     'fonte-fisc-url': { type: 'string' },
     'fonte-fisc-licenca': { type: 'string' },
     'fonte-fisc-obtido-em': { type: 'string' },
     'fonte-fisc-atualizado-em': { type: 'string' },
+    'fonte-fisc-observacao': { type: 'string' },
   },
 });
 
 async function lerLinhas(caminho) {
+  if (extname(caminho).toLowerCase() === '.xlsx') return lerXlsx(await readFile(caminho));
   const texto = await readFile(caminho, a.encoding);
   if (extname(caminho).toLowerCase() === '.json') {
     const dados = JSON.parse(texto);
@@ -52,6 +56,7 @@ const fonte = (p) => ({
   licenca: a[`fonte-${p}-licenca`],
   obtidoEm: a[`fonte-${p}-obtido-em`],
   ...(a[`fonte-${p}-atualizado-em`] ? { atualizadoEm: a[`fonte-${p}-atualizado-em`] } : {}),
+  ...(a[`fonte-${p}-observacao`] ? { observacao: a[`fonte-${p}-observacao`] } : {}),
 });
 
 try {

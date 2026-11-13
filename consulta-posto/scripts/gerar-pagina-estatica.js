@@ -4,6 +4,7 @@
 // Mini-empacotador: cada módulo vira uma função isolada; `import { a, b as c } from './x.js'` vira
 // `const { a, b: c } = __m['x']`, e os nomes exportados são devolvidos pela função.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { parseArgs } from 'node:util';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { filtrosDisponiveis } from '../server/dominio/busca.js';
@@ -54,12 +55,17 @@ const visitar = (rel) => {
 };
 ENTRADAS.forEach(visitar);
 
-const base = JSON.parse(await readFile(join(raiz, 'data/demo/base-demo.json'), 'utf8'));
+// --base data/importado/base.json gera a versão com dados oficiais em dist/real/ (página + arquivos de dados).
+const { values: args } = parseArgs({ options: { base: { type: 'string', default: 'data/demo/base-demo.json' } } });
+const base = JSON.parse(await readFile(resolve(raiz, args.base), 'utf8'));
+const oficial = base.meta.tipo === 'oficial';
+const dirSaida = join(raiz, oficial ? 'dist/real' : 'dist');
 const status = {
   disponivel: true,
   erro: null,
   fonte: { tipo: base.meta.tipo, nome: base.meta.nome, aviso: base.meta.aviso, fontes: base.meta.fontes, totalPostos: base.postos.length },
-  filtros: filtrosDisponiveis(base),
+  // Na versão estática o histórico é carregado só no detalhe, então o filtro por período fica de fora.
+  filtros: oficial ? { ...filtrosDisponiveis(base), periodoFiscalizacao: null } : filtrosDisponiveis(base),
   ufs: 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' '),
   linksOficiais: LINKS_OFICIAIS,
   relatos: { tiposProblema: TIPOS_PROBLEMA, limites: LIMITES, retencaoDias: RETENCAO },
@@ -74,7 +80,31 @@ const corpoModulos = ordem
   });
 // apiLocal precisa ser instalada antes de app.js rodar
 const idxApp = corpoModulos.findIndex((c) => c.startsWith('// public/js/app.js'));
-corpoModulos.splice(idxApp, 0, `__m["estatico/apiLocal.js"].instalarApiLocal({ base: ${json(base)}, status: ${json(status)} });`);
+const arquivosDados = new Map(); // caminho publicado -> conteúdo
+if (oficial) {
+  const CAMPOS = ['cnpj', 'razaoSocial', 'logradouro', 'complemento', 'bairro', 'cep', 'municipio', 'uf', 'bandeira', 'bandeiraDesde', 'autorizacaoNumero', 'autorizacaoData', 'totalFisc', 'ultimaFisc'];
+  const fiscPorPosto = new Map();
+  for (const f of base.fiscalizacoes) {
+    if (!fiscPorPosto.has(f.postoId)) fiscPorPosto.set(f.postoId, []);
+    fiscPorPosto.get(f.postoId).push(f);
+  }
+  const porUf = new Map();
+  const linhas = base.postos.map((p) => {
+    const fisc = (fiscPorPosto.get(p.id) ?? []).sort((a, b) => String(b.data).localeCompare(String(a.data)));
+    if (fisc.length) {
+      const uf = p.endereco.uf;
+      if (!porUf.has(uf)) porUf.set(uf, {});
+      porUf.get(uf)[p.cnpj] = fisc.map((f) => [f.data, f.tipo, f.resultado, f.documento, f.ocorrencias.length ? f.ocorrencias.map((o) => o.descricao) : undefined]);
+    }
+    const e = p.endereco;
+    return [p.cnpj, p.razaoSocial, e.logradouro, e.complemento, e.bairro, e.cep, e.municipio, e.uf, p.bandeira, p.bandeiraDesde, p.autorizacao?.numero, p.autorizacao?.data, fisc.length, fisc[0]?.data ?? null];
+  });
+  arquivosDados.set('dados/postos.json', JSON.stringify({ meta: base.meta, campos: CAMPOS, postos: linhas }));
+  for (const [uf, dados] of porUf) arquivosDados.set(`dados/fisc-${uf}.json`, JSON.stringify(dados));
+  corpoModulos.splice(idxApp, 0, `__m["estatico/apiLocal.js"].instalarApiLocal({ status: ${json(status)}, dados: { postos: 'dados/postos.json', fiscalizacoes: 'dados/fisc-{uf}.json' } });`);
+} else {
+  corpoModulos.splice(idxApp, 0, `__m["estatico/apiLocal.js"].instalarApiLocal({ base: ${json(base)}, status: ${json(status)} });`);
+}
 
 const script = `window.__CONSULTA_POSTO_ESTATICO__ = true;\nwindow.__LEAFLET_URL__ = ${JSON.stringify(LEAFLET_CDN)};\nconst __m = {};\n${corpoModulos.join('\n\n')}`;
 
@@ -102,7 +132,13 @@ ${script.replace(/<\/script/gi, '<\\/script')}
 </script>
 `;
 
-const destino = join(raiz, 'dist/consulta-posto.html');
-await mkdir(dirname(destino), { recursive: true });
+const destino = join(dirSaida, 'consulta-posto.html');
+await mkdir(join(dirSaida, 'dados'), { recursive: true });
 await writeFile(destino, pagina);
+let totalDados = 0;
+for (const [caminho, conteudo] of arquivosDados) {
+  await writeFile(join(dirSaida, caminho), conteudo);
+  totalDados += conteudo.length;
+}
 console.log(`Página estática gerada (${(pagina.length / 1024).toFixed(0)} KB, ${ordem.length} módulos) -> ${destino}`);
+if (arquivosDados.size) console.log(`${arquivosDados.size} arquivos de dados (${(totalDados / 1e6).toFixed(1)} MB) em ${join(dirSaida, 'dados')}`);

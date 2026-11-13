@@ -18,16 +18,24 @@ export function filtrosDisponiveis(base) {
   }
   const datas = (base.fiscalizacoes ?? []).map((f) => f.data).filter(Boolean).sort();
   return {
+    coordenadas: postos.some((p) => p.coordenadas),
     combustivel: campos.combustiveis && combustiveis.size > 0 ? [...combustiveis].sort() : null,
     situacaoCadastral: campos.situacaoCadastral && situacoes.size > 0 ? [...situacoes].sort() : null,
     periodoFiscalizacao: campos.fiscalizacoes && datas.length > 0 ? { min: datas[0], max: datas.at(-1) } : null,
   };
 }
 
+// Caches por objeto: a base pode ter dezenas de milhares de postos.
+const cacheTexto = new WeakMap();
+const cacheGrupos = new WeakMap();
+
 function textoPesquisavel(p) {
-  return normalizar(
+  if (cacheTexto.has(p)) return cacheTexto.get(p);
+  const t = normalizar(
     [p.nomeFantasia, p.razaoSocial, p.endereco?.logradouro, p.endereco?.bairro, p.endereco?.municipio, p.endereco?.uf].join(' '),
   );
+  cacheTexto.set(p, t);
+  return t;
 }
 
 function pontuacao(p, termoNorm) {
@@ -51,7 +59,9 @@ export function buscarPostos(base, c) {
   const porCnpj = pareceCnpj(termo);
   const digitos = apenasDigitos(termo);
 
-  const fiscPorPosto = agruparFiscalizacoes(base.fiscalizacoes ?? []);
+  const lista = base.fiscalizacoes ?? [];
+  if (!cacheGrupos.has(lista)) cacheGrupos.set(lista, agruparFiscalizacoes(lista));
+  const fiscPorPosto = cacheGrupos.get(lista);
   const itens = (base.postos ?? []).filter((p) => {
     if (porCnpj) {
       if (!apenasDigitos(p.cnpj).startsWith(digitos)) return false;
@@ -72,8 +82,7 @@ export function buscarPostos(base, c) {
   });
 
   let resultado = itens.map((p) => {
-    const fisc = fiscPorPosto.get(p.id) ?? [];
-    const item = resumoPosto(p, fisc);
+    const item = resumoPosto(p, fiscPorPosto.get(p.id) ?? []);
     if (c.origem && p.coordenadas) item.distanciaKm = Math.round(distanciaKm(c.origem, p.coordenadas) * 10) / 10;
     item._score = pontuacao(p, termoNorm);
     return item;
@@ -116,8 +125,9 @@ function resumoPosto(p, fisc) {
     coordenadas: p.coordenadas ?? null,
     bandeira: p.bandeira ?? null,
     // Só a contagem e a data — sem nota, cor ou rótulo de "bom/ruim".
-    fiscalizacoesRegistradas: fisc.length,
-    ultimaFiscalizacao: fisc[0]?.data ?? null,
+    // Versão estática: o resumo vem pré-calculado porque o histórico é carregado só no detalhe.
+    fiscalizacoesRegistradas: p.resumoFiscalizacoes?.total ?? fisc.length,
+    ultimaFiscalizacao: p.resumoFiscalizacoes?.ultima ?? fisc[0]?.data ?? null,
   };
 }
 

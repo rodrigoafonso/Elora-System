@@ -1,0 +1,25 @@
+{
+  "_leia-me": "Mapeamento CONFERIDO em 13/11/2026 contra os metadados oficiais da ANP: cadastro (metadados-revendedores-varejistas-combustiveis-automoveis.pdf) e cabeçalho do arquivo dados-fisc-a-partir-2019.xlsx (metadados-acoes-fiscalizacao.docx). Se a ANP mudar as colunas, a importação avisa que nenhum posto foi importado.",
+  "cadastro": {
+    "cnpj": ["CNPJ"],
+    "razaoSocial": ["RAZAOSOCIAL"],
+    "logradouro": ["ENDERECO"],
+    "complemento": ["COMPLEMENTO"],
+    "bairro": ["BAIRRO"],
+    "cep": ["CEP"],
+    "municipio": ["MUNICIPIO"],
+    "uf": ["UF"],
+    "bandeira": ["BANDEIRA"],
+    "bandeiraData": ["DATAVINCULACAO"],
+    "autorizacaoNumero": ["AUTORIZACAO"],
+    "autorizacaoData": ["DATAPUBLICACAO"]
+  },
+  "filtroFiscalizacoes": { "coluna": "Segmento Fiscalizado", "valores": ["Revenda de Combustíveis"] },
+  "fiscalizacoes": {
+    "cnpj": ["CNPJ/CPF"],
+    "data": ["DATA DO DF"],
+    "tipo": ["Procedimento de Fiscalização"],
+    "resultado": ["Resultado"],
+    "documento": ["Número do Documento"]
+  }
+}

@@ -163,7 +163,10 @@ export async function paginaResultados(raiz, ctx) {
     return;
   }
 
-  // Barra de ferramentas: lista/mapa + ordenação + localização
+  // Barra de ferramentas: lista/mapa + ordenação + localização.
+  // Mapa e distância só existem quando a base traz coordenadas (a base oficial da ANP não traz).
+  const comMapa = ctx.status?.filtros?.coordenadas !== false;
+  if (!comMapa) modoVisao = 'lista';
   const lista = h('ul', { class: 'lista-postos', 'aria-live': 'polite' });
   const regiaoMapa = h('div', { class: 'mapa', role: 'region', 'aria-label': 'Mapa dos resultados' });
   const avisoMapa = h('div', { class: 'aviso-mapa' });
@@ -191,7 +194,7 @@ export async function paginaResultados(raiz, ctx) {
   const ordenar = h('select', { id: 'ordenar', name: 'ordenar' },
     h('option', { value: 'relevancia' }, 'Relevância'),
     h('option', { value: 'nome' }, 'Nome (A–Z)'),
-    h('option', { value: 'distancia', disabled: !localizacao }, localizacao ? 'Distância' : 'Distância (autorize a localização)'),
+    comMapa ? h('option', { value: 'distancia', disabled: !localizacao }, localizacao ? 'Distância' : 'Distância (autorize a localização)') : null,
   );
   ordenar.value = q.get('ordenar') && (q.get('ordenar') !== 'distancia' || localizacao) ? q.get('ordenar') : 'relevancia';
   ordenar.addEventListener('change', () => {
@@ -217,11 +220,13 @@ export async function paginaResultados(raiz, ctx) {
 
   raiz.append(
     h('div', { class: 'ferramentas' },
-      alternador,
+      comMapa ? alternador : null,
       h('div', { class: 'campo campo--inline' }, h('label', { for: 'ordenar' }, 'Ordenar por'), ordenar),
-      botaoLocal,
+      comMapa ? botaoLocal : null,
     ),
-    h('p', { class: 'ajuda' }, 'A localização é opcional, usada só para calcular distâncias de forma aproximada e não é armazenada.'),
+    comMapa
+      ? h('p', { class: 'ajuda' }, 'A localização é opcional, usada só para calcular distâncias de forma aproximada e não é armazenada.')
+      : h('p', { class: 'ajuda' }, 'A base oficial da ANP não informa a localização geográfica (coordenadas) dos postos, por isso o mapa e a ordenação por distância não estão disponíveis. Use o endereço de cada posto.'),
     msgLocal,
     caixaAviso(),
     blocoLista,

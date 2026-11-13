@@ -19,13 +19,14 @@ function blocoCadastro(posto, fonte) {
       itemDl('Endereço', enderecoEmLinha(e)),
       itemDl('Município/UF', e.municipio ? `${e.municipio}/${e.uf ?? '?'}` : null),
       itemDl('CEP', e.cep),
-      itemDl('Bandeira', posto.bandeira),
+      itemDl('Bandeira', posto.bandeira ? `${posto.bandeira}${posto.bandeiraDesde ? ` (desde ${formatarData(posto.bandeiraDesde)})` : ''}` : null),
       itemDl('Situação cadastral', posto.situacaoCadastral),
       itemDl('Combustíveis informados', posto.combustiveis),
       itemDl('Autorização', posto.autorizacao?.numero
         ? `${posto.autorizacao.numero}${posto.autorizacao.data ? ` · publicada em ${formatarData(posto.autorizacao.data)}` : ''}` : null),
       itemDl('Coordenadas', posto.coordenadas ? `${posto.coordenadas.lat.toFixed(5)}, ${posto.coordenadas.lon.toFixed(5)}` : null),
     ),
+    fonte?.fontes?.cadastro?.observacao ? h('p', { class: 'ajuda' }, fonte.fontes.cadastro.observacao) : null,
     linhaFonte(fonte?.fontes?.cadastro, fonte?.tipo),
   );
 }
@@ -45,7 +46,7 @@ function blocoFiscalizacoes(fiscalizacoes, fonte) {
       ),
     );
   } else {
-    corpo.push(h('p', { class: 'ajuda' }, `${fiscalizacoes.length} registro(s), do mais recente para o mais antigo. Os textos reproduzem a fonte.`));
+    corpo.push(h('p', { class: 'ajuda' }, `${fiscalizacoes.length} registro(s), do mais recente para o mais antigo. Os textos reproduzem a fonte. “Sem Registro de Ocorrência” é o resultado usado pela ANP quando a ação não apontou irregularidade.`));
     corpo.push(
       h('ol', { class: 'linha-tempo' },
         fiscalizacoes.map((f) =>
@@ -68,6 +69,7 @@ function blocoFiscalizacoes(fiscalizacoes, fonte) {
   }
   return h('section', { class: 'cartao', 'aria-labelledby': 'fisc-titulo' },
     h('h2', { id: 'fisc-titulo' }, icone('escudo'), 'Histórico de fiscalizações (registros oficiais)'),
+    fonteFisc?.observacao ? caixaAviso(fonteFisc.observacao) : null,
     corpo,
     fonteFisc ? linhaFonte(fonteFisc, fonte?.tipo) : null,
   );

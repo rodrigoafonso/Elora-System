@@ -12,7 +12,7 @@ Precisa só de **Node.js 22+**. Não há dependências para instalar.
 ```bash
 cd consulta-posto
 npm start            # http://127.0.0.1:3000 (base DEMO)
-npm test             # 33 testes: domínio, importador, relatos e API
+npm test             # 35 testes: domínio, importador (CSV/XLSX), relatos e API
 ```
 
 | Variável | Padrão | Para quê |
@@ -73,35 +73,38 @@ scripts/       gerar-demo.js (base fictícia determinística)
 serve (ver o contrato em `server/fontes/fonteArquivo.js`). Uma integração com uma API oficial, se um dia
 existir, entra como outra classe com o mesmo contrato, sem mexer na interface.
 
-## Dados oficiais: situação e próximos passos
+## Dados oficiais da ANP
 
-Antes de apresentar qualquer dado como real, é preciso confirmar **origem, licença e data**. Status em 13/11/2026:
+Conferidos em **13/11/2026** nas páginas e nos metadados oficiais:
 
-| Item | Situação |
-|---|---|
-| API pública documentada da ANP para consulta por posto | **Não encontrada.** Não há integração ao vivo, scraping nem chamadas simuladas. |
-| Ferramenta oficial **ANP com VC – Postos** (lançada em 13/07/2026, com nota de 0 a 5 e mapa colorido) | Usada só como link (“Consultar na fonte oficial”). O app **não** reproduz a nota nem as cores: as regras são da ANP e não estão numa base aberta conferida. |
-| Conjunto **Ações de Fiscalização** (portal de dados abertos da ANP; metadados citam o sistema SIGAF e atualização mensal) | Candidato para o histórico. **Colunas, formato (CSV x XLSX, os metadados divergem) e licença não confirmados**: o domínio gov.br estava bloqueado no ambiente de desenvolvimento. |
-| Cadastro de revendedores varejistas (endereço, CNPJ, coordenadas) | Candidato para o cadastro. **Conjunto e colunas não confirmados.** |
+| Conjunto | Arquivo | Atualização | Licença | O que traz |
+|---|---|---|---|---|
+| [Dados Cadastrais dos Revendedores Varejistas de Combustíveis Automotivos](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/dados-cadastrais-dos-revendedores-varejistas-de-combustiveis-automotivos) | CSV (`;`, UTF-8) | Diária | **Não especificada nos metadados.** O rodapé do portal diz que o conteúdo do site está sob CC BY-ND 3.0. | Postos em operação: razão social, CNPJ, endereço, município/UF, bandeira, autorização. **Sem coordenadas, sem nome fantasia, sem combustíveis.** |
+| [Ações de Fiscalização do Abastecimento](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/acoes-de-fiscalizacao) | XLSX (2019 em diante) | Mensal, cerca de 2 meses de defasagem | Aberta, segundo os metadados (CC Atribuição, CC0, ODbL ou PDDL) | Data, procedimento (boletim, notificação, auto de infração…), número do documento e resultado. Usamos só o segmento “Revenda de Combustíveis”. |
 
-### Como importar quando os arquivos estiverem conferidos
+**Pendência de licença:** antes de lançar ao público, confirme com a ANP (faleconosco@anp.gov.br) a licença do
+cadastro. A divergência é entre a ausência nos metadados e o rodapé CC BY-ND (“sem derivações”) do portal.
 
-1. Baixe os arquivos e os **metadados** no [portal de dados abertos da ANP](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos).
-2. Copie `server/importador/mapeamento.exemplo.json` e troque os nomes **candidatos** pelos nomes exatos das colunas.
-3. Rode (a importação é recusada sem URL https, licença e data de obtenção):
+Para baixar e importar tudo de novo (cerca de 1 minuto):
 
 ```bash
-npm run importar -- \
-  --cadastro cadastro.csv --fiscalizacoes acoes.csv --mapeamento meu-mapeamento.json --encoding latin1 \
-  --fonte-cadastro-nome "ANP — <nome do conjunto>" --fonte-cadastro-url "https://..." \
-  --fonte-cadastro-licenca "<licença do portal>" --fonte-cadastro-obtido-em 2026-11-13 \
-  --fonte-fisc-nome "ANP — Ações de Fiscalização" --fonte-fisc-url "https://..." \
-  --fonte-fisc-licenca "<licença>" --fonte-fisc-obtido-em 2026-11-13
+./scripts/importar-dados-anp.sh      # gera data/importado/base.json (≈ 47 MB, fora do git)
 FONTE_DADOS=importada npm start
+npm run pagina-estatica -- --base data/importado/base.json   # versão publicada: dist/real/
 ```
 
-O importador liga fiscalizações ao posto pelo CNPJ, agrupa várias infrações da mesma ação e informa as
-linhas ignoradas. Os filtros de combustível e situação só aparecem se as colunas existirem e vierem preenchidas.
+O mapeamento de colunas conferido está em `server/importador/mapeamento.anp.json`. Resultado da importação em
+13/11/2026: **45.840 postos** e **105.005 ações de fiscalização**. Ações de CNPJs que não estão mais no cadastro
+(postos fechados) e de outros segmentos ficam de fora.
+
+**Não há API oficial em tempo real** e o app não faz scraping. O app oficial “ANP com VC – Postos” é usado só
+como link. Como a base não traz coordenadas, o mapa e a ordenação por distância ficam ocultos com dados reais.
+
+### Importar outros arquivos
+
+O importador aceita CSV, JSON e XLSX. Copie `server/importador/mapeamento.exemplo.json`, ajuste os nomes das
+colunas conforme os metadados e rode `npm run importar` (ver `--help` no topo de `server/importador/cli.js`). A
+importação é recusada sem URL https, licença e data de obtenção.
 
 ## Privacidade e moderação (resumo)
 
