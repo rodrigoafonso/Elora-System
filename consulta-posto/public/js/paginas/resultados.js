@@ -44,7 +44,7 @@ function carregarLeaflet() {
   if (window.L) return Promise.resolve(window.L);
   leafletPromessa ??= new Promise((ok, falha) => {
     const s = document.createElement('script');
-    s.src = '/vendor/leaflet/leaflet.js';
+    s.src = window.__LEAFLET_URL__ ?? '/vendor/leaflet/leaflet.js';
     s.onload = () => (window.L ? ok(window.L) : falha(new Error('Mapa indisponível')));
     s.onerror = () => {
       leafletPromessa = null;

@@ -10,6 +10,7 @@
     "dev": "node --watch server/index.js",
     "test": "node --test",
     "demo:gerar": "node scripts/gerar-demo.js",
-    "importar": "node server/importador/cli.js"
+    "importar": "node server/importador/cli.js",
+    "pagina-estatica": "node scripts/gerar-pagina-estatica.js"
   }
 }

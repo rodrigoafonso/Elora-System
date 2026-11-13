@@ -125,7 +125,7 @@ export async function paginaPosto(raiz, ctx) {
   definirTitulo(nome);
 
   raiz.append(
-    h('p', {}, h('button', { type: 'button', class: 'link link--botao', onclick: () => (history.length > 1 ? history.back() : ctx.navegar('/')) }, '← Voltar')),
+    h('p', {}, h('button', { type: 'button', class: 'link link--botao', onclick: () => ctx.voltar() }, '← Voltar')),
     h('header', { class: 'cabecalho-posto' },
       h('h1', {}, nome, fonte?.tipo === 'demo' ? [' ', selo('DEMO — não são dados reais', 'demo')] : null),
       h('p', { class: 'endereco' }, icone('pino'), `${enderecoEmLinha(posto.endereco)} — ${posto.endereco?.municipio ?? '?'}/${posto.endereco?.uf ?? '?'}`),

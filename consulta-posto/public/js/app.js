@@ -29,10 +29,27 @@ const ROTAS = [
 const main = document.getElementById('conteudo');
 let geracao = 0;
 
+// Versão estática (página publicada): a navegação fica na memória, sem mudar o endereço da página.
+const ESTATICO = Boolean(window.__CONSULTA_POSTO_ESTATICO__);
+const pilha = ['/'];
+const urlAtual = () => (ESTATICO ? new URL(pilha.at(-1), 'https://app.local') : new URL(location.href));
+
 export function navegar(url, { substituir = false } = {}) {
-  if (substituir) history.replaceState(null, '', url);
+  if (ESTATICO) {
+    if (substituir) pilha[pilha.length - 1] = url;
+    else pilha.push(url);
+  } else if (substituir) history.replaceState(null, '', url);
   else history.pushState(null, '', url);
   renderizar();
+}
+
+export function voltar() {
+  if (ESTATICO) {
+    if (pilha.length > 1) pilha.pop();
+    else pilha[0] = '/';
+    renderizar();
+  } else if (history.length > 1) history.back();
+  else navegar('/');
 }
 
 function marcarMenu(caminho) {
@@ -53,7 +70,7 @@ function mostrarFaixaDemo(status) {
 
 async function renderizar() {
   const minha = ++geracao;
-  const { pathname, searchParams } = new URL(location.href);
+  const { pathname, searchParams } = urlAtual();
   marcarMenu(pathname);
   main.replaceChildren(estadoCarregando());
 
@@ -79,6 +96,7 @@ async function renderizar() {
         status,
         links: status?.linksOficiais ?? LINKS_RESERVA,
         navegar,
+        voltar,
         atual: () => minha === geracao,
       });
     }
@@ -92,7 +110,7 @@ async function renderizar() {
   const titulo = main.querySelector('h1');
   if (titulo) {
     titulo.setAttribute('tabindex', '-1');
-    if (document.readyState === 'complete' && history.state?.focar !== false) titulo.focus({ preventScroll: true });
+    if (document.readyState === 'complete') titulo.focus({ preventScroll: true });
   }
   window.scrollTo(0, 0);
 }
@@ -103,5 +121,5 @@ document.addEventListener('click', (ev) => {
   ev.preventDefault();
   navegar(a.getAttribute('href'));
 });
-window.addEventListener('popstate', renderizar);
+if (!ESTATICO) window.addEventListener('popstate', renderizar);
 renderizar();

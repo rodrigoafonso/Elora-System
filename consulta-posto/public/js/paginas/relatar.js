@@ -221,6 +221,9 @@ export async function paginaRelatar(raiz, ctx) {
             h('dt', {}, 'Protocolo'), h('dd', {}, h('code', {}, resposta.protocolo)),
             h('dt', {}, 'Código de remoção'), h('dd', {}, h('code', {}, resposta.codigoRemocao)),
           ),
+          resposta.simulado
+            ? caixaAviso('Esta é uma página de demonstração: o relato não foi enviado nem gravado. Na versão com servidor, ele iria para a moderação.', 'alerta')
+            : null,
           caixaAviso('Guarde o protocolo e o código de remoção: eles são mostrados só agora e permitem apagar o relato a qualquer momento na página “Remover um relato”.', 'alerta'),
           h('p', {}, h('strong', {}, 'Lembre-se: '), 'este envio não substitui a denúncia oficial.'),
           h('div', { class: 'acoes' },

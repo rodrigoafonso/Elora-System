@@ -9,6 +9,12 @@ export class ErroApi extends Error {
 }
 
 async function requisitar(caminho, opcoes = {}) {
+  // Versão estática: a "API" roda no próprio navegador sobre a base DEMO embutida.
+  if (window.__API_LOCAL__) {
+    const [status, corpo] = await window.__API_LOCAL__(caminho, opcoes);
+    if (status >= 400) throw new ErroApi(corpo?.erro ?? 'Os dados não puderam ser carregados.', status, corpo);
+    return corpo;
+  }
   let resposta;
   try {
     resposta = await fetch(caminho, {

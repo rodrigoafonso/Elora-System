@@ -24,6 +24,12 @@ npm test             # 33 testes: domínio, importador, relatos e API
 | `MODERACAO_TOKEN` | — | Liga as rotas de moderação (mín. 24 caracteres) |
 | `CONFIAR_PROXY` | — | `1` para usar `X-Forwarded-For` no limite de envios |
 
+### Versão de demonstração sem servidor
+
+`npm run pagina-estatica` gera `dist/consulta-posto.html`: o app inteiro num único arquivo, com a base DEMO
+embutida e as mesmas regras de busca rodando no navegador. Serve para publicar uma demonstração. Nela o envio de
+relatos é **simulado** (nada é gravado) e o fundo do mapa pode não aparecer, conforme o local onde for aberta.
+
 ## Telas
 
 | Rota | O que tem |
