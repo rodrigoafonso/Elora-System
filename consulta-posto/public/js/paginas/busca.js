@@ -88,6 +88,15 @@ export async function paginaBusca(raiz, ctx) {
     return;
   }
   raiz.append(h('div', { class: 'cartao' }, formularioBusca(ctx)));
+  if (ctx.status.filtros?.coordenadas) {
+    raiz.append(
+      h('a', { href: '/perto', 'data-link': true, class: 'cartao cartao--atalho' },
+        icone('alvo'),
+        h('span', {}, h('strong', {}, 'Postos perto de mim'), h('span', { class: 'secundario' }, 'Use a localização do aparelho ou o seu CEP para ver os postos ao redor, com o indicador de alerta.')),
+        h('span', { class: 'seta', 'aria-hidden': 'true' }, '→'),
+      ),
+    );
+  }
 
   const meta = ctx.status.fonte;
   raiz.append(

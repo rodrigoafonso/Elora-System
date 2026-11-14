@@ -25,7 +25,9 @@ function blocoCadastro(posto, fonte) {
       itemDl('Combustíveis informados', posto.combustiveis),
       itemDl('Autorização', posto.autorizacao?.numero
         ? `${posto.autorizacao.numero}${posto.autorizacao.data ? ` · publicada em ${formatarData(posto.autorizacao.data)}` : ''}` : null),
-      itemDl('Coordenadas', posto.coordenadas ? `${posto.coordenadas.lat.toFixed(5)}, ${posto.coordenadas.lon.toFixed(5)}` : null),
+      itemDl('Localização', posto.coordenadas
+        ? `${posto.coordenadas.lat.toFixed(5)}, ${posto.coordenadas.lon.toFixed(5)}${posto.coordenadasData ? ` (registrada pela ANP no PMQC em ${formatarData(posto.coordenadasData)})` : ''}`
+        : 'Não informada nos dados oficiais'),
     ),
     fonte?.fontes?.cadastro?.observacao ? h('p', { class: 'ajuda' }, fonte.fontes.cadastro.observacao) : null,
     linhaFonte(fonte?.fontes?.cadastro, fonte?.tipo),

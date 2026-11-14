@@ -141,6 +141,7 @@ function resumoPosto(p, fisc) {
     cnpj: p.cnpj ?? null,
     endereco: p.endereco ?? null,
     coordenadas: p.coordenadas ?? null,
+    coordenadasData: p.coordenadasData ?? null,
     bandeira: p.bandeira ?? null,
     // Só a contagem e a data — sem nota, cor ou rótulo de "bom/ruim".
     // Versão estática: o resumo vem pré-calculado porque o histórico é carregado só no detalhe.
@@ -156,4 +157,91 @@ export function detalharPosto(base, id) {
     .filter((f) => f.postoId === id)
     .sort((a, b) => String(b.data).localeCompare(String(a.data)));
   return { posto: p, fiscalizacoes: fisc, alerta: alertaDo(base, p, fisc) };
+}
+
+// --- Postos ao redor -------------------------------------------------------------------------------
+
+export const RAIOS_KM = [1, 2, 5, 10, 20, 50];
+const cacheCep = new WeakMap();
+
+/**
+ * Posição aproximada a partir do CEP, sem serviço externo: média das coordenadas dos postos da base
+ * cujo CEP começa com os mesmos 5 dígitos (ou 4, ou 3, se não houver). Devolve null se não achar.
+ */
+export function localizarPorCep(base, cep) {
+  const d = apenasDigitos(cep);
+  if (d.length !== 8) return null;
+  const postos = base.postos ?? [];
+  if (!cacheCep.has(postos)) {
+    const indice = new Map(); // prefixo -> { lat, lon, n }
+    for (const p of postos) {
+      const c = apenasDigitos(p.endereco?.cep);
+      if (c.length !== 8 || !p.coordenadas) continue;
+      for (const tam of [5, 4, 3]) {
+        const k = c.slice(0, tam);
+        const s = indice.get(k) ?? { lat: 0, lon: 0, n: 0 };
+        s.lat += p.coordenadas.lat;
+        s.lon += p.coordenadas.lon;
+        s.n++;
+        indice.set(k, s);
+      }
+    }
+    cacheCep.set(postos, indice);
+  }
+  const indice = cacheCep.get(postos);
+  for (const tam of [5, 4, 3]) {
+    const s = indice.get(d.slice(0, tam));
+    if (s?.n) {
+      return { lat: Math.round((s.lat / s.n) * 1e5) / 1e5, lon: Math.round((s.lon / s.n) * 1e5) / 1e5, digitos: tam, postosUsados: s.n };
+    }
+  }
+  return null;
+}
+
+/**
+ * Postos com coordenadas dentro do raio, do mais perto para o mais longe.
+ * Também informa o município do posto mais próximo e quantos postos dele não têm localização,
+ * para a pessoa saber que a lista pode estar incompleta.
+ */
+export function buscarProximos(base, { origem, raioKm = 5, limite = 50 }) {
+  const lista = base.fiscalizacoes ?? [];
+  if (!cacheGrupos.has(lista)) cacheGrupos.set(lista, agruparFiscalizacoes(lista));
+  const fiscPorPosto = cacheGrupos.get(lista);
+
+  let maisProximo = null;
+  const dentro = [];
+  for (const p of base.postos ?? []) {
+    if (!p.coordenadas) continue;
+    const km = distanciaKm(origem, p.coordenadas);
+    if (!maisProximo || km < maisProximo.km) maisProximo = { p, km };
+    if (km <= raioKm) dentro.push({ p, km });
+  }
+  dentro.sort((a, b) => a.km - b.km);
+  const itens = dentro.slice(0, limite).map(({ p, km }) => {
+    const fisc = fiscPorPosto.get(p.id) ?? [];
+    const item = resumoPosto(p, fisc);
+    item.alerta = alertaDo(base, p, fisc);
+    item.distanciaKm = Math.round(km * 100) / 100;
+    return item;
+  });
+
+  let municipio = null;
+  if (maisProximo && maisProximo.km <= 30) {
+    const { municipio: nome, uf } = maisProximo.p.endereco ?? {};
+    const doMunicipio = (base.postos ?? []).filter((p) => p.endereco?.municipio === nome && p.endereco?.uf === uf);
+    municipio = { municipio: nome, uf, total: doMunicipio.length, semLocalizacao: doMunicipio.filter((p) => !p.coordenadas).length };
+  }
+  const contagem = { alerta: 0, atencao: 0, sem_alerta: 0, sem_registro: 0 };
+  for (const { p } of dentro) {
+    const nivel = alertaDo(base, p, fiscPorPosto.get(p.id) ?? [])?.nivel;
+    if (nivel) contagem[nivel]++;
+  }
+  return {
+    raioKm,
+    totalNoRaio: dentro.length,
+    itens,
+    porNivel: contagem,
+    maisProximoKm: maisProximo ? Math.round(maisProximo.km * 10) / 10 : null,
+    municipio,
+  };
 }

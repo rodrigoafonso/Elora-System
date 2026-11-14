@@ -5,6 +5,7 @@
 //     --mapeamento caminho/mapeamento.json \
 //     --fonte-cadastro-nome "..." --fonte-cadastro-url https://... --fonte-cadastro-licenca "..." --fonte-cadastro-obtido-em AAAA-MM-DD \
 //     [--fonte-fisc-nome ... --fonte-fisc-url ... --fonte-fisc-licenca ... --fonte-fisc-obtido-em ...] \
+//     [--coordenadas coordenadas.json --fonte-coord-nome ... --fonte-coord-url ... --fonte-coord-licenca ... --fonte-coord-obtido-em ...]
 //     [--fonte-cadastro-observacao ...] [--fonte-fisc-observacao ...] [--encoding latin1] [--saida data/importado/base.json]
 //
 // A importação é recusada sem origem, licença e data de obtenção de cada arquivo.
@@ -13,7 +14,7 @@ import { dirname, extname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { lerCsv } from './csv.js';
 import { lerXlsx } from './xlsx.js';
-import { importar } from './importar.js';
+import { aplicarCoordenadas, importar } from './importar.js';
 import { validarBase } from '../fontes/validarBase.js';
 
 const { values: a } = parseArgs({
@@ -36,6 +37,13 @@ const { values: a } = parseArgs({
     'fonte-fisc-obtido-em': { type: 'string' },
     'fonte-fisc-atualizado-em': { type: 'string' },
     'fonte-fisc-observacao': { type: 'string' },
+    coordenadas: { type: 'string' },
+    'fonte-coord-nome': { type: 'string' },
+    'fonte-coord-url': { type: 'string' },
+    'fonte-coord-licenca': { type: 'string' },
+    'fonte-coord-obtido-em': { type: 'string' },
+    'fonte-coord-atualizado-em': { type: 'string' },
+    'fonte-coord-observacao': { type: 'string' },
   },
 });
 
@@ -69,6 +77,11 @@ try {
     fontes: { cadastro: fonte('cadastro'), fiscalizacoes: fonte('fisc') },
     nome: a.nome,
   });
+  if (a.coordenadas) {
+    const mapa = JSON.parse(await readFile(a.coordenadas, 'utf8'));
+    const n = aplicarCoordenadas(base, mapa, fonte('coord'));
+    avisos.push(`Coordenadas aplicadas a ${n} de ${base.postos.length} postos (${((100 * n) / Math.max(1, base.postos.length)).toFixed(1)}%).`);
+  }
   const problemas = validarBase(base);
   if (problemas.length) throw new Error(`Base gerada é inválida: ${problemas.slice(0, 10).join('; ')}`);
   const destino = resolve(a.saida);

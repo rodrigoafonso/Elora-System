@@ -1,23 +1,11 @@
 import { buscarPostos } from '../api.js';
 import { bolaAlerta, caixaAviso, definirTitulo, enderecoEmLinha, estadoCarregando, estadoErro, formatarCnpj, formatarData, h, icone, legendaAlertas, resumoAlerta, selo } from '../ui.js';
 import { formularioBusca } from './busca.js';
+import { estadoLocal, pedirLocalizacao } from '../localizacao.js';
 
-// Localização autorizada fica só na memória da aba; vai à API arredondada (~1 km) apenas para calcular distância.
-let localizacao = null;
 let modoVisao = 'lista';
 
-function pedirLocalizacao() {
-  return new Promise((resolver, rejeitar) => {
-    if (!('geolocation' in navigator)) return rejeitar(new Error('Seu navegador não oferece localização.'));
-    navigator.geolocation.getCurrentPosition(
-      (p) => resolver({ lat: Math.round(p.coords.latitude * 100) / 100, lon: Math.round(p.coords.longitude * 100) / 100 }),
-      (e) => rejeitar(new Error(e.code === 1 ? 'Permissão de localização negada. A lista continua disponível.' : 'Não foi possível obter sua localização.')),
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
-    );
-  });
-}
-
-function cartaoPosto(p) {
+export function cartaoPosto(p) {
   const detalhes = [];
   if (p.cnpj) detalhes.push(h('span', {}, h('span', { class: 'rotulo' }, 'CNPJ '), formatarCnpj(p.cnpj)));
   if (p.bandeira) detalhes.push(h('span', {}, h('span', { class: 'rotulo' }, 'Bandeira '), p.bandeira));
@@ -58,7 +46,7 @@ function carregarLeaflet() {
   return leafletPromessa;
 }
 
-async function montarMapa(container, itens, avisoMapa) {
+export async function montarMapa(container, itens, avisoMapa, { raioKm } = {}) {
   const comCoord = itens.filter((p) => p.coordenadas);
   const semCoord = itens.length - comCoord.length;
   avisoMapa.replaceChildren();
@@ -99,18 +87,22 @@ async function montarMapa(container, itens, avisoMapa) {
       .bindTooltip(`${p.nome} — ${p.alerta?.rotulo ?? ''}`)
       .addTo(mapa);
   }
-  if (localizacao) {
-    L.circleMarker([localizacao.lat, localizacao.lon], { radius: 7, color: '#1d3a5f', weight: 3, fillColor: '#ffffff', fillOpacity: 1 })
+  if (estadoLocal.posicao) {
+    L.circleMarker([estadoLocal.posicao.lat, estadoLocal.posicao.lon], { radius: 7, color: '#1d3a5f', weight: 3, fillColor: '#ffffff', fillOpacity: 1 })
       .bindTooltip('Sua localização aproximada')
       .addTo(mapa);
   }
-  mapa.fitBounds(limites, { padding: [30, 30], maxZoom: 15 });
+  if (estadoLocal.posicao && raioKm) {
+    const centro = L.latLng(estadoLocal.posicao.lat, estadoLocal.posicao.lon);
+    mapa.fitBounds(centro.toBounds(raioKm * 2000), { padding: [10, 10] });
+    L.circle(centro, { radius: raioKm * 1000, color: '#1d3a5f', weight: 1, fillOpacity: 0.04, interactive: false }).addTo(mapa);
+  } else mapa.fitBounds(limites, { padding: [30, 30], maxZoom: 15 });
 }
 
-function legendaMapa() {
+export function legendaMapa() {
   return h('div', { class: 'legenda', 'aria-label': 'Legenda do mapa' },
     h('p', {}, 'A cor de cada ponto segue o indicador de alerta (veja “O que significam as cores”).'),
-    localizacao ? h('p', {}, h('span', { class: 'legenda__ponto legenda__ponto--voce', 'aria-hidden': 'true' }), 'Sua localização aproximada') : null,
+    estadoLocal.posicao ? h('p', {}, h('span', { class: 'legenda__ponto legenda__ponto--voce', 'aria-hidden': 'true' }), 'Sua localização aproximada') : null,
     h('p', { class: 'ajuda' }, 'Clique em um ponto para ver o nome, o indicador e abrir os detalhes.'),
   );
 }
@@ -131,8 +123,8 @@ export async function paginaResultados(raiz, ctx) {
   const params = Object.fromEntries(q);
   delete params.lat;
   delete params.lon;
-  if (localizacao) Object.assign(params, { lat: localizacao.lat, lon: localizacao.lon });
-  if (params.ordenar === 'distancia' && !localizacao) delete params.ordenar;
+  if (estadoLocal.posicao) Object.assign(params, { lat: estadoLocal.posicao.lat, lon: estadoLocal.posicao.lon });
+  if (params.ordenar === 'distancia' && !estadoLocal.posicao) delete params.ordenar;
 
   let resposta;
   try {
@@ -197,21 +189,22 @@ export async function paginaResultados(raiz, ctx) {
   const ordenar = h('select', { id: 'ordenar', name: 'ordenar' },
     h('option', { value: 'relevancia' }, 'Relevância'),
     h('option', { value: 'nome' }, 'Nome (A–Z)'),
-    comMapa ? h('option', { value: 'distancia', disabled: !localizacao }, localizacao ? 'Distância' : 'Distância (autorize a localização)') : null,
+    comMapa ? h('option', { value: 'distancia', disabled: !estadoLocal.posicao }, estadoLocal.posicao ? 'Distância' : 'Distância (autorize a localização)') : null,
   );
-  ordenar.value = q.get('ordenar') && (q.get('ordenar') !== 'distancia' || localizacao) ? q.get('ordenar') : 'relevancia';
+  ordenar.value = q.get('ordenar') && (q.get('ordenar') !== 'distancia' || estadoLocal.posicao) ? q.get('ordenar') : 'relevancia';
   ordenar.addEventListener('change', () => {
     const novo = new URLSearchParams(q);
     novo.set('ordenar', ordenar.value);
     ctx.navegar(`/resultados?${novo}`, { substituir: true });
   });
 
-  const botaoLocal = h('button', { type: 'button', class: 'botao botao--secundario' }, icone('alvo'), localizacao ? 'Atualizar minha localização' : 'Usar minha localização');
+  const botaoLocal = h('button', { type: 'button', class: 'botao botao--secundario' }, icone('alvo'), estadoLocal.posicao ? 'Atualizar minha localização' : 'Usar minha localização');
   botaoLocal.addEventListener('click', async () => {
     botaoLocal.disabled = true;
     msgLocal.textContent = 'Solicitando permissão de localização…';
     try {
-      localizacao = await pedirLocalizacao();
+      estadoLocal.posicao = await pedirLocalizacao();
+      estadoLocal.origem = 'gps';
       const novo = new URLSearchParams(q);
       novo.set('ordenar', 'distancia');
       ctx.navegar(`/resultados?${novo}`, { substituir: true });
@@ -228,7 +221,7 @@ export async function paginaResultados(raiz, ctx) {
       comMapa ? botaoLocal : null,
     ),
     comMapa
-      ? h('p', { class: 'ajuda' }, 'A localização é opcional, usada só para calcular distâncias de forma aproximada e não é armazenada.')
+      ? h('p', { class: 'ajuda' }, 'A localização é opcional, usada só para calcular distâncias e não é armazenada. Para ver tudo ao redor de você, use “Perto de mim”.')
       : h('p', { class: 'ajuda' }, 'A base oficial da ANP não informa a localização geográfica (coordenadas) dos postos, por isso o mapa e a ordenação por distância não estão disponíveis. Use o endereço de cada posto.'),
     msgLocal,
     legendaAlertas(ctx.status?.alerta),

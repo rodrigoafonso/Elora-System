@@ -28,6 +28,13 @@ export function lerData(valor) {
   return paraDataIso(t);
 }
 
+/** CEP com 8 dígitos. Planilhas costumam perder o zero inicial (ex.: 4563002 -> 04563002). */
+export function normalizarCep(valor) {
+  const d = apenasDigitos(valor);
+  if (d.length === 7) return `0${d}`;
+  return d.length === 8 ? d : null;
+}
+
 /** Filtro opcional de linhas: { coluna, valores: [...] } */
 function passaFiltro(linha, filtro) {
   if (!filtro) return true;
@@ -71,7 +78,7 @@ export function importar({ linhasCadastro, linhasFiscalizacoes = [], mapeamento,
         numero: pegar(linha, mc.numero),
         complemento: pegar(linha, mc.complemento),
         bairro: pegar(linha, mc.bairro),
-        cep: pegar(linha, mc.cep),
+        cep: normalizarCep(pegar(linha, mc.cep)),
         municipio: pegar(linha, mc.municipio),
         uf: pegar(linha, mc.uf)?.toUpperCase() ?? null,
       },
@@ -157,3 +164,26 @@ export function importar({ linhasCadastro, linhasFiscalizacoes = [], mapeamento,
   };
   return { base, avisos };
 }
+
+/**
+ * Preenche as coordenadas dos postos a partir de um mapa { cnpj: [lat, lon, data] } (ex.: PMQC).
+ * Só preenche quem não tem coordenada própria. Registra a fonte em meta.fontes.coordenadas.
+ */
+export function aplicarCoordenadas(base, mapa, fonte) {
+  const erros = validarMetaFonte(fonte, 'fonte das coordenadas');
+  if (erros.length) throw new Error(`Informe origem, licença e data das coordenadas: ${erros.join('; ')}`);
+  let aplicadas = 0;
+  for (const p of base.postos) {
+    const c = mapa[p.cnpj];
+    if (!c || p.coordenadas) continue;
+    const [lat, lon, data] = c;
+    if (!coordenadaValida(lat, lon)) continue;
+    p.coordenadas = { lat, lon };
+    p.coordenadasData = data ?? null;
+    aplicadas++;
+  }
+  base.meta.fontes.coordenadas = fonte;
+  base.meta.camposConfiaveis.coordenadas = aplicadas > 0;
+  return aplicadas;
+}
+

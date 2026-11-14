@@ -7,7 +7,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { filtrosDisponiveis, referenciaAlerta } from '../server/dominio/busca.js';
+import { filtrosDisponiveis, RAIOS_KM, referenciaAlerta } from '../server/dominio/busca.js';
 import { calcularAlerta, NIVEIS } from '../server/dominio/alerta.js';
 import { LINKS_OFICIAIS } from '../server/config.js';
 import { RETENCAO } from '../server/relatos/repositorio.js';
@@ -67,6 +67,7 @@ const status = {
   fonte: { tipo: base.meta.tipo, nome: base.meta.nome, aviso: base.meta.aviso, fontes: base.meta.fontes, totalPostos: base.postos.length },
   // Na versão estática o histórico é carregado só no detalhe, então o filtro por período fica de fora.
   filtros: oficial ? { ...filtrosDisponiveis(base), periodoFiscalizacao: null } : filtrosDisponiveis(base),
+  raiosKm: RAIOS_KM,
   ufs: 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' '),
   linksOficiais: LINKS_OFICIAIS,
   relatos: { tiposProblema: TIPOS_PROBLEMA, limites: LIMITES, retencaoDias: RETENCAO },
@@ -84,7 +85,7 @@ const corpoModulos = ordem
 const idxApp = corpoModulos.findIndex((c) => c.startsWith('// public/js/app.js'));
 const arquivosDados = new Map(); // caminho publicado -> conteúdo
 if (oficial) {
-  const CAMPOS = ['cnpj', 'razaoSocial', 'logradouro', 'complemento', 'bairro', 'cep', 'municipio', 'uf', 'bandeira', 'bandeiraDesde', 'autorizacaoNumero', 'autorizacaoData', 'totalFisc', 'ultimaFisc', 'alertaNivel', 'alertaData', 'alertaMotivo'];
+  const CAMPOS = ['cnpj', 'razaoSocial', 'logradouro', 'complemento', 'bairro', 'cep', 'municipio', 'uf', 'bandeira', 'bandeiraDesde', 'autorizacaoNumero', 'autorizacaoData', 'totalFisc', 'ultimaFisc', 'alertaNivel', 'alertaData', 'alertaMotivo', 'lat', 'lon', 'coordData'];
   const ref = referenciaAlerta(base);
   const fiscPorPosto = new Map();
   for (const f of base.fiscalizacoes) {
@@ -101,7 +102,7 @@ if (oficial) {
     }
     const e = p.endereco;
     const a = calcularAlerta(fisc, ref);
-    return [p.cnpj, p.razaoSocial, e.logradouro, e.complemento, e.bairro, e.cep, e.municipio, e.uf, p.bandeira, p.bandeiraDesde, p.autorizacao?.numero, p.autorizacao?.data, fisc.length, fisc[0]?.data ?? null, a.nivel, a.data, a.motivo];
+    return [p.cnpj, p.razaoSocial, e.logradouro, e.complemento, e.bairro, e.cep, e.municipio, e.uf, p.bandeira, p.bandeiraDesde, p.autorizacao?.numero, p.autorizacao?.data, fisc.length, fisc[0]?.data ?? null, a.nivel, a.data, a.motivo, p.coordenadas?.lat ?? null, p.coordenadas?.lon ?? null, p.coordenadasData ?? null];
   });
   arquivosDados.set('dados/postos.json', JSON.stringify({ meta: { ...base.meta, referenciaAlerta: ref }, campos: CAMPOS, postos: linhas }));
   for (const [uf, dados] of porUf) arquivosDados.set(`dados/fisc-${uf}.json`, JSON.stringify(dados));

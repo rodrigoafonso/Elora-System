@@ -7,7 +7,7 @@ import { timingSafeEqual } from 'node:crypto';
 import { LINKS_OFICIAIS } from './config.js';
 import { CABECALHOS_SEGURANCA, enviarJson, ErroHttp, lerJson, LimitadorDeEnvios } from './api/http.js';
 import { FonteIndisponivelError } from './fontes/fonteArquivo.js';
-import { ORDENACOES } from './dominio/busca.js';
+import { ORDENACOES, RAIOS_KM } from './dominio/busca.js';
 import { dataIsoValida, coordenadaValida } from './dominio/texto.js';
 import { RETENCAO } from './relatos/repositorio.js';
 import { NIVEIS } from './dominio/alerta.js';
@@ -86,6 +86,7 @@ export function criarApp({ fonte, relatos, config }) {
           : null,
         filtros: info.filtros,
         ufs: UFS,
+        raiosKm: RAIOS_KM,
         linksOficiais: LINKS_OFICIAIS,
         relatos: { tiposProblema: TIPOS_PROBLEMA, limites: LIMITES, retencaoDias: RETENCAO },
         alerta: info.disponivel ? { niveis: NIVEIS, referencia: info.referenciaAlerta } : null,
@@ -95,6 +96,25 @@ export function criarApp({ fonte, relatos, config }) {
     ['GET', /^\/api\/postos$/, async (req, url) => {
       const resultado = await fonte.buscar(lerCriterios(url.searchParams));
       return { ...resultado, fonte: fonteResumo(fonte) };
+    }],
+
+    ['GET', /^\/api\/proximos$/, async (_req, url) => {
+      const p = url.searchParams;
+      const raioKm = RAIOS_KM.includes(Number(p.get('raio'))) ? Number(p.get('raio')) : 5;
+      let origem = null;
+      let porCep = null;
+      if (p.has('cep')) {
+        porCep = await fonte.localizarCep(p.get('cep'));
+        if (!porCep) throw new ErroHttp(404, 'Não foi possível localizar esse CEP: os dados oficiais não trazem a localização de postos dessa região, ou o CEP está incompleto. Confira os 8 números ou use a busca por cidade.');
+        origem = { lat: porCep.lat, lon: porCep.lon };
+      } else {
+        const lat = Number(p.get('lat'));
+        const lon = Number(p.get('lon'));
+        if (!coordenadaValida(lat, lon)) throw new ErroHttp(400, 'Localização inválida.');
+        origem = { lat, lon };
+      }
+      const resultado = await fonte.proximos({ origem, raioKm, limite: 60 });
+      return { ...resultado, origem, porCep, fonte: fonteResumo(fonte) };
     }],
 
     ['GET', /^\/api\/postos\/([\w-]{1,80})$/, async (_req, _url, [id]) => {

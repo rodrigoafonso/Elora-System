@@ -3,6 +3,7 @@ import { obterStatus } from './api.js';
 import { estadoCarregando, estadoErro, h } from './ui.js';
 import { paginaBusca } from './paginas/busca.js';
 import { paginaResultados } from './paginas/resultados.js';
+import { paginaPerto } from './paginas/perto.js';
 import { paginaPosto } from './paginas/posto.js';
 import { paginaRelatar } from './paginas/relatar.js';
 import { paginaRemover } from './paginas/remover.js';
@@ -18,6 +19,7 @@ const LINKS_RESERVA = {
 const ROTAS = [
   [/^\/$/, paginaBusca],
   [/^\/resultados$/, paginaResultados],
+  [/^\/perto$/, paginaPerto],
   [/^\/posto\/([\w-]{1,80})$/, paginaPosto],
   [/^\/relatar$/, paginaRelatar],
   [/^\/remover$/, paginaRemover],

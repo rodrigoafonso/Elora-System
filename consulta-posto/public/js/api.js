@@ -39,6 +39,7 @@ export function obterStatus() {
 }
 
 export const buscarPostos = (params) => requisitar(`/api/postos?${new URLSearchParams(params)}`);
+export const buscarProximos = (params) => requisitar(`/api/proximos?${new URLSearchParams(params)}`);
 export const obterPosto = (id) => requisitar(`/api/postos/${encodeURIComponent(id)}`);
 export const obterRelatos = (id) => requisitar(`/api/postos/${encodeURIComponent(id)}/relatos`);
 export const enviarRelato = (dados) => requisitar('/api/relatos', { method: 'POST', body: JSON.stringify(dados) });

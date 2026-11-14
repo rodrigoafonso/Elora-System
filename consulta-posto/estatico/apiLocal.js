@@ -1,7 +1,7 @@
 // API que roda no navegador, usada só na versão estática (página publicada sem servidor).
 // Reaproveita as mesmas regras de busca do servidor (server/dominio/busca.js) sobre a base DEMO embutida.
 // Relatos não são enviados a lugar nenhum: as respostas vêm marcadas com `simulado: true`.
-import { buscarPostos, detalharPosto, ORDENACOES } from '../server/dominio/busca.js';
+import { buscarPostos, buscarProximos, detalharPosto, localizarPorCep, ORDENACOES, RAIOS_KM } from '../server/dominio/busca.js';
 import { coordenadaValida, dataIsoValida } from '../server/dominio/texto.js';
 import { NIVEIS } from '../server/dominio/alerta.js';
 
@@ -21,7 +21,8 @@ function desempacotarPostos(arquivo) {
       razaoSocial: v[i.razaoSocial],
       nomeFantasia: null,
       endereco: { logradouro: v[i.logradouro], numero: null, complemento: v[i.complemento], bairro: v[i.bairro], cep: v[i.cep], municipio: v[i.municipio], uf: v[i.uf] },
-      coordenadas: null,
+      coordenadas: v[i.lat] != null && v[i.lon] != null ? { lat: v[i.lat], lon: v[i.lon] } : null,
+      coordenadasData: v[i.coordData] ?? null,
       bandeira: v[i.bandeira],
       bandeiraDesde: v[i.bandeiraDesde],
       situacaoCadastral: null,
@@ -105,7 +106,7 @@ export function instalarApiLocal({ base: baseEmbutida, status, dados }) {
     let m;
     if (metodo === 'GET' && url.pathname === '/api/status') return [200, status];
     let base;
-    if (metodo === 'GET' && url.pathname.startsWith('/api/postos')) {
+    if (metodo === 'GET' && (url.pathname.startsWith('/api/postos') || url.pathname === '/api/proximos')) {
       try {
         base = await obterBase();
       } catch {
@@ -113,6 +114,22 @@ export function instalarApiLocal({ base: baseEmbutida, status, dados }) {
       }
     }
     const resumoFonte = { tipo: status.fonte.tipo, aviso: status.fonte.aviso, fontes: status.fonte.fontes };
+    if (metodo === 'GET' && url.pathname === '/api/proximos') {
+      // Tudo calculado aqui no navegador: a posição da pessoa não sai do aparelho.
+      const p = url.searchParams;
+      const raioKm = RAIOS_KM.includes(Number(p.get('raio'))) ? Number(p.get('raio')) : 5;
+      let origem;
+      let porCep = null;
+      if (p.has('cep')) {
+        porCep = localizarPorCep(base, p.get('cep'));
+        if (!porCep) return erro(404, 'Não foi possível localizar esse CEP: os dados oficiais não trazem a localização de postos dessa região, ou o CEP está incompleto. Confira os 8 números ou use a busca por cidade.');
+        origem = { lat: porCep.lat, lon: porCep.lon };
+      } else {
+        origem = { lat: Number(p.get('lat')), lon: Number(p.get('lon')) };
+        if (!coordenadaValida(origem.lat, origem.lon)) return erro(400, 'Localização inválida.');
+      }
+      return [200, { ...buscarProximos(base, { origem, raioKm, limite: 60 }), origem, porCep, fonte: resumoFonte }];
+    }
     if (metodo === 'GET' && url.pathname === '/api/postos') {
       const c = criterios(url.searchParams);
       if (c.erro) return erro(400, c.erro);

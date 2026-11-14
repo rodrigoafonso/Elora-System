@@ -284,3 +284,16 @@ input:hover, select:hover, textarea:hover { border-color: var(--texto-suave); }
 .legenda-alertas li { display: grid; grid-template-columns: minmax(9.5rem, max-content) 1fr; gap: 0.6rem; align-items: start; }
 .legenda-alertas li span { min-width: 0; white-space: normal; }
 @media (max-width: 480px) { .legenda-alertas li { grid-template-columns: 1fr; gap: 0.15rem; } }
+
+/* Perto de mim */
+.cartao--atalho { display: flex; align-items: center; gap: 0.9rem; text-decoration: none; color: var(--texto); border: 2px solid var(--primaria); }
+.cartao--atalho > .icone { width: 1.8rem; height: 1.8rem; color: var(--primaria); }
+.cartao--atalho span { display: flex; flex-direction: column; min-width: 0; }
+.cartao--atalho .seta { margin-left: auto; font-size: 1.4rem; color: var(--primaria); }
+.cartao--atalho:hover { background: var(--superficie-suave); }
+.perto-opcoes { display: grid; gap: 1.25rem; }
+.perto-opcao h2 { font-size: 1.05rem; }
+.perto-opcao .linha input { flex: 1 1 9rem; max-width: 14rem; }
+.resumo-niveis { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; }
+.resumo-niveis .indicador strong { font-weight: 600; }
+@media (min-width: 720px) { .perto-opcoes { grid-template-columns: 1fr 1fr; } .perto-opcoes > .campo, .perto-opcoes > p { grid-column: 1 / -1; } }

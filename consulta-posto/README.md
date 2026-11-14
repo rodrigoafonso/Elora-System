@@ -12,7 +12,7 @@ Precisa só de **Node.js 22+**. Não há dependências para instalar.
 ```bash
 cd consulta-posto
 npm start            # http://127.0.0.1:3000 (base DEMO)
-npm test             # 35 testes: domínio, importador (CSV/XLSX), relatos e API
+npm test             # 47 testes: domínio, alerta, perto de mim, importador (CSV/XLSX), relatos e API
 ```
 
 | Variável | Padrão | Para quê |
@@ -98,7 +98,19 @@ O mapeamento de colunas conferido está em `server/importador/mapeamento.anp.jso
 (postos fechados) e de outros segmentos ficam de fora.
 
 **Não há API oficial em tempo real** e o app não faz scraping. O app oficial “ANP com VC – Postos” é usado só
-como link. Como a base não traz coordenadas, o mapa e a ordenação por distância ficam ocultos com dados reais.
+como link.
+
+### Localização dos postos (mapa e “Perto de mim”)
+
+O cadastro não traz coordenadas. Elas vêm do [PMQC](https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/pmqc-programa-de-monitoramento-da-qualidade-dos-combustiveis)
+(Programa de Monitoramento da Qualidade dos Combustíveis, ANP): segundo os metadados, as colunas Latitude/Longitude são
+a posição do posto (SIRGAS 2000). Usamos a coleta mais recente de cada CNPJ entre 2016 e hoje. Cobertura em 14/11/2026:
+**30.862 de 45.840 postos (67,3%)**; AC, AM, MT, PI, RO e RR ficam sem localização. Licença não especificada nos
+metadados (mesma pendência do cadastro).
+
+“Perto de mim” aceita a localização do aparelho (GPS, arredondada a ~100 m) ou o **CEP**: a posição é a média dos postos
+com o mesmo prefixo de CEP (5, 4 ou 3 dígitos), sem serviço externo. A tela avisa quantos postos do município ficaram
+de fora por não terem localização. O arquivo oficial perde o zero inicial de alguns CEPs (ex.: 4563002); o importador corrige.
 
 ### Importar outros arquivos
 

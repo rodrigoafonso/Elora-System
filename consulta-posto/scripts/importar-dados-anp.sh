@@ -21,6 +21,21 @@ data_pagina() {
     | grep -oE "$2 ?[0-9]{1,2}/[0-9]{1,2}/ ?[0-9]{4}" | head -1 \
     | grep -oE '[0-9]{1,2}/[0-9]{1,2}/ ?[0-9]{4}' | tr -d ' ' | awk -F/ '{printf "%04d-%02d-%02d", $3, $2, $1}'
 }
+# Coordenadas: PMQC (posição do posto em cada coleta de amostra). Na primeira vez baixa 2016 em diante
+# (~250 MB em ZIP); depois, só os arquivos do ano corrente. Apague o JSON para refazer do zero.
+PAG_PMQC="https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/pmqc-programa-de-monitoramento-da-qualidade-dos-combustiveis"
+COORD="data/importado/coordenadas-pmqc.json"
+ANO="$(date -u +%Y)"
+LINKS="$(curl -fsSL --retry 4 --retry-all-errors --retry-delay 3 -m 60 "$PAG_PMQC" | grep -oE 'https://www\.gov\.br/anp/[^"]*/pmqc_[0-9_]+\.zip' | sort -u)"
+if [ -s "$COORD" ]; then LINKS="$(echo "$LINKS" | grep "pmqc_${ANO}" || true)"; fi
+for z in $LINKS; do
+  echo "PMQC: $(basename "$z")"
+  baixar "$z" "$TMP/pmqc.zip"
+  mkdir -p "$TMP/pmqc" && unzip -o -q -j "$TMP/pmqc.zip" '*.csv' -d "$TMP/pmqc"
+  node server/importador/cli-coordenadas.js --saida "$COORD" "$TMP"/pmqc/*.csv
+  rm -rf "$TMP/pmqc" "$TMP/pmqc.zip"
+done
+
 ATU_CAD="$(data_pagina "$PAG_CAD" 'csv\)[^0-9]{0,8}atualizado em' || true)"
 ATU_FISC="$(data_pagina "$PAG_FISC" '\(atualizado em' || true)"
 HOJE="$(date -u +%F)"
@@ -39,4 +54,10 @@ node server/importador/cli.js \
   --fonte-fisc-licenca "Licença aberta indicada nos metadados (Creative Commons Atribuição, CC0, ODbL ou PDDL)" \
   --fonte-fisc-obtido-em "$HOJE" ${ATU_FISC:+--fonte-fisc-atualizado-em "$ATU_FISC"} \
   --fonte-fisc-observacao "Segundo a ANP, os agentes autuados têm direito ao contraditório e à ampla defesa; somente após o julgamento definitivo do processo administrativo fica comprovado se o estabelecimento cometeu ou não as infrações indicadas. Os dados são publicados com cerca de dois meses de defasagem." \
+  --coordenadas "$COORD" \
+  --fonte-coord-nome "ANP — Programa de Monitoramento da Qualidade dos Combustíveis (PMQC), posição do posto nas coletas" \
+  --fonte-coord-url "$PAG_PMQC" \
+  --fonte-coord-licenca "Dados abertos da ANP; licença não especificada nos metadados do conjunto — uso com citação da fonte" \
+  --fonte-coord-obtido-em "$HOJE" \
+  --fonte-coord-observacao "Latitude/longitude do posto (SIRGAS 2000) registradas na coleta mais recente do PMQC entre 2016 e hoje. Nem todo posto foi visitado pelo programa, então parte dos postos não tem localização." \
   --saida data/importado/base.json

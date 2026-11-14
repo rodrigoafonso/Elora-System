@@ -4,10 +4,12 @@
 //   info()            -> { disponivel, meta, filtros, erro? }
 //   buscar(criterios) -> { total, pagina, porPagina, itens, buscaPorCnpj }
 //   obterPosto(id)    -> { posto, fiscalizacoes } | null
+//   proximos({ origem, raioKm, limite }) -> { itens, totalNoRaio, municipio, … }
+//   localizarCep(cep) -> { lat, lon, digitos, postosUsados } | null
 //   postoExiste(id)   -> boolean
 // Toda fonte deve informar em meta: tipo ('demo' | 'oficial'), origem, licença e datas de obtenção/atualização.
 import { readFile } from 'node:fs/promises';
-import { buscarPostos, detalharPosto, filtrosDisponiveis, referenciaAlerta } from '../dominio/busca.js';
+import { buscarPostos, buscarProximos, detalharPosto, filtrosDisponiveis, localizarPorCep, referenciaAlerta } from '../dominio/busca.js';
 import { validarBase } from './validarBase.js';
 
 export class FonteIndisponivelError extends Error {}
@@ -51,6 +53,14 @@ export class FonteArquivo {
 
   async buscar(criterios) {
     return buscarPostos(this.#exigirBase(), criterios);
+  }
+
+  async proximos(criterios) {
+    return buscarProximos(this.#exigirBase(), criterios);
+  }
+
+  async localizarCep(cep) {
+    return localizarPorCep(this.#exigirBase(), cep);
   }
 
   postoExiste(id) {

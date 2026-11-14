@@ -25,6 +25,7 @@ export function validarBase(base) {
   if (meta.camposConfiaveis?.fiscalizacoes) {
     erros.push(...validarMetaFonte(meta.fontes?.fiscalizacoes, 'meta.fontes.fiscalizacoes'));
   }
+  if (meta.fontes?.coordenadas) erros.push(...validarMetaFonte(meta.fontes.coordenadas, 'meta.fontes.coordenadas'));
   if (!Array.isArray(base.postos)) erros.push('postos deve ser uma lista');
   if (!Array.isArray(base.fiscalizacoes)) erros.push('fiscalizacoes deve ser uma lista');
   const ids = new Set();
