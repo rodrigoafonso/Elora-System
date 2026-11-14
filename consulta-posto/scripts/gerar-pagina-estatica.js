@@ -7,7 +7,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { filtrosDisponiveis, RAIOS_KM, referenciaAlerta } from '../server/dominio/busca.js';
+import { filtrosDisponiveis, numerosDaBase, RAIOS_KM, referenciaAlerta } from '../server/dominio/busca.js';
 import { calcularAlerta, NIVEIS } from '../server/dominio/alerta.js';
 import { LINKS_OFICIAIS } from '../server/config.js';
 import { RETENCAO } from '../server/relatos/repositorio.js';
@@ -72,6 +72,7 @@ const status = {
   linksOficiais: LINKS_OFICIAIS,
   relatos: { tiposProblema: TIPOS_PROBLEMA, limites: LIMITES, retencaoDias: RETENCAO },
   alerta: { niveis: NIVEIS, referencia: referenciaAlerta(base) },
+  numeros: numerosDaBase(base),
 };
 
 const json = (v) => JSON.stringify(v).replace(/</g, '\\u003c');
@@ -122,8 +123,11 @@ const corpoHtml = html
   .slice(html.indexOf('<body>') + 6, html.indexOf('</body>'))
   .replace('<a class="pular" href="#conteudo">', '<a class="pular" href="#conteudo">');
 
-const pagina = `<title>Consulta Posto</title>
-<meta name="description" content="Consulta Posto: projeto independente para consultar informações públicas sobre postos de combustíveis no Brasil. Versão de demonstração." />
+const pagina = `<title>Raio-X do Posto</title>
+<meta name="description" content="Raio-X do Posto: veja o histórico oficial de fiscalizações da ANP de qualquer posto de combustível antes de abastecer. Projeto independente." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" />
 <style>
 /* Leaflet 1.9.4 — BSD-2-Clause, (c) Volodymyr Agafonkin */
 ${leafletCss}

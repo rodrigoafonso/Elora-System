@@ -245,3 +245,25 @@ export function buscarProximos(base, { origem, raioKm = 5, limite = 50 }) {
     municipio,
   };
 }
+
+// --- Números da base (tela inicial) ---------------------------------------------------------------
+const cacheNumeros = new WeakMap();
+
+/** Totais exibidos na abertura: postos, fiscalizações, com localização e por nível de alerta. */
+export function numerosDaBase(base) {
+  const postos = base.postos ?? [];
+  if (cacheNumeros.has(postos)) return cacheNumeros.get(postos);
+  const lista = base.fiscalizacoes ?? [];
+  if (!cacheGrupos.has(lista)) cacheGrupos.set(lista, agruparFiscalizacoes(lista));
+  const grupos = cacheGrupos.get(lista);
+  const porNivel = { alerta: 0, atencao: 0, sem_alerta: 0, sem_registro: 0 };
+  let comLocalizacao = 0;
+  for (const p of postos) {
+    if (p.coordenadas) comLocalizacao++;
+    const nivel = alertaDo(base, p, grupos.get(p.id) ?? [])?.nivel;
+    if (nivel) porNivel[nivel]++;
+  }
+  const numeros = { postos: postos.length, fiscalizacoes: lista.length, comLocalizacao, porNivel };
+  cacheNumeros.set(postos, numeros);
+  return numeros;
+}

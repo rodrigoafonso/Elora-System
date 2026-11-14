@@ -1,9 +1,9 @@
-# Consulta Posto (MVP)
+# Raio-X do Posto (MVP)
 
 App web responsivo, em português, para consultar **informações públicas sobre postos de combustíveis**
 (cadastro e histórico de fiscalizações), sempre com **fonte e data** visíveis.
 
-> **Projeto independente.** Não é um serviço da ANP. **A base que vem com o projeto é DEMO: os dados não são reais.**
+> Nome anterior: Consulta Posto. **Projeto independente.** Não é um serviço da ANP. **A base que vem com o projeto é DEMO: os dados não são reais.**
 
 ## Rodar
 

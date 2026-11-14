@@ -139,7 +139,7 @@ test('pedido de remoção por terceiros exige motivo e e-mail', async () => {
 test('arquivos estáticos: SPA, bloqueio de travessia de diretório e tipo de conteúdo', async () => {
   const r = await fetch(`${url}/posto/demo-001`);
   assert.equal(r.status, 200);
-  assert.match(await r.text(), /Consulta Posto/);
+  assert.match(await r.text(), /Raio-X do Posto/);
   assert.equal((await fetch(`${url}/..%2f..%2fpackage.json`)).status, 404);
   assert.equal((await fetch(`${url}/nao-existe.js`)).status, 404);
   assert.match((await fetch(`${url}/js/app.js`)).headers.get('content-type'), /javascript/);

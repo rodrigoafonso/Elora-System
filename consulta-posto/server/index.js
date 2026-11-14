@@ -20,5 +20,5 @@ if (!config.tokenModeracao) console.log('Moderação desligada (defina MODERACAO
 setInterval(() => relatos.aplicarRetencao().catch(console.error), 24 * 60 * 60 * 1000).unref();
 
 criarApp({ fonte, relatos, config }).listen(config.porta, config.host, () => {
-  console.log(`Consulta Posto em http://${config.host}:${config.porta}`);
+  console.log(`Raio-X do Posto em http://${config.host}:${config.porta}`);
 });

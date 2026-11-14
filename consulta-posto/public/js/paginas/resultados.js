@@ -1,30 +1,28 @@
 import { buscarPostos } from '../api.js';
-import { bolaAlerta, caixaAviso, definirTitulo, enderecoEmLinha, estadoCarregando, estadoErro, formatarCnpj, formatarData, h, icone, legendaAlertas, resumoAlerta, selo } from '../ui.js';
+import { bolaAlerta, caixaAviso, definirTitulo, enderecoEmLinha, estadoCarregando, estadoErro, formatarCnpj, formatarData, h, icone, legendaAlertas, resumoAlerta, selo, seloAlerta } from '../ui.js';
 import { formularioBusca } from './busca.js';
 import { estadoLocal, pedirLocalizacao } from '../localizacao.js';
 
 let modoVisao = 'lista';
 
 export function cartaoPosto(p) {
-  const detalhes = [];
-  if (p.cnpj) detalhes.push(h('span', {}, h('span', { class: 'rotulo' }, 'CNPJ '), formatarCnpj(p.cnpj)));
-  if (p.bandeira) detalhes.push(h('span', {}, h('span', { class: 'rotulo' }, 'Bandeira '), p.bandeira));
-  if (p.coordenadas) {
-    detalhes.push(h('span', {}, h('span', { class: 'rotulo' }, 'Coordenadas '), `${p.coordenadas.lat.toFixed(5)}, ${p.coordenadas.lon.toFixed(5)}`));
-  }
-  return h('li', { class: 'cartao cartao--posto' },
-    h('h3', {}, h('a', { href: `/posto/${p.id}`, 'data-link': true }, p.nome)),
-    p.alerta ? h('p', { class: 'linha-alerta' }, bolaAlerta(p.alerta), h('span', { class: 'secundario' }, resumoAlerta(p.alerta))) : null,
-    p.razaoSocial && p.razaoSocial !== p.nome ? h('p', { class: 'secundario' }, p.razaoSocial) : null,
-    h('p', { class: 'endereco' }, icone('pino'), h('span', {}, enderecoEmLinha(p.endereco), ' — ', h('strong', {}, `${p.endereco?.municipio ?? '?'}/${p.endereco?.uf ?? '?'}`))),
-    detalhes.length ? h('p', { class: 'detalhes' }, detalhes) : null,
-    h('p', { class: 'resumo-fisc' },
-      p.fiscalizacoesRegistradas
-        ? `${p.fiscalizacoesRegistradas} fiscalização(ões) registrada(s) nesta base · última em ${formatarData(p.ultimaFiscalizacao)}`
-        : 'Nenhuma fiscalização encontrada nesta base',
-      p.distanciaKm !== undefined ? h('span', { class: 'distancia' }, ` · ${p.distanciaKm.toLocaleString('pt-BR')} km de você (aprox.)`) : null,
+  const nivel = p.alerta?.nivel ?? 'sem_registro';
+  const meta = [];
+  if (p.cnpj) meta.push(formatarCnpj(p.cnpj));
+  if (p.bandeira) meta.push(p.bandeira);
+  meta.push(p.fiscalizacoesRegistradas ? `${p.fiscalizacoesRegistradas} fiscalização(ões) · última ${formatarData(p.ultimaFiscalizacao)}` : 'Sem fiscalizações na base');
+  return h('li', {},
+    h('a', { href: `/posto/${p.id}`, 'data-link': true, class: `cartao-posto cartao-posto--${nivel}` },
+      h('span', { class: 'cartao-posto__topo' },
+        seloAlerta(p.alerta),
+        p.distanciaKm !== undefined ? h('span', { class: 'chip-distancia' }, icone('pino'), `${p.distanciaKm.toLocaleString('pt-BR')} km`) : null,
+      ),
+      h('span', { class: 'cartao-posto__nome' }, p.nome),
+      h('span', { class: 'cartao-posto__endereco' }, `${enderecoEmLinha(p.endereco)} — ${p.endereco?.municipio ?? '?'}/${p.endereco?.uf ?? '?'}`),
+      p.alerta && (nivel === 'alerta' || nivel === 'atencao') ? h('span', { class: 'cartao-posto__motivo' }, resumoAlerta(p.alerta)) : null,
+      h('span', { class: 'cartao-posto__meta' }, meta.join(' · ')),
+      h('span', { class: 'cartao-posto__seta', 'aria-hidden': 'true' }, icone('seta')),
     ),
-    h('a', { href: `/posto/${p.id}`, 'data-link': true, class: 'link link--seta' }, 'Ver detalhes', h('span', { class: 'sr' }, ` de ${p.nome}`)),
   );
 }
 

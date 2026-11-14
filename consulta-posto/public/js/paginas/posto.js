@@ -1,6 +1,6 @@
 import { obterPosto, obterRelatos } from '../api.js';
 import {
-  bolaAlerta, legendaAlertas, resumoAlerta,
+  botaoCompartilhar, legendaAlertas, seloAlerta,
   caixaAviso, definirTitulo, enderecoEmLinha, estadoErro, formatarCnpj, formatarData, h, icone, linhaFonte, linkExterno, selo,
 } from '../ui.js';
 
@@ -115,17 +115,51 @@ async function blocoRelatos(posto, ctx) {
   return secao;
 }
 
-function blocoAlerta(alerta, ctx) {
+function mesesAntes(iso, meses) {
+  const d = new Date(`${iso}T00:00:00Z`);
+  d.setUTCMonth(d.getUTCMonth() - meses);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Painel principal: o "raio-x" do posto — status, motivo e números do histórico oficial. */
+function painelRaioX(alerta, fiscalizacoes, ctx) {
   const regra = ctx.status?.alerta?.niveis?.[alerta.nivel]?.regra;
-  return h('section', { class: `cartao cartao--alerta cartao--alerta-${alerta.nivel}`, 'aria-labelledby': 'alerta-titulo' },
-    h('h2', { id: 'alerta-titulo' }, 'Indicador para o consumidor'),
-    h('p', { class: 'alerta-principal' }, bolaAlerta(alerta, { grande: true })),
-    regra ? h('p', {}, regra) : null,
+  const ref = alerta.referencia ?? ctx.status?.alerta?.referencia;
+  const corte = ref ? mesesAntes(ref, 24) : null;
+  const n = (filtro) => fiscalizacoes.filter(filtro).length.toLocaleString('pt-BR');
+  const tipo = (t) => (f) => String(f.tipo ?? '').toLowerCase() === t;
+  return h('section', { class: `raiox raiox--${alerta.nivel}`, 'aria-labelledby': 'raiox-titulo' },
+    h('div', { class: 'raiox__status' },
+      h('span', { class: 'raiox__bola', 'aria-hidden': 'true' }),
+      h('div', {},
+        h('h2', { id: 'raiox-titulo', class: 'raiox__rotulo' }, alerta.rotulo),
+        regra ? h('p', { class: 'raiox__regra' }, regra) : null,
+      ),
+    ),
     alerta.nivel === 'alerta' || alerta.nivel === 'atencao'
-      ? h('p', {}, h('strong', {}, 'Registro que gerou o indicador: '), `${alerta.motivo ?? 'registro oficial'} (${formatarData(alerta.data)}). Veja o histórico completo abaixo.`)
-      : h('p', { class: 'secundario' }, resumoAlerta(alerta) + '.'),
+      ? h('div', { class: 'raiox__motivo' },
+          h('span', { class: 'rotulo' }, 'Registro que acendeu o alerta'),
+          h('strong', {}, alerta.motivo ?? 'Registro oficial'),
+          h('span', {}, `em ${formatarData(alerta.data)} · veja o histórico abaixo`))
+      : null,
+    h('dl', { class: 'raiox__numeros' },
+      h('div', {}, h('dt', {}, 'Fiscalizações na base'), h('dd', {}, n(() => true))),
+      h('div', {}, h('dt', {}, 'Nos últimos 24 meses'), h('dd', {}, corte ? n((f) => f.data >= corte) : '—')),
+      h('div', {}, h('dt', {}, 'Autos de infração'), h('dd', {}, n(tipo('auto de infração')))),
+      h('div', {}, h('dt', {}, 'Interdições'), h('dd', {}, n(tipo('auto de interdição')))),
+    ),
+    h('p', { class: 'raiox__rodape' }, `Regra deste app com registros oficiais da ANP até ${formatarData(ref)}. Não é a nota da ANP e não prova adulteração agora.`),
     legendaAlertas(ctx.status?.alerta),
   );
+}
+
+function textoCompartilhar(nome, posto, alerta) {
+  const local = `${posto.endereco?.municipio ?? ''}/${posto.endereco?.uf ?? ''}`;
+  const ref = formatarData(alerta?.referencia);
+  if (alerta?.nivel === 'alerta' || alerta?.nivel === 'atencao') {
+    return `Raio-X do Posto: ${nome} (${local}) aparece como "${alerta.rotulo}" — ${alerta.motivo ?? 'registro oficial'} em ${formatarData(alerta.data)}, segundo registros de fiscalização da ANP. Confira o histórico antes de abastecer.`;
+  }
+  return `Raio-X do Posto: ${nome} (${local}) aparece como "${alerta?.rotulo ?? 'sem dados'}" nos registros de fiscalização da ANP até ${ref}. Faça o raio-x do seu posto antes de abastecer.`;
 }
 
 export async function paginaPosto(raiz, ctx) {
@@ -143,17 +177,19 @@ export async function paginaPosto(raiz, ctx) {
   definirTitulo(nome);
 
   raiz.append(
-    h('p', {}, h('button', { type: 'button', class: 'link link--botao', onclick: () => ctx.voltar() }, '← Voltar')),
-    h('header', { class: 'cabecalho-posto' },
-      h('h1', {}, nome, fonte?.tipo === 'demo' ? [' ', selo('DEMO — não são dados reais', 'demo')] : null),
-      h('p', { class: 'endereco' }, icone('pino'), `${enderecoEmLinha(posto.endereco)} — ${posto.endereco?.municipio ?? '?'}/${posto.endereco?.uf ?? '?'}`),
+    h('header', { class: 'ficha' },
+      h('button', { type: 'button', class: 'voltar', onclick: () => ctx.voltar() }, '← Voltar'),
+      h('div', { class: 'ficha__selos' }, seloAlerta(alerta), fonte?.tipo === 'demo' ? selo('DEMO — não são dados reais', 'demo') : null),
+      h('h1', { class: 'ficha__nome' }, nome),
+      h('p', { class: 'ficha__endereco' }, icone('pino'), h('span', {}, `${enderecoEmLinha(posto.endereco)} — ${posto.endereco?.municipio ?? '?'}/${posto.endereco?.uf ?? '?'}`)),
+      posto.cnpj ? h('p', { class: 'ficha__cnpj' }, 'CNPJ ', h('strong', {}, formatarCnpj(posto.cnpj))) : null,
       h('div', { class: 'acoes' },
         linkExterno(linksOficiais.consultaPostos.url, 'Consultar na fonte oficial', 'botao botao--primario'),
+        alerta ? botaoCompartilhar(textoCompartilhar(nome, posto, alerta)) : null,
       ),
-      h('p', { class: 'ajuda' }, 'A consulta oficial é da ANP e pode ter dados mais recentes que os exibidos aqui. Para localizar o posto lá, use o CNPJ ',
-        posto.cnpj ? h('strong', {}, formatarCnpj(posto.cnpj)) : '(não informado)', '.'),
+      h('p', { class: 'ajuda' }, 'A consulta oficial é da ANP e pode ter dados mais recentes. Para achar o posto lá, use o CNPJ.'),
     ),
-    alerta ? blocoAlerta(alerta, ctx) : null,
+    alerta ? painelRaioX(alerta, fiscalizacoes, ctx) : null,
     caixaAviso(),
     blocoCadastro(posto, fonte),
     blocoFiscalizacoes(fiscalizacoes, fonte),

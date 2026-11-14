@@ -1,4 +1,4 @@
-import { caixaAviso, definirTitulo, estadoErro, formatarData, h, icone } from '../ui.js';
+import { botaoCompartilhar, caixaAviso, definirTitulo, estadoErro, formatarData, h, icone, seloAlerta } from '../ui.js';
 
 /** Formulário de busca. Reutilizado na tela de resultados (versão compacta). */
 export function formularioBusca(ctx, valores = new URLSearchParams(), { compacto = false } = {}) {
@@ -41,7 +41,7 @@ export function formularioBusca(ctx, valores = new URLSearchParams(), { compacto
   const erro = h('p', { class: 'erro-campo', id: 'q-erro', role: 'alert', hidden: true });
   const entrada = h('input', {
     id: 'q', name: 'q', type: 'search', autocomplete: 'off', enterkeyhint: 'search',
-    placeholder: 'Ex.: Curitiba, Posto Demonstração 05 ou 99.123.456/0001-00',
+    placeholder: 'Cidade, nome do posto ou CNPJ',
     value: valores.get('q') ?? '', 'aria-describedby': 'q-ajuda q-erro',
   });
 
@@ -77,42 +77,82 @@ export function formularioBusca(ctx, valores = new URLSearchParams(), { compacto
 
 export async function paginaBusca(raiz, ctx) {
   definirTitulo('');
-  raiz.append(
-    h('section', { class: 'abertura' },
-      h('h1', {}, 'Consulte informações públicas sobre postos de combustíveis'),
-      h('p', { class: 'abertura__texto' }, 'Encontre um posto pela cidade, pelo nome ou pelo CNPJ e veja os dados cadastrais e o histórico de fiscalizações disponível, sempre com a fonte e a data.'),
-    ),
+  const st = ctx.status;
+  const meta = st?.fonte;
+  const num = st?.numeros;
+  const fmt = (n) => Number(n ?? 0).toLocaleString('pt-BR');
+
+  const hero = h('section', { class: 'hero', 'aria-labelledby': 'hero-titulo' },
+    h('p', { class: 'hero__eyebrow' }, icone('raiox'),
+      meta?.tipo === 'demo' ? 'Versão de demonstração · dados fictícios'
+        : st?.alerta?.referencia ? `Dados oficiais da ANP · fiscalizações até ${formatarData(st.alerta.referencia)}` : 'Dados oficiais da ANP'),
+    h('h1', { id: 'hero-titulo', class: 'hero__titulo' }, 'Faça o raio-x do posto ', h('span', {}, 'antes de abastecer.')),
+    h('p', { class: 'hero__texto' }, 'Histórico oficial de fiscalizações de cada posto do Brasil, com um alerta simples de entender. Grátis, sem cadastro.'),
   );
-  if (!ctx.status?.disponivel) {
+  raiz.append(hero);
+  if (!st?.disponivel) {
     raiz.append(estadoErro('Os dados não puderam ser carregados no momento.', ctx.links));
     return;
   }
-  raiz.append(h('div', { class: 'cartao' }, formularioBusca(ctx)));
-  if (ctx.status.filtros?.coordenadas) {
-    raiz.append(
-      h('a', { href: '/perto', 'data-link': true, class: 'cartao cartao--atalho' },
-        icone('alvo'),
-        h('span', {}, h('strong', {}, 'Postos perto de mim'), h('span', { class: 'secundario' }, 'Use a localização do aparelho ou o seu CEP para ver os postos ao redor, com o indicador de alerta.')),
-        h('span', { class: 'seta', 'aria-hidden': 'true' }, '→'),
+  hero.append(h('div', { class: 'hero__busca' }, formularioBusca(ctx)));
+  if (st.filtros?.coordenadas) {
+    hero.append(
+      h('a', { href: '/perto', 'data-link': true, class: 'hero__perto' },
+        h('span', { class: 'hero__perto-icone', 'aria-hidden': 'true' }, icone('alvo')),
+        h('span', {}, h('strong', {}, 'Postos perto de mim'), h('span', {}, 'Pela localização ou pelo CEP')),
+        icone('seta'),
+      ),
+    );
+  }
+  hero.append(
+    h('div', { class: 'hero__compartilhar' },
+      botaoCompartilhar('Antes de abastecer, faça o raio-x do posto: o Raio-X do Posto mostra o histórico oficial de fiscalizações da ANP de cada posto do Brasil, com um alerta simples. Grátis e sem cadastro.', 'Mandar para a família'),
+    ),
+  );
+  if (num) {
+    hero.append(
+      h('dl', { class: 'numeros' },
+        h('div', {}, h('dt', {}, 'postos em operação'), h('dd', {}, fmt(num.postos))),
+        h('div', {}, h('dt', {}, 'fiscalizações analisadas'), h('dd', {}, fmt(num.fiscalizacoes))),
+        h('div', {}, h('dt', {}, 'com alerta (últimos 12 meses)'), h('dd', { class: 'numeros__alerta' }, fmt(num.porNivel?.alerta))),
       ),
     );
   }
 
-  const meta = ctx.status.fonte;
+  // O que as cores dizem
+  const niveis = st.alerta?.niveis;
+  if (niveis) {
+    raiz.append(
+      h('section', { class: 'secao', 'aria-labelledby': 'cores-titulo' },
+        h('div', { class: 'secao__cabecalho' },
+          h('h2', { id: 'cores-titulo' }, 'O que cada cor quer dizer'),
+          h('p', { class: 'secundario' }, 'Calculado só com os registros oficiais de fiscalização da ANP. Não é a nota da ANP nem um selo de “posto seguro”.'),
+        ),
+        h('ul', { class: 'grade-niveis' },
+          Object.entries(niveis).map(([nivel, n]) =>
+            h('li', { class: `nivel nivel--${nivel}` },
+              h('div', { class: 'nivel__topo' }, seloAlerta({ nivel, rotulo: n.rotulo }), num ? h('span', { class: 'nivel__total' }, fmt(num.porNivel?.[nivel])) : null),
+              h('p', {}, n.regra),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   raiz.append(
-    h('section', { class: 'cartao cartao--suave', 'aria-labelledby': 'origem-titulo' },
-      h('h2', { id: 'origem-titulo' }, icone('info'), 'De onde vêm os dados e quais os limites'),
-      h('ul', { class: 'lista-pontos' },
+    h('section', { class: 'secao secao--dados', 'aria-labelledby': 'origem-titulo' },
+      h('h2', { id: 'origem-titulo' }, 'De onde vêm os dados'),
+      h('ul', { class: 'lista-check' },
         meta.tipo === 'demo'
           ? h('li', {}, h('strong', {}, 'Esta versão usa dados de DEMONSTRAÇÃO, que não são reais. '), 'Nenhum posto, CNPJ ou fiscalização mostrado aqui existe de verdade.')
-          : h('li', {}, `Os dados vêm de arquivos públicos da ANP (${meta.totalPostos.toLocaleString('pt-BR')} postos em operação), importados por este projeto. Cada tela informa a fonte e a data de obtenção.`),
+          : h('li', {}, 'Arquivos públicos da ANP: cadastro dos postos em operação, ações de fiscalização e localização registrada no programa de qualidade (PMQC).'),
+        h('li', {}, 'Cada tela mostra a fonte e a data dos dados. Confira as datas: a fonte oficial pode estar mais atualizada.'),
+        h('li', {}, 'Não ter registros não significa que o posto nunca teve problemas.'),
         meta.tipo !== 'demo' && meta.fontes?.fiscalizacoes?.observacao ? h('li', {}, meta.fontes.fiscalizacoes.observacao) : null,
-        h('li', {}, 'Os registros podem estar desatualizados em relação à fonte oficial. Confira sempre as datas.'),
-        h('li', {}, 'A ausência de registros não significa que o posto nunca teve problemas.'),
-        h('li', {}, 'A bola colorida de cada posto resume os registros oficiais de fiscalização dos últimos 24 meses, com regra explicada no app. Ela não diz se um posto é seguro ou se o combustível está adulterado agora.'),
       ),
-      h('p', {}, h('a', { href: '/sobre', 'data-link': true, class: 'link' }, 'Saiba mais sobre os dados')),
+      h('p', {}, h('a', { href: '/sobre', 'data-link': true, class: 'link link--seta' }, 'Saiba mais sobre os dados')),
     ),
+    caixaAviso(),
   );
-  raiz.append(caixaAviso());
 }

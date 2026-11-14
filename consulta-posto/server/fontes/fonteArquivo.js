@@ -9,7 +9,7 @@
 //   postoExiste(id)   -> boolean
 // Toda fonte deve informar em meta: tipo ('demo' | 'oficial'), origem, licença e datas de obtenção/atualização.
 import { readFile } from 'node:fs/promises';
-import { buscarPostos, buscarProximos, detalharPosto, filtrosDisponiveis, localizarPorCep, referenciaAlerta } from '../dominio/busca.js';
+import { buscarPostos, buscarProximos, detalharPosto, filtrosDisponiveis, localizarPorCep, numerosDaBase, referenciaAlerta } from '../dominio/busca.js';
 import { validarBase } from './validarBase.js';
 
 export class FonteIndisponivelError extends Error {}
@@ -48,6 +48,7 @@ export class FonteArquivo {
       filtros: filtrosDisponiveis(this.base),
       totalPostos: this.base.postos.length,
       referenciaAlerta: referenciaAlerta(this.base),
+      numeros: numerosDaBase(this.base),
     };
   }
 

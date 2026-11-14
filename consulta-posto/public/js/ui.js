@@ -35,6 +35,9 @@ const ICONES = {
   balao: ['M4 5h16v11H9l-5 4z'],
   alvo: ['M12 3v3', 'M12 18v3', 'M3 12h3', 'M18 12h3', 'M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z'],
   escudo: ['M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z'],
+  compartilhar: ['M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'M6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'M18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'M8.6 13.5l6.8 4', 'M15.4 6.5l-6.8 4'],
+  seta: ['M9 6l6 6-6 6'],
+  raiox: ['M4 9V4h5', 'M15 4h5v5', 'M20 15v5h-5', 'M9 20H4v-5', 'M4 12h16'],
 };
 
 export function icone(nome, rotulo) {
@@ -132,7 +135,7 @@ export function selo(texto, tipo = 'neutro') {
 }
 
 export function definirTitulo(texto) {
-  document.title = texto ? `${texto} · Consulta Posto` : 'Consulta Posto';
+  document.title = texto ? `${texto} · Raio-X do Posto` : 'Raio-X do Posto — veja o histórico do posto antes de abastecer';
 }
 
 // --- Indicador de alerta ao consumidor ------------------------------------------------------------
@@ -170,4 +173,48 @@ export function legendaAlertas(config, { aberta = false } = {}) {
       `Regra deste app, calculada só com os registros oficiais de fiscalização da ANP (dados até ${formatarData(config.referencia)}). `,
       'Não é a nota oficial da ANP, não indica que o combustível esteja adulterado agora e não substitui a consulta à fonte oficial. Autuações ainda podem ser contestadas pelo posto.'),
   );
+}
+
+// --- Selo de status, compartilhar e avisos rápidos -------------------------------------------------
+
+/** Selo (pílula) com a bola e o rótulo do nível — usado nos cartões e na ficha. */
+export function seloAlerta(alerta) {
+  if (!alerta) return null;
+  return h('span', { class: `selo-status selo-status--${alerta.nivel}` }, h('span', { class: 'bola', 'aria-hidden': 'true' }), alerta.rotulo);
+}
+
+let toastAtual = null;
+export function avisoRapido(texto) {
+  toastAtual?.remove();
+  toastAtual = h('div', { class: 'toast', role: 'status' }, texto);
+  document.body.append(toastAtual);
+  const este = toastAtual;
+  setTimeout(() => este.classList.add('toast--saindo'), 2600);
+  setTimeout(() => este.remove(), 3100);
+}
+
+/**
+ * Botão "Compartilhar": usa o compartilhamento do aparelho quando existe; senão copia o texto.
+ * O texto descreve só o que os registros oficiais mostram, com a data.
+ */
+export function botaoCompartilhar(texto, rotulo = 'Compartilhar') {
+  const b = h('button', { type: 'button', class: 'botao botao--secundario' }, icone('compartilhar'), rotulo);
+  b.addEventListener('click', async () => {
+    const url = /^https?:/.test(location.href) && !window.__CONSULTA_POSTO_ESTATICO__ ? location.href : undefined;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'Raio-X do Posto', text: texto, url });
+        return;
+      }
+    } catch (e) {
+      if (e?.name === 'AbortError') return;
+    }
+    try {
+      await navigator.clipboard.writeText(url ? `${texto}\n${url}` : texto);
+      avisoRapido('Texto copiado. É só colar no WhatsApp ou nas redes.');
+    } catch {
+      avisoRapido('Não foi possível copiar automaticamente neste navegador.');
+    }
+  });
+  return b;
 }

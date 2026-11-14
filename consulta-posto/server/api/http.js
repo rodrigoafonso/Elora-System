@@ -12,10 +12,10 @@ export const CABECALHOS_SEGURANCA = {
   'Content-Security-Policy': [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self'",
+    "style-src 'self' https://fonts.googleapis.com",
     "img-src 'self' data: blob: https://tile.openstreetmap.org",
     "connect-src 'self'",
-    "font-src 'self'",
+    "font-src 'self' https://fonts.gstatic.com",
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'self'",

@@ -90,6 +90,7 @@ export function criarApp({ fonte, relatos, config }) {
         linksOficiais: LINKS_OFICIAIS,
         relatos: { tiposProblema: TIPOS_PROBLEMA, limites: LIMITES, retencaoDias: RETENCAO },
         alerta: info.disponivel ? { niveis: NIVEIS, referencia: info.referenciaAlerta } : null,
+        numeros: info.disponivel ? info.numeros : null,
       };
     }],
 
