@@ -140,3 +140,10 @@ pausa ao passar o mouse ou no botão, e parada (texto em linhas) com "reduzir mo
 corretor), Reuniões e Projeto Boa Ideia (substitui o painel do fundo). Reuniões ganharam título, data, hora e local:
 a reunião com data de hoje em diante entra na faixa assim que é salva. Na plataforma: componente React `FaixaRotativa`
 com os mesmos itens calculados no frontend a partir da API.
+
+## Entrada e ritmo dos leads (protótipo v61) e módulo `captacao`
+
+Ver `docs/funcionalidades/entrada-e-ritmo-dos-leads.md`. Coleções novas no protótipo: `fontes`, `automacoes`,
+`autoexec`; campos novos no lead: `fonteId`, `gatilhos`, `autoMsg`. Plataforma: módulo `captacao` (V8) com o
+endereço público de recebimento de leads e a caixa de entrada. O protótipo também traz o módulo Marketing,
+feito em outra sessão.

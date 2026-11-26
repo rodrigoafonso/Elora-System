@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 57). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 61). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -19,6 +19,8 @@ history.replaceState=function(a,b,u){rs(a,b,u);avisar();};})();
 </script>
 </head>
 <body>
+
+
 
 
 <title>Elora Partner OS</title>
@@ -892,7 +894,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 /*ENGINE-START*/
 const pad = n => String(n).padStart(2, '0');
 const hojeISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes', 'lotes'];
+const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes', 'lotes', 'posts', 'fontes', 'automacoes', 'autoexec'];
 const CONFIG_PADRAO = { custoDiretoPct: 25, participacaoPct: 40, gestaoPct: 5, margemMinPct: 55, vendaDeducaoPct: 0, vendaCaptPct: 40, vendaTetoPct: 50, divisaoCaptPct: 60, indicacaoMaxPct: 25, creciJ: '', responsavel: '', vendaPct: 6, vendaCorretorPct: 40, locCorretorPct: 20, pctLeadElora: 40, pctLeadProprio: 45, diaPagamento: 10, repasseDias: 5, soSeguroFianca: false,
   aceiteMin: 15, rodizioAuto: false, rodizioPausado: false, whatsapp: '', site: '',
   rodizioHorario: false, rodizioDias: [1, 2, 3, 4, 5], rodizioIni: '08:00', rodizioFim: '18:00', cubValor: 0, cubMes: '', funil: [], pixTipo: '', pixChave: '', pixNome: '', pixCidade: '', cartaoLink: '' };
@@ -932,7 +934,7 @@ const fmtData = s => /^\d{4}-\d{2}-\d{2}/.test(s || '') ? s.slice(8, 10) + '/' +
 const brl = cent => (cent / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const pct = n => (+n).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%';
 
-const CHAVE_MIN = { corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId', lotes: 'comp' };
+const CHAVE_MIN = { posts: 'tema', corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId', lotes: 'comp', fontes: 'nome', automacoes: 'nome', autoexec: 'regra' };
 // Cache por identidade: toda gravação troca o objeto da coleção (DB[col] = {...}), então o cache nunca fica velho.
 const LISTA_CACHE = new Map(), IDX_CACHE = new Map();
 const listaBase = col => { const src = DB[col] || {}, c = LISTA_CACHE.get(col); if (c && c.src === src) return c.arr;
@@ -3297,13 +3299,14 @@ const VIEWS = {
   // Menu por pergunta do dia a dia: Hoje, Clientes, Imóveis, Operações, Equipe, Análises e Configurações.
   // Telas irmãs viram abas de uma entrada só (GRUPOS_TELA); o endereço de cada tela continua o mesmo.
   equipe: [['#', 'Hoje'], ['central', 'Dashboard'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
-    ['#', 'Clientes'], ['comercial', 'Funil de atendimento'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['pessoas', 'Pessoas'], ['campanhas', 'Campanhas'],
+    ['#', 'Clientes'], ['comercial', 'Funil de atendimento'], ['radar', 'Radar'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['fontes', 'Fontes de captação'], ['automacoes', 'Automações'], ['pessoas', 'Pessoas'],
+    ['#', 'Marketing'], ['marketing', 'Marketing'], ['campanhas', 'Campanhas'],
     ['#', 'Imóveis'], ['im-locacao', 'Para locação'], ['im-venda', 'À venda'], ['im-cuidado', 'Recebimento e manutenção'], ['prospeccao', 'Captação'],
     ['#', 'Operações'], ['locacao', 'Locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'],
     ['#', 'Equipe'], ['rede', 'Corretores'], ['rodizio', 'Rodízio e funil'], ['tickets', 'Tickets e Kanban'], ['reunioes', 'Reuniões'], ['ideias', 'Projeto Boa Ideia'],
     ['#', 'Análises'], ['desempenho', 'Comercial'], ['resultados', 'Resultados e OKRs'], ['inteligencia', 'Inteligência'], ['guerra', 'Sala de guerra'],
     ['#', 'Configurações'], ['juridico', 'Empresa e jurídico'], ['acessos', 'Acessos'], ['dados', 'Dados']],
-  corretor: [['#', 'Hoje'], ['inicio', 'Início'], ['agenda-c', 'Agenda'], ['flows-c', 'Mensagens do dia'], ['chat-c', 'Chat da equipe'],
+  corretor: [['#', 'Hoje'], ['inicio', 'Início'], ['agenda-c', 'Agenda'], ['flows-c', 'Mensagens do dia'], ['radar-c', 'Radar'], ['chat-c', 'Chat da equipe'],
     ['#', 'Clientes'], ['crm-c', 'Funil'], ['leads-c', 'Meus leads'], ['compradores-c', 'Compradores'],
     ['#', 'Imóveis'], ['imoveis-c', 'Imóveis em oferta'], ['capt-c', 'Minhas captações'], ['prosp-c', 'Prospecção'],
     ['#', 'Meus ganhos'], ['carteira', 'Carteira'], ['extrato', 'Extrato'], ['poschaves-c', 'Elora Casa+'],
@@ -3312,8 +3315,8 @@ const VIEWS = {
   inquilino: [['inquilino', 'Minha locação']],
 };
 // Telas irmãs: uma entrada no menu e abas no alto da tela.
-const GRUPOS_TELA = [['Atendimentos', ['comercial', 'compradores', 'flows']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado']], ['Corretores', ['rede', 'rodizio']],
-  ['Relatórios', ['desempenho', 'resultados']], ['Inteligência', ['inteligencia', 'guerra']], ['Configurações', ['juridico', 'acessos', 'dados']],
+const GRUPOS_TELA = [['Atendimentos', ['comercial', 'radar', 'compradores', 'flows']], ['Entrada de leads', ['fontes', 'automacoes']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado']], ['Corretores', ['rede', 'rodizio']],
+  ['Marketing', ['marketing', 'campanhas']], ['Relatórios', ['desempenho', 'resultados']], ['Inteligência', ['inteligencia', 'guerra']], ['Configurações', ['juridico', 'acessos', 'dados']],
   ['Atendimentos', ['crm-c', 'leads-c', 'compradores-c']], ['Captação', ['capt-c', 'prosp-c']], ['Carteira e extrato', ['carteira', 'extrato']]];
 const grupoDe = v => GRUPOS_TELA.find(g => g[1].includes(v)) || null;
 const OCULTAS_MENU = ['chat', 'chat-c'];   // o chat fica no alto de cada tela, ao lado do sino
@@ -3324,6 +3327,7 @@ const MENU_IC = { hoje: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19
   equipe: '<circle cx="12" cy="7.5" r="3"/><circle cx="5" cy="10" r="2.2"/><circle cx="19" cy="10" r="2.2"/><path d="M7 20a5 5 0 0 1 10 0M1.5 19a3.6 3.6 0 0 1 5-3.3M22.5 19a3.6 3.6 0 0 0-5-3.3"/>',
   analises: '<path d="M3 20h18M6.5 17v-5M11.5 17V6M16.5 17v-8"/>', configuracoes: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M2.5 12h3M18.5 12h3M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
   meusganhos: '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1.2-1.7-2-3-2-1.7 0-3 1-3 2.3 0 3.2 6 1.7 6 4.9 0 1.3-1.3 2.3-3 2.3-1.4 0-2.6-.8-3-2M12 5.5v2M12 16.5v2"/>',
+  marketing: '<path d="M3 10v4h3l6 4V6L6 10z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/>',
   elora: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
   busca: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>', chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>' };
 const mic = (n, s = 15) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${MENU_IC[n] || ''}</svg>`;
@@ -3458,7 +3462,9 @@ const store = {
     if (novoPronto && !obj.corretorId && !obj.foraRodizio && autoRodizio()) setTimeout(() => { const l = DB.leads[id]; if (l && !l.corretorId) distribuirPara(id, null, 'rodízio automático'); }, 0);
     const body = { ...obj }; delete body.id;
     for (const k of Object.keys(body)) if (body[k] === undefined) delete body[k];
+    const antesAu = col === 'leads' ? DB.leads[id] || null : undefined;
     DB[col] = { ...DB[col], [id]: { ...body, id } }; agendar();
+    if (antesAu !== undefined && !AU_RODANDO) setTimeout(() => { auEvento(antesAu, DB.leads[id]).catch(() => {}); }, 0);
     if (this.modo === 'nuvem') { try { await this.db.doc(col + '/' + id).set(body); } catch (e) { erroDb(e); } } else this.gravarLocal();
   },
   // Várias gravações de uma vez: uma atualização da tela e, no modo local, uma escrita só.
@@ -4842,6 +4848,7 @@ function viewFlows(soC) {
   return cab(soC ? 'Mensagens do dia' : 'Sequências de mensagens', 'Cada lead recebe uma sequência de contatos para não esfriar: boas-vindas, opções que cabem, convite para visita e retomadas. O sistema diz a mensagem de hoje, já escrita.') + `
   <section class="panel"><h2>Para enviar hoje · ${fila.length}</h2>${fila.length ? `<div class="list" id="fl-fila">${fila.slice(0, 50).map(itemFlow).join('')}</div>` : vazio('Nenhuma mensagem da sequência para hoje.')}
     <p class="sub">O envio é feito por você no WhatsApp (o envio automático depende da API oficial). Ao enviar pelo botão, o passo é marcado e o contato vai ao histórico do lead. A sequência para quando o lead fecha, é perdido ou é pausado.</p></section>
+  ${painelGatilhos(soC)}
   ${soC ? '' : `<section class="panel"><h2>As sequências</h2>${ed ? `<form id="frm-flows">${['Locação', 'Compra'].map(tp => `<h3>${tp}</h3>${fl[tp].map((s, i) => `<div class="fgrid fl-ed"><div class="f"><label for="fl-${tp[0]}-${i}-d">Dia</label><input id="fl-${tp[0]}-${i}-d" type="number" min="0" max="120" value="${+s.d}"></div><div class="f"><label for="fl-${tp[0]}-${i}-t">Passo</label><input id="fl-${tp[0]}-${i}-t" type="text" maxlength="60" value="${esc(s.t)}"></div><div class="f w"><label for="fl-${tp[0]}-${i}-x">Mensagem</label><textarea id="fl-${tp[0]}-${i}-x" rows="2" maxlength="600">${esc(s.x)}</textarea></div></div>`).join('')}`).join('')}
       <p class="sub">Use {nome}, {quem}, {n} (quantidade de opções), {opcoes} (até 3 imóveis que cabem no bolso do cliente) e {imovel}. "{qualif}" sozinho usa a mensagem de qualificação.</p>
       <div class="acts">${bt('fl-padrao', 'Voltar ao padrão')}${bt('fl-edit', 'Cancelar')}<button class="btn" type="submit">Salvar as sequências</button></div></form>`
@@ -4857,6 +4864,272 @@ function marcarFlow(id, i, pausa) {
   if (pausa != null) fl.pausa = !!pausa; else fl.feitos = [...new Set([...(fl.feitos || []), +i])];
   if (!fl.ini) fl.ini = String(l.criadoEm || l.contatoEm || REF).slice(0, 10);
   store.salvar('leads', id, { ...l, flow: fl });
+}
+
+// ====================== Entrada e ritmo dos leads: Radar, gatilhos por etapa, fontes de captação e automações ======================
+// Ideias trazidas do DeskcommCRM (MIT) e refeitas no padrão da Elora: nada é enviado sozinho; a regra nasce pausada; tudo vai ao histórico.
+
+// ---------- 1. Radar: quem está esfriando ----------
+// Prazo de resposta por etapa. "Novo" é em horas desde a chegada (sem primeiro contato); as outras, em dias desde o último contato.
+const RADAR_PADRAO = { novoH: 2, qualificado: 2, visita: 2, proposta: 1 };
+const radarSla = () => ({ ...RADAR_PADRAO, ...((DB.config || {}).radarSla || {}) });
+const horasDesde = iso => { const t = Date.parse(iso || ''); return isFinite(t) ? Math.max(0, (AGORA() - t) / 3600000) : null; };
+const entradaEtapa = l => { const h = (l.hist || []).find(x => x.t === 'etapa'); return String((h && h.em) || l.criadoEm || l.contatoEm || REF).slice(0, 10); };
+const fmtHoras = h => h == null ? '—' : h < 1 ? `${Math.max(1, Math.round(h * 60))} min` : h < 48 ? `${Math.round(h)} h` : `${Math.round(h / 24)} dias`;
+// Cada lead aberto ganha no máximo um motivo (o mais grave) e uma gravidade: 2 = passou do dobro do prazo, 1 = passou do prazo.
+function radarDe(l) {
+  if (!PROB[l.etapa]) return null; const s = radarSla();
+  if (!l.respostaEm && l.etapa === 'novo') { const h = horasDesde(l.criadoQ || (l.criadoEm ? l.criadoEm + 'T12:00:00' : null)); if (h != null && h >= +s.novoH) return { tipo: 'primeiro', grav: h >= 2 * s.novoH ? 2 : 1, h, txt: `Sem primeiro contato há ${fmtHoras(h)} (prazo: ${s.novoH} h).` }; }
+  if (l.distEm && !l.aceiteEm && l.corretorId) { const h = horasDesde(l.distEm); if (h != null && h >= 1) return { tipo: 'aceite', grav: h >= 4 ? 2 : 1, h, txt: `Distribuído há ${fmtHoras(h)} e o corretor ainda não aceitou.` }; }
+  const prazoD = +s[l.etapa]; if (prazoD > 0) { const base = l.contatoEm || l.criadoEm, d = base ? dias(base, REF) : null; if (d != null && d >= prazoD) return { tipo: 'parado', grav: d >= 2 * prazoD ? 2 : 1, h: d * 24, txt: `${d} dia(s) sem contato na etapa ${(ETAPAS[l.etapa] || l.etapa).toLowerCase()} (prazo: ${prazoD} dia${prazoD > 1 ? 's' : ''}).` }; }
+  if (l.prazo && l.prazo < REF) { const d = dias(l.prazo, REF); return { tipo: 'prazo', grav: d >= 3 ? 2 : 1, h: d * 24, txt: `Próximo passo vencido há ${d} dia(s)${l.ia ? ': ' + String(l.ia).slice(0, 80) : ''}.` }; }
+  if (!l.ia && l.etapa !== 'novo') return { tipo: 'sempasso', grav: 1, h: 0, txt: 'Sem próximo passo combinado.' };
+  return null;
+}
+const RADAR_TIPO = { primeiro: 'Sem primeiro contato', aceite: 'Aguarda aceite', parado: 'Parado na etapa', prazo: 'Próximo passo vencido', sempasso: 'Sem próximo passo' };
+const radarLista = kid => lista('leads').filter(l => !kid || l.corretorId === kid).map(l => ({ l, r: radarDe(l) })).filter(x => x.r).sort((a, b) => b.r.grav - a.r.grav || b.r.h - a.r.h);
+function msgRetomada(l) {
+  const cor = DB.corretores[l.corretorId], quem = cor ? `${tratar(cor.nome)}, da ${EMPRESA}` : `a equipe da ${EMPRESA}`, nome = tratar(l.nome);
+  const im = DB.imoveis[l.imovelId];
+  return { novo: `Olá, ${nome}! Aqui é ${quem}. Recebi o seu contato e já estou separando opções para você. Qual o melhor horário para conversarmos?`,
+    qualificado: `Olá, ${nome}! Aqui é ${quem}. Separei opções que combinam com o que você procura. Quer agendar uma visita esta semana?`,
+    visita: `Olá, ${nome}! Aqui é ${quem}. O que achou ${im ? 'do ' + im.descricao : 'da visita'}? Se quiser, preparo uma proposta ou te mostro outras opções.`,
+    proposta: `Olá, ${nome}! Aqui é ${quem}. Alguma novidade sobre a proposta? Posso esclarecer qualquer ponto com o proprietário.` }[l.etapa] || `Olá, ${nome}! Aqui é ${quem}. Podemos conversar?`;
+}
+function viewRadar(soC) {
+  const kid = soC ? eu() : (estado.radarK || ''), xs = radarLista(kid || null), f = estado.radarF || '', ys = f ? xs.filter(x => x.r.tipo === f) : xs, s = radarSla();
+  const n = t => xs.filter(x => x.r.tipo === t).length, ks = lista('corretores');
+  const porCor = soC ? [] : ks.map(k => [k, xs.filter(x => x.l.corretorId === k.id).length]).filter(x => x[1]).sort((a, b) => b[1] - a[1]);
+  return cab(soC ? 'Radar dos meus clientes' : 'Radar', 'Quem está esfriando agora: lead sem primeiro contato, parado além do prazo da etapa, com próximo passo vencido ou sem próximo passo. Os mais graves primeiro.') + `
+  <div class="kpis"><div><span>Em risco agora</span><b class="num">${xs.length}</b><em>${xs.filter(x => x.r.grav === 2).length} passaram do dobro do prazo</em></div>
+    <div><span>Sem primeiro contato</span><b class="num">${n('primeiro')}</b><em>prazo de ${s.novoH} h</em></div>
+    <div><span>Parados na etapa</span><b class="num">${n('parado')}</b><em>prazo por etapa</em></div>
+    <div><span>Próximo passo vencido ou ausente</span><b class="num">${n('prazo') + n('sempasso')}</b><em>combine data e ação</em></div></div>
+  <div class="chips" role="group" aria-label="Filtrar por motivo"><button type="button" data-act="radar-f" data-v="" aria-pressed="${!f}">Todos · ${xs.length}</button>${Object.entries(RADAR_TIPO).map(([k, t]) => n(k) ? `<button type="button" data-act="radar-f" data-v="${k}" aria-pressed="${f === k}">${t} · ${n(k)}</button>` : '').join('')}</div>
+  ${!soC && porCor.length ? `<p class="sub">Por corretor: ${porCor.map(([k, c]) => `<button type="button" class="lnk" data-act="radar-k" data-v="${esc(kid === k.id ? '' : k.id)}">${esc(k.nome)} (${c})</button>`).join(' · ')}${kid ? ` · <button type="button" class="lnk" data-act="radar-k" data-v="">ver todos</button>` : ''}</p>` : ''}
+  <section class="panel"><h2>${f ? RADAR_TIPO[f] : 'Leads em risco'} · ${ys.length}</h2>${ys.length ? `<div class="list" id="radar-lista">${ys.slice(0, 80).map(({ l, r }) => { const cor = DB.corretores[l.corretorId], ult = (l.hist || [])[0];
+    return `<div class="item"><h3>${esc(l.nome)} · ${esc(ETAPAS[l.etapa] || l.etapa)}</h3><p>${esc(r.txt)}</p><p>${cor ? esc(cor.nome) : '<b class="neg">sem corretor</b>'}${ult ? ` · último registro: ${esc(HIST[ult.t] || ult.t)} em ${fmtData(ult.em)}` : ''}${l.canal ? ' · ' + esc(l.canal) : ''}</p>
+      <div class="acts">${zapBt(l.telefone, msgRetomada(l), 'WhatsApp', { id: l.id, t: 'mensagem' })}${bt('at-rapido', 'Liguei', { id: l.id })}${bt('atendimento', 'Atendimento', { id: l.id }, '')}</div>
+      <div class="side-r">${pill(r.grav === 2 ? 'bad' : 'warn', RADAR_TIPO[r.tipo])}</div></div>`; }).join('')}</div>` : vazio('Nenhum lead esfriando. Bom trabalho.')}</section>
+  ${!soC && ehGestor ? `<details class="panel"><summary><h2 style="display:inline">Prazos do radar</h2></summary><form id="frm-radar" class="fgrid" style="margin-top:12px">
+    <div class="f"><label for="rd-novoH">Primeiro contato (horas)</label><input id="rd-novoH" type="number" min="1" max="72" value="${+s.novoH}"></div>
+    ${['qualificado', 'visita', 'proposta'].map(e => `<div class="f"><label for="rd-${e}">${ETAPAS[e]}: dias sem contato</label><input id="rd-${e}" type="number" min="1" max="30" value="${+s[e]}"></div>`).join('')}
+    <div class="acts f w"><button class="btn" type="submit">Salvar os prazos</button></div></form></details>` : ''}`;
+}
+
+// ---------- 2. Gatilhos por etapa (follow-up depois da visita, da proposta etc.) ----------
+const GATILHOS_PADRAO = [
+  { etapa: 'qualificado', d: 2, t: 'Convite para visita', x: 'Olá, {nome}! Separei {n} opção(ões) que combinam com você{opcoes}. Qual o melhor dia para visitar? {quem}' },
+  { etapa: 'visita', d: 1, t: 'Depois da visita', x: 'Olá, {nome}! O que achou de {imovel}? Se gostou, já preparo a proposta; se não, me conta o que faltou que eu ajusto a busca. {quem}' },
+  { etapa: 'proposta', d: 2, t: 'Retorno da proposta', x: 'Olá, {nome}! Passando para saber da proposta de {imovel}. Posso esclarecer qualquer ponto com o proprietário. {quem}' }];
+const gatilhosCfg = () => { const g = (DB.config || {}).gatilhos; return Array.isArray(g) && g.length ? g : GATILHOS_PADRAO; };
+// O gatilho dispara quando o lead está na etapa há "d" dias sem contato, uma vez por entrada na etapa.
+function gatilhoHoje(l) {
+  if (!PROB[l.etapa] || (l.flow || {}).pausa || !l.telefone) return null; const ent = entradaEtapa(l), base = l.contatoEm && l.contatoEm > ent ? l.contatoEm : ent;
+  for (const [i, g] of gatilhosCfg().entries()) { if (g.etapa !== l.etapa) continue; const chave = g.etapa + '|' + ent; if ((l.gatilhos || {})[chave]) continue;
+    const d = dias(base, REF); if (d >= +g.d) return { i, g, chave, d }; }
+  return null;
+}
+const gatilhoFila = kid => lista('leads').filter(l => !kid || l.corretorId === kid).map(l => ({ l, g: gatilhoHoje(l) })).filter(x => x.g);
+function marcarGatilho(id, chave) { const l = DB.leads[id]; if (!l || !chave) return; store.salvar('leads', id, { ...l, gatilhos: { ...(l.gatilhos || {}), [chave]: REF } }); }
+function itemGatilho({ l, g }) {
+  const cor = DB.corretores[l.corretorId], quem = cor ? `${tratar(cor.nome)}, da ${EMPRESA}` : quemSou(), txt = flowTexto(l, g.g, quem);
+  return `<div class="item"><h3>${esc(l.nome)} · ${esc(g.g.t)}</h3><p>Na etapa ${esc((ETAPAS[l.etapa] || l.etapa).toLowerCase())} há ${g.d} dia(s) sem contato${cor ? ' · ' + esc(cor.nome) : ' · sem corretor'}</p>
+    <div class="memo pre">${esc(txt)}</div>
+    <div class="acts">${zapBt(l.telefone, txt, 'Enviar no WhatsApp', { id: l.id, t: 'mensagem' }).replace('data-act="zap-reg"', `data-act="zap-reg" data-ga="${esc(g.chave)}"`)}${bt('ga-feito', 'Já enviei', { id: l.id, ch: g.chave })}${bt('ga-pular', 'Pular', { id: l.id, ch: g.chave })}${bt('atendimento', 'Atendimento', { id: l.id })}</div></div>`;
+}
+// Mensagens sugeridas pelas automações (ação "Sugerir mensagem").
+const autoMsgFila = kid => lista('leads').filter(l => (!kid || l.corretorId === kid) && PROB[l.etapa] && l.telefone).flatMap(l => Object.entries(l.autoMsg || {}).filter(([, m]) => m && !m.feito).map(([k, m]) => ({ l, k, m })));
+function itemAutoMsg({ l, k, m }) {
+  return `<div class="item"><h3>${esc(l.nome)} · ${esc(m.t || 'Mensagem sugerida')}</h3><p>Sugerida pela automação em ${fmtData(m.em)}</p><div class="memo pre">${esc(m.x)}</div>
+    <div class="acts">${zapBt(l.telefone, m.x, 'Enviar no WhatsApp', { id: l.id, t: 'mensagem' }).replace('data-act="zap-reg"', `data-act="zap-reg" data-am="${esc(k)}"`)}${bt('am-feito', 'Já enviei', { id: l.id, k })}${bt('am-pular', 'Descartar', { id: l.id, k })}</div></div>`;
+}
+function marcarAutoMsg(id, k) { const l = DB.leads[id]; if (!l || !(l.autoMsg || {})[k]) return; store.salvar('leads', id, { ...l, autoMsg: { ...l.autoMsg, [k]: { ...l.autoMsg[k], feito: REF } } }); }
+function painelGatilhos(soC) {
+  const kid = soC ? eu() : null, gs = gatilhoFila(kid), ms = autoMsgFila(kid), cfg = gatilhosCfg(), ed = ehGestor && !soC && estado.gaEdit;
+  return `<section class="panel"><h2>Gatilhos por etapa · ${gs.length}</h2>${gs.length ? `<div class="list" id="ga-fila">${gs.slice(0, 40).map(itemGatilho).join('')}</div>` : vazio('Nenhum gatilho por etapa para hoje.')}
+    <p class="sub">Disparam quando o lead fica parado numa etapa: ${cfg.map(g => `${esc(ETAPAS[g.etapa] || g.etapa)} há ${+g.d} dia(s) → ${esc(g.t)}`).join(' · ')}. Uma vez por entrada na etapa.</p>
+    ${soC ? '' : ed ? `<form id="frm-gatilhos">${cfg.map((g, i) => `<div class="fgrid"><div class="f"><label for="ga-${i}-e">Etapa</label><select id="ga-${i}-e">${['qualificado', 'visita', 'proposta'].map(e => `<option value="${e}"${g.etapa === e ? ' selected' : ''}>${ETAPAS[e]}</option>`).join('')}</select></div>
+      <div class="f"><label for="ga-${i}-d">Dias sem contato</label><input id="ga-${i}-d" type="number" min="0" max="60" value="${+g.d}"></div><div class="f w"><label for="ga-${i}-t">Nome</label><input id="ga-${i}-t" type="text" maxlength="60" value="${esc(g.t)}"></div>
+      <div class="f w"><label for="ga-${i}-x">Mensagem</label><textarea id="ga-${i}-x" rows="3" maxlength="600">${esc(g.x)}</textarea></div></div>`).join('')}
+      <p class="sub">Use {nome}, {quem}, {n}, {opcoes} e {imovel}.</p><div class="acts">${bt('ga-padrao', 'Voltar ao padrão')}${bt('ga-edit', 'Cancelar')}<button class="btn" type="submit">Salvar os gatilhos</button></div></form>`
+      : ehGestor ? `<div class="acts">${bt('ga-edit', 'Editar os gatilhos', {}, '')}</div>` : ''}</section>
+  ${ms.length ? `<section class="panel"><h2>Sugeridas pelas automações · ${ms.length}</h2><div class="list" id="am-fila">${ms.slice(0, 40).map(itemAutoMsg).join('')}</div></section>` : ''}`;
+}
+
+// ---------- 3. Fontes de captação ----------
+// Na plataforma, cada fonte ganha um código secreto gerado pelo servidor e o endereço /api/v1/captacao/<código> recebe os leads
+// 24 horas. O código não fica neste protótipo (a página é aberta por link). Aqui, os leads que chegam por e-mail ou planilha entram colando.
+const FONTE_TIPOS = { site: 'Site ou landing page', portal: 'Portal imobiliário', formulario: 'Formulário (Google, Typeform…)', redes: 'Anúncio em rede social', parceiro: 'Parceiro ou indicação', outro: 'Outro' };
+const urlCaptacao = () => `${String((DB.config || {}).siteUrl || 'https://SEU-DOMINIO').replace(/\/+$/, '')}/api/v1/captacao/receber/<código da fonte>`;
+const leadsDaFonte = fid => lista('leads').filter(l => l.fonteId === fid);
+function viewFontes() {
+  const fs = lista('fontes'), tot = fs.reduce((s, f) => s + leadsDaFonte(f.id).length, 0);
+  return cab('Fontes de captação', 'De onde chegam os leads: site, portais, formulários e anúncios. Cada fonte leva o lead direto ao funil, com o canal, a campanha e o corretor certos, e as automações entram em ação.', ehGestor ? bt('fonte-nova', 'Nova fonte', {}, '') : '') + `
+  <section class="panel"><h2>Fontes · ${fs.length}</h2>${fs.length ? `<div class="list" id="fontes-lista">${fs.map(f => { const ls = leadsDaFonte(f.id), ct = ls.filter(l => l.etapa === 'contrato').length, k = DB.corretores[f.corretorId];
+    return `<div class="item"><h3>${esc(f.nome)}</h3><p>${esc(FONTE_TIPOS[f.tipo] || 'Outro')} · canal ${esc(f.canal || 'Site')} · ${esc(f.negocio || 'Locação')} · ${k ? 'vai para ' + esc(k.nome) : 'vai ao rodízio'}${f.campanhaId && DB.campanhas[f.campanhaId] ? ' · campanha ' + esc(DB.campanhas[f.campanhaId].titulo) : ''}</p>
+      <p>${ls.length} lead(s) recebido(s) · ${ct} viraram contrato${f.ultimoEm ? ' · último em ' + fmtData(f.ultimoEm) : ''}</p>
+      <div class="acts">${f.ativa === false ? '' : bt('fonte-colar', 'Receber leads', { id: f.id }, '')}${bt('fonte-endereco', 'Endereço para o site', { id: f.id })}${ehGestor ? bt('fonte-editar', 'Editar', { id: f.id }) : ''}</div>
+      <div class="side-r">${f.ativa === false ? pill('', 'Pausada') : pill('ok', 'Ativa')}</div></div>`; }).join('')}</div>` : vazio('Nenhuma fonte ainda. Crie uma para cada origem de leads: o site, cada portal, cada formulário.')}
+    <p class="sub">${tot} lead(s) chegaram pelas fontes. Leads com o mesmo telefone ou e-mail de quem já está no funil não são duplicados: o contato novo vai ao histórico do lead existente.</p></section>`;
+}
+function abrirFonte(id) {
+  if (!ehGestor) return; const f = id ? (DB.fontes || {})[id] : null, o = f || { tipo: 'site', canal: 'Site', negocio: 'Locação', ativa: true };
+  const op = (obj, v) => Object.entries(obj).map(([k, t]) => `<option value="${esc(k)}"${k === v ? ' selected' : ''}>${esc(t)}</option>`).join('');
+  abrirDlg(`<h2>${f ? 'Editar fonte' : 'Nova fonte de captação'}</h2><form id="frm-fonte" data-id="${esc(id || '')}"><div class="fgrid">
+    <div class="f w"><label for="fo-nome">Nome *</label><input id="fo-nome" type="text" maxlength="60" required value="${esc(o.nome || '')}" placeholder="Ex.: Site Elora, ZAP Imóveis, Landing de locação"></div>
+    <div class="f"><label for="fo-tipo">Tipo</label><select id="fo-tipo">${op(FONTE_TIPOS, o.tipo)}</select></div>
+    <div class="f"><label for="fo-canal">Canal do lead</label><select id="fo-canal">${op({ Site: 'Site', Portal: 'Portal', Instagram: 'Instagram', WhatsApp: 'WhatsApp', 'Indicação': 'Indicação', Telefone: 'Telefone' }, o.canal)}</select></div>
+    <div class="f"><label for="fo-neg">Interesse padrão</label><select id="fo-neg">${op({ 'Locação': 'Locação', Compra: 'Compra' }, o.negocio)}</select></div>
+    <div class="f"><label for="fo-cor">Quem atende</label><select id="fo-cor"><option value="">Rodízio da Elora</option>${lista('corretores').map(k => `<option value="${esc(k.id)}"${o.corretorId === k.id ? ' selected' : ''}>${esc(k.nome)}</option>`).join('')}</select></div>
+    <div class="f"><label for="fo-camp">Campanha</label><select id="fo-camp"><option value="">Nenhuma</option>${lista('campanhas').map(c => `<option value="${esc(c.id)}"${o.campanhaId === c.id ? ' selected' : ''}>${esc(c.titulo)}</option>`).join('')}</select></div>
+    ${f ? `<div class="f ck w"><input type="checkbox" id="fo-ativa"${o.ativa === false ? '' : ' checked'}><label for="fo-ativa">Fonte ativa (pausada não recebe leads)</label></div>` : ''}</div>
+    <div class="acts" style="margin-top:14px">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Salvar</button></div></form>`);
+}
+function salvarFonte(f) {
+  const id = f.dataset.id || ('FO-' + Date.now().toString(36)), antes = (DB.fontes || {})[id] || {}, nome = $('fo-nome').value.trim().slice(0, 60); if (!nome) return toast('Dê um nome à fonte.');
+  store.salvar('fontes', id, { ...antes, nome, tipo: $('fo-tipo').value, canal: $('fo-canal').value, negocio: $('fo-neg').value === 'Compra' ? 'Compra' : 'Locação', corretorId: $('fo-cor').value || null, campanhaId: $('fo-camp').value || null,
+    ativa: $('fo-ativa') ? $('fo-ativa').checked : true, criadaEm: antes.criadaEm || REF });
+  registrar('Comercial', `Fonte de captação ${antes.nome ? 'alterada' : 'criada'}: ${nome}.`); fecharDlg(); toast('Fonte salva.');
+}
+function abrirEnderecoFonte(id) {
+  const f = (DB.fontes || {})[id]; if (!f) return; const u = urlCaptacao();
+  abrirDlg(`<h2>Endereço para o site · ${esc(f.nome)}</h2><p class="sub">Para o site, a landing page ou o formulário enviarem os leads direto para a Elora, 24 horas por dia, pela plataforma.</p>
+    <div class="f"><label for="fo-url">Endereço (POST)</label><textarea id="fo-url" class="ax-code" rows="2" readonly>${esc(u)}</textarea></div>
+    <div class="f"><label for="fo-ex">Exemplo do que enviar (JSON ou formulário)</label><textarea id="fo-ex" class="ax-code" rows="7" readonly>${esc(JSON.stringify({ nome: 'Maria Souza', telefone: '(12) 99999-0000', email: 'maria@exemplo.com', mensagem: 'Procuro apartamento de 2 dormitórios até R$ 2.500', bairro: 'Jardim Aquarius', valor_max: 2500, consentimento: true }, null, 2))}</textarea></div>
+    ${axNota(`O código secreto da fonte é gerado pela plataforma quando a fonte é criada lá; o endereço funciona com a API da plataforma no ar${(DB.config || {}).siteUrl ? '' : ' e o domínio configurado em Empresa e jurídico'}. Guarde o código como uma senha: quem tiver o endereço consegue enviar leads.`, 'escudo')}
+    <p class="sub">No formulário do site, inclua um campo escondido chamado "website": só robô preenche, e o lead é descartado sem aviso. Aceita JSON ou formulário comum; resposta 202 quando recebe. Na plataforma, os leads ficam na caixa de entrada da fonte (novo, repetido em 30 dias ou descartado) até entrar no funil.</p>
+    <p class="sub">Enquanto isso, os leads que chegam por e-mail ou planilha entram em "Receber leads".</p><div class="acts">${bt('fechar', 'Fechar')}</div>`);
+}
+// Leitura do que foi colado: JSON (objeto ou lista), planilha com cabeçalho (vírgula, ponto e vírgula ou tabulação)
+// ou blocos "Campo: valor" de e-mail de portal, separados por linha em branco.
+const FONTE_CAMPOS = { nome: ['nome', 'name', 'nome completo', 'full_name', 'cliente'], telefone: ['telefone', 'phone', 'celular', 'whatsapp', 'fone', 'tel'], email: ['email', 'e-mail', 'mail'],
+  quer: ['mensagem', 'message', 'interesse', 'quer', 'procura', 'comentario', 'comentário', 'observacao', 'observação'], regiao: ['bairro', 'regiao', 'região', 'cidade', 'bairros'], valorMax: ['valor', 'valor_max', 'valormax', 'orcamento', 'orçamento', 'budget', 'preco', 'preço'],
+  imovel: ['imovel', 'imóvel', 'codigo', 'código', 'ref', 'referencia', 'referência'] };
+const campoDe = k => { const c = semAcento(String(k || '')).replace(/[^a-z_ ]/g, '').trim(); for (const [f, ns] of Object.entries(FONTE_CAMPOS)) if (ns.some(n => semAcento(n) === c)) return f; return null; };
+function normLead(o) {
+  const r = {}; for (const [k, v] of Object.entries(o || {})) { const f = campoDe(k); if (f && v != null && String(v).trim() && !r[f]) r[f] = String(v).trim().slice(0, 400); }
+  if (r.valorMax) { const n = parseFloat(String(r.valorMax).replace(/[^\d,.]/g, '').replace(/\.(?=\d{3}\b)/g, '').replace(',', '.')); r.valorMax = isFinite(n) && n > 0 ? Math.round(n) : undefined; }
+  if (r.nome) r.nome = r.nome.slice(0, 80); return r;
+}
+function lerColados(txt) {
+  const t = String(txt || '').trim(); if (!t) return [];
+  if (/^[\[{]/.test(t)) { try { const j = JSON.parse(t); return (Array.isArray(j) ? j : [j]).filter(x => x && typeof x === 'object').map(normLead); } catch (e) { return []; } }
+  const linhas = t.split(/\r?\n/), sep = [';', '\t', ','].find(s => linhas[0].split(s).length > 1 && linhas[0].split(s).filter(campoDe).length >= 2);
+  if (sep) { const cab0 = linhas[0].split(sep).map(x => x.replace(/^"|"$/g, '').trim()); return linhas.slice(1).filter(x => x.trim()).map(l => { const cs = l.split(sep).map(x => x.replace(/^"|"$/g, '').trim()); return normLead(Object.fromEntries(cab0.map((c, i) => [c, cs[i]]))); }); }
+  return t.split(/\n\s*\n/).map(b => normLead(Object.fromEntries(b.split(/\r?\n/).map(x => x.match(/^\s*([^:]{2,30}):\s*(.+)$/)).filter(Boolean).map(m => [m[1], m[2]])))).filter(x => Object.keys(x).length);
+}
+function abrirColarFonte(id) {
+  const f = (DB.fontes || {})[id]; if (!f) return; const prev = estado.fonteColar && estado.fonteColar.id === id ? estado.fonteColar : { id, txt: '', itens: [] };
+  const linhas = prev.itens.map(x => ({ x, dup: duplicados('leads', x)[0] || null, ok: !!(x.nome && (x.telefone || x.email)) }));
+  abrirDlg(`<h2>Receber leads · ${esc(f.nome)}</h2><p class="sub">Cole o que chegou: e-mail do portal, linhas de uma planilha (com cabeçalho) ou JSON. O sistema separa nome, telefone, e-mail, o que procura, bairro e valor.</p>
+    <div class="f"><label for="fo-colar">O que chegou</label><textarea id="fo-colar" rows="7" maxlength="60000" placeholder="Nome: Maria Souza&#10;Telefone: (12) 99999-0000&#10;E-mail: maria@exemplo.com&#10;Mensagem: Procuro apartamento de 2 dormitórios&#10;&#10;Nome: João…">${esc(prev.txt)}</textarea></div>
+    <div class="acts" style="justify-content:flex-start">${bt('fonte-ler', 'Ler', { id })}</div>
+    ${linhas.length ? `<div class="tbl"><table class="tight" id="fo-prev"><tr><th>Nome</th><th>Contato</th><th>Procura</th><th>Situação</th></tr>${linhas.map(({ x, dup, ok }) => `<tr><td>${esc(x.nome || '—')}</td><td>${esc([x.telefone, x.email].filter(Boolean).join(' · ') || '—')}</td><td>${esc((x.quer || '').slice(0, 80))}</td><td>${!ok ? pill('bad', 'Falta nome e telefone ou e-mail') : dup ? pill('warn', 'Já é lead: vai ao histórico de ' + dup.nome) : pill('ok', 'Novo lead')}</td></tr>`).join('')}</table></div>
+      ${axNota('Só entram dados que a própria pessoa enviou pelo canal de contato. Não importe listas compradas ou de terceiros (LGPD).', 'escudo')}
+      <div class="acts">${bt('fechar', 'Cancelar')}${bt('fonte-importar', `Importar ${linhas.filter(x => x.ok).length} lead(s)`, { id }, '')}</div>` : `<div class="acts">${bt('fechar', 'Fechar')}</div>`}`, true);
+}
+async function importarDaFonte(id) {
+  const f = (DB.fontes || {})[id], st = estado.fonteColar; if (!f || !st || st.id !== id) return; let novos = 0, hist = 0; const q = new Date(AGORA()).toISOString();
+  for (const x of st.itens.slice(0, 200)) { if (!(x.nome && (x.telefone || x.email))) continue; const dup = duplicados('leads', x)[0];
+    if (dup) { await store.salvar('leads', dup.id, { ...histLead(dup, 'origem', `Novo contato pela fonte ${f.nome}${x.quer ? ': ' + x.quer : ''}`.slice(0, 400)), contatoEm: dup.contatoEm }); hist++; continue; }
+    const im = x.imovel && DB.imoveis[String(x.imovel).toUpperCase()] ? String(x.imovel).toUpperCase() : null, lid = novoId('leads');
+    await store.salvar('leads', lid, { nome: x.nome, telefone: x.telefone || '', email: x.email || '', quer: x.quer || 'Contato pela fonte ' + f.nome, regiao: x.regiao || '', ...(x.valorMax ? { valorMax: x.valorMax } : {}), tipo: f.negocio || 'Locação',
+      canal: f.canal || 'Site', origem: 'imobiliaria', fonteId: f.id, ...(f.campanhaId ? { campanhaId: f.campanhaId } : {}), ...(im ? { imovelId: im } : {}), etapa: 'novo', prioridade: 'normal', criadoEm: REF, criadoQ: q,
+      hist: [{ em: REF, t: 'origem', txt: `Fonte: ${f.nome}`, ...(im ? { im } : {}) }] });
+    if (f.corretorId) distribuirPara(lid, f.corretorId, 'fonte ' + f.nome); novos++; }
+  await store.salvar('fontes', f.id, { ...f, ultimoEm: REF });
+  registrar('Comercial', `Fonte ${f.nome}: ${novos} lead(s) novo(s) e ${hist} contato(s) em leads existentes.`); estado.fonteColar = null; fecharDlg(); toast(`${novos} lead(s) novo(s) no funil${hist ? `, ${hist} no histórico de quem já era lead` : ''}.`);
+}
+
+// ---------- 4. Automações: quando / se / então ----------
+const AU_QUANDO = { lead_novo: 'Chegou um lead novo', etapa: 'O lead mudou de etapa', visita: 'Uma visita foi registrada', proposta: 'Uma proposta foi registrada', parado: 'O lead ficou parado' };
+const AU_ACOES = { tarefa: 'Criar tarefa para o corretor', mensagem: 'Sugerir mensagem (o corretor envia)', etapa: 'Mudar a etapa', prioridade: 'Marcar prioridade alta', aviso: 'Avisar no chat da equipe', corretor: 'Passar para um corretor (se estiver sem)' };
+const AU_RECEITAS = [
+  { nome: 'Lead novo: ligar em até 1 hora', quando: 'lead_novo', se: {}, entao: [{ t: 'tarefa', titulo: 'Ligar para {nome} (lead novo: {canal})', prazo: 0 }, { t: 'aviso', texto: 'Lead novo: {nome}, {canal}. Primeiro contato em até 1 hora.' }] },
+  { nome: 'Depois da visita: pedir retorno', quando: 'visita', se: {}, entao: [{ t: 'tarefa', titulo: 'Pedir o retorno da visita a {nome}', prazo: 1 }, { t: 'mensagem', texto: 'Olá, {nome}! O que achou do imóvel? Se gostou, já preparo a proposta. {quem}' }] },
+  { nome: 'Proposta: prioridade e acompanhamento', quando: 'proposta', se: {}, entao: [{ t: 'prioridade' }, { t: 'tarefa', titulo: 'Acompanhar a proposta de {nome}', prazo: 2 }] },
+  { nome: 'Parado 5 dias em Qualificado: alertar', quando: 'parado', se: { etapa: 'qualificado', dias: 5 }, entao: [{ t: 'aviso', texto: '{nome} está há {dias} dias sem contato na etapa Qualificado ({corretor}).' }, { t: 'tarefa', titulo: 'Retomar o contato com {nome}', prazo: 0 }] }];
+const auTexto = (s, l, extra = {}) => { const cor = DB.corretores[l.corretorId]; return String(s || '').replace(/\{nome\}/g, tratar(l.nome)).replace(/\{canal\}/g, l.canal || 'site').replace(/\{corretor\}/g, cor ? cor.nome : 'sem corretor')
+  .replace(/\{quem\}/g, cor ? `${tratar(cor.nome)}, da ${EMPRESA}` : `equipe ${EMPRESA}`).replace(/\{etapa\}/g, (ETAPAS[l.etapa] || l.etapa || '').toLowerCase()).replace(/\{dias\}/g, extra.dias ?? '').slice(0, 600); };
+const auHash = s => { let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); };
+const auSe = (r, l, ev) => { const s = r.se || {}; return (!s.etapa || l.etapa === s.etapa) && (!s.tipo || (l.tipo || 'Locação') === s.tipo) && (!s.canal || l.canal === s.canal) && (!s.fonteId || l.fonteId === s.fonteId) && (r.quando !== 'etapa' || !s.para || ev.para === s.para); };
+let AU_RODANDO = false;
+// Executa as ações de uma regra para um lead, uma vez por "chave" (evento). Ids fixos: rodar de novo, em outra tela ou outro computador, não duplica.
+async function auExecutar(r, l, chave, extra = {}) {
+  const xid = 'AX-' + auHash(r.id + '|' + l.id + '|' + chave); if ((DB.autoexec || {})[xid]) return false;
+  const feitos = []; let lead = DB.leads[l.id]; AU_RODANDO = true;
+  try { for (const [i, a] of (r.entao || []).entries()) { const aid = xid + '-' + i;
+      if (a.t === 'tarefa') { if (!DB.tarefas[aid]) await store.salvar('tarefas', aid, { titulo: auTexto(a.titulo || 'Falar com {nome}', lead, extra).slice(0, 240), tipo: 'ligacao', data: somaDias(REF, Math.max(0, +a.prazo || 0)), ...(lead.corretorId ? { corretorId: lead.corretorId } : {}), leadId: lead.id, status: 'pendente', auto: r.id }); feitos.push('tarefa criada'); }
+      else if (a.t === 'mensagem') { lead = DB.leads[lead.id]; if (!(lead.autoMsg || {})[aid]) { await store.salvar('leads', lead.id, { ...lead, autoMsg: { ...(lead.autoMsg || {}), [aid]: { t: r.nome, x: auTexto(a.texto, lead, extra), em: REF } } }); } feitos.push('mensagem sugerida'); }
+      else if (a.t === 'etapa' && ETAPAS[a.etapa] && lead.etapa !== a.etapa && a.etapa !== 'perdido' && a.etapa !== 'contrato') { lead = DB.leads[lead.id]; await store.salvar('leads', lead.id, { ...histLead(lead, 'etapa', 'Etapa: ' + ETAPAS[a.etapa] + ' (automação)'), etapa: a.etapa }); feitos.push('etapa: ' + ETAPAS[a.etapa]); }
+      else if (a.t === 'prioridade') { lead = DB.leads[lead.id]; if (lead.prioridade !== 'alta') await store.salvar('leads', lead.id, { ...lead, prioridade: 'alta' }); feitos.push('prioridade alta'); }
+      else if (a.t === 'aviso') { const q = new Date(AGORA()).toISOString(), m = { canal: a.canal || 'corretores', q, autor: 'Automação', txt: auTexto(a.texto || 'Atenção ao lead {nome}.', lead, extra), ref: lead.id };
+        if (!(DB.chat || {})[aid]) { DB.chat = { ...(DB.chat || {}), [aid]: { ...m, id: aid } }; if (store.modo === 'nuvem') { try { await store.db.doc('chat/' + aid).set(m); } catch (e) { erroDb(e); } } else store.gravarLocal(); } feitos.push('aviso no chat'); }
+      else if (a.t === 'corretor' && a.corretorId && DB.corretores[a.corretorId]) { lead = DB.leads[lead.id]; if (!lead.corretorId) { distribuirPara(lead.id, a.corretorId, 'automação ' + r.nome); feitos.push('passado para ' + DB.corretores[a.corretorId].nome); } } }
+    await store.salvar('autoexec', xid, { regra: r.id, regraNome: r.nome, leadId: l.id, leadNome: l.nome, chave, em: new Date(AGORA()).toISOString(), acoes: feitos });
+    await store.salvar('automacoes', r.id, { ...DB.automacoes[r.id], execucoes: (+(DB.automacoes[r.id] || {}).execucoes || 0) + 1, ultimaEm: REF });
+  } finally { AU_RODANDO = false; }
+  return true;
+}
+const auAtivas = q => lista('automacoes').filter(r => r.ativa && r.quando === q);
+// Eventos do lead, vindos das gravações feitas nesta tela (não das que chegam de outros computadores, para não repetir).
+async function auEvento(antes, l) {
+  if (AU_RODANDO || !l || !podeGravar || !lista('automacoes').some(r => r.ativa)) return;
+  const evs = [];
+  if (!antes) evs.push(['lead_novo', 'novo', {}]);
+  else { if (antes.etapa !== l.etapa) evs.push(['etapa', 'etapa:' + l.etapa + ':' + REF, { para: l.etapa }]);
+    const kh = h => [h.em, h.t, h.txt, h.im].join('|'), vistos = new Set((antes.hist || []).map(kh)), novos = (l.hist || []).slice(0, 5).filter(h => !vistos.has(kh(h)));
+    for (const h of novos) if (h.t === 'visita' || h.t === 'proposta') evs.push([h.t, h.t + ':' + h.em + ':' + (h.im || ''), {}]); }
+  for (const [q, chave, ev] of evs) for (const r of auAtivas(q)) if (auSe(r, l, ev)) await auExecutar(r, DB.leads[l.id] || l, chave, ev);
+}
+// Regras de tempo ("parado"): uma varredura ao abrir e a cada 5 minutos; cada período parado dispara uma vez.
+async function auVarredura() {
+  if (AU_RODANDO || !podeGravar || estado.perfil !== 'equipe') return; const rs = auAtivas('parado'); if (!rs.length) return;
+  for (const l of lista('leads')) { if (!PROB[l.etapa]) continue; const base = l.contatoEm || l.criadoEm; if (!base) continue; const d = dias(base, REF);
+    for (const r of rs) if (auSe(r, l, {}) && d >= Math.max(1, +(r.se || {}).dias || 3)) await auExecutar(r, l, 'parado:' + base, { dias: d }); }
+}
+setInterval(() => { auVarredura().catch(() => {}); }, 300000);
+function viewAutomacoes() {
+  const rs = lista('automacoes'), tab = estado.auTab || 'regras', ex = lista('autoexec').sort((a, b) => String(b.em).localeCompare(String(a.em)));
+  const resumoR = r => `<b>Quando</b> ${esc((AU_QUANDO[r.quando] || r.quando).toLowerCase())}${r.quando === 'parado' ? ` há ${+(r.se || {}).dias || 3} dia(s)` : ''}${(r.se || {}).etapa ? ` · <b>se</b> etapa ${esc((ETAPAS[r.se.etapa] || r.se.etapa).toLowerCase())}` : ''}${(r.se || {}).tipo ? ` · ${esc(r.se.tipo.toLowerCase())}` : ''}${(r.se || {}).canal ? ` · canal ${esc(r.se.canal)}` : ''}${(r.se || {}).fonteId && (DB.fontes || {})[r.se.fonteId] ? ` · fonte ${esc(DB.fontes[r.se.fonteId].nome)}` : ''} · <b>então</b> ${(r.entao || []).map(a => esc((AU_ACOES[a.t] || a.t).toLowerCase())).join(', ')}`;
+  return cab('Automações', 'Regras do tipo "quando acontecer isto, se for assim, então faça aquilo". Toda regra nasce pausada até você revisar e ligar. Mensagens são só sugeridas: quem envia é o corretor.', ehGestor ? bt('au-nova', 'Nova regra', {}, '') : '') + `
+  ${abas('au-tab', tab, [['regras', `Regras · ${rs.length}`], ['atividade', `Atividade · ${ex.length}`]])}
+  ${tab === 'atividade' ? `<section class="panel"><h2>O que as automações fizeram</h2>${ex.length ? `<div class="tl" id="au-ativ">${ex.slice(0, 100).map(x => `<div><span>${fmtData(String(x.em).slice(0, 10))}</span><span><b>${esc(x.regraNome || x.regra)}</b> · ${DB.leads[x.leadId] ? `<button type="button" class="lnk" data-act="atendimento" data-id="${esc(x.leadId)}">${esc(x.leadNome || '')}</button>` : esc(x.leadNome || '')}: ${esc((x.acoes || []).join(', ') || 'nada a fazer')}</span></div>`).join('')}</div>` : vazio('Nenhuma execução ainda.')}</section>`
+  : `<section class="panel"><h2>Regras</h2>${rs.length ? `<div class="list" id="au-regras">${rs.map(r => `<div class="item"><h3>${esc(r.nome)}</h3><p>${resumoR(r)}</p><p>${+r.execucoes || 0} execução(ões)${r.ultimaEm ? ' · última em ' + fmtData(r.ultimaEm) : ''}</p>
+      ${ehGestor ? `<div class="acts">${bt('au-ligar', r.ativa ? 'Pausar' : 'Ligar', { id: r.id }, r.ativa ? '' : 'elora')}${bt('au-editar', 'Editar', { id: r.id })}${bt('au-apagar', estado.confirmar === 'au' + r.id ? 'Confirmar: apagar' : 'Apagar', { id: r.id }, 'danger')}</div>` : ''}
+      <div class="side-r">${r.ativa ? pill('ok', 'Ligada') : pill('', 'Pausada')}</div></div>`).join('')}</div>` : vazio('Nenhuma regra ainda. Comece por uma das receitas abaixo.')}</section>
+  ${ehGestor ? `<section class="panel"><h2>Receitas prontas</h2><div class="list">${AU_RECEITAS.map((r, i) => `<div class="item"><h3>${esc(r.nome)}</h3><p>${resumoR(r)}</p><div class="acts">${bt('au-receita', 'Usar esta receita', { i })}</div></div>`).join('')}</div>
+    <p class="sub">Cada execução fica registrada em Atividade. Rodar de novo a mesma regra para o mesmo evento não duplica a tarefa nem o aviso.</p></section>` : ''}`}`;
+}
+function abrirAutomacao(id, base) {
+  if (!ehGestor) return; const r = id ? DB.automacoes[id] : (base || { nome: '', quando: 'lead_novo', se: {}, entao: [{ t: 'tarefa', titulo: 'Falar com {nome}', prazo: 0 }] }), se = r.se || {};
+  const op = (obj, v, vazio) => (vazio ? `<option value="">${vazio}</option>` : '') + Object.entries(obj).map(([k, t]) => `<option value="${esc(k)}"${k === v ? ' selected' : ''}>${esc(t)}</option>`).join('');
+  const ac = [...(r.entao || []), {}, {}].slice(0, Math.max(3, (r.entao || []).length + 1));
+  abrirDlg(`<h2>${id ? 'Editar regra' : 'Nova regra'}</h2><form id="frm-auto" data-id="${esc(id || '')}"><div class="fgrid">
+    <div class="f w"><label for="au-nome">Nome *</label><input id="au-nome" type="text" maxlength="80" required value="${esc(r.nome)}"></div>
+    <div class="f w"><label for="au-quando">Quando</label><select id="au-quando">${op(AU_QUANDO, r.quando)}</select></div>
+    <div class="f"><label for="au-etapa">Se a etapa for</label><select id="au-etapa">${op(ETAPAS, se.etapa, 'Qualquer etapa')}</select><small>Em "mudou de etapa", é a etapa nova.</small></div>
+    <div class="f"><label for="au-dias">Dias parado (só para "ficou parado")</label><input id="au-dias" type="number" min="1" max="90" value="${+se.dias || 3}"></div>
+    <div class="f"><label for="au-tipo">Se o interesse for</label><select id="au-tipo">${op({ 'Locação': 'Locação', Compra: 'Compra' }, se.tipo, 'Qualquer')}</select></div>
+    <div class="f"><label for="au-fonte">Se vier da fonte</label><select id="au-fonte"><option value="">Qualquer</option>${lista('fontes').map(f => `<option value="${esc(f.id)}"${se.fonteId === f.id ? ' selected' : ''}>${esc(f.nome)}</option>`).join('')}</select></div>
+    <div class="f sec">Então</div>
+    ${ac.map((a, i) => `<div class="f"><label for="au-a${i}">Ação ${i + 1}</label><select id="au-a${i}">${op(AU_ACOES, a.t, 'Nenhuma')}</select></div>
+      <div class="f"><label for="au-v${i}">Detalhe</label><input id="au-v${i}" type="text" maxlength="300" value="${esc(a.titulo || a.texto || a.etapa || a.corretorId || '')}" placeholder="Texto, etapa (visita, proposta…) ou id do corretor"><small>${a.t === 'tarefa' ? `Prazo em dias: <input id="au-p${i}" type="number" min="0" max="30" value="${+a.prazo || 0}" style="width:60px">` : `<input id="au-p${i}" type="hidden" value="0">`}</small></div>`).join('')}</div>
+    <p class="sub">No texto, use {nome}, {canal}, {corretor}, {quem}, {etapa} e {dias}. A regra salva fica pausada até você ligar.</p>
+    <div class="acts" style="margin-top:14px">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Salvar</button></div></form>`, true);
+}
+function salvarAutomacao(f) {
+  const id = f.dataset.id || ('AU-' + Date.now().toString(36)), antes = (DB.automacoes || {})[id] || {}, nome = $('au-nome').value.trim().slice(0, 80); if (!nome) return toast('Dê um nome à regra.');
+  const entao = []; for (let i = 0; $('au-a' + i); i++) { const t = $('au-a' + i).value, v = $('au-v' + i).value.trim(), p = +($('au-p' + i) || {}).value || 0; if (!AU_ACOES[t]) continue;
+    if (t === 'tarefa') entao.push({ t, titulo: v || 'Falar com {nome}', prazo: Math.max(0, Math.min(30, p)) }); else if (t === 'mensagem' || t === 'aviso') entao.push({ t, texto: v || (t === 'aviso' ? 'Atenção ao lead {nome}.' : 'Olá, {nome}! {quem}') });
+    else if (t === 'etapa') { const e = semAcento(v); if (!ETAPAS[e] || ['perdido', 'contrato'].includes(e)) return toast('Na ação "Mudar a etapa", escreva novo, qualificado, visita ou proposta.'); entao.push({ t, etapa: e }); }
+    else if (t === 'corretor') { const k = lista('corretores').find(x => x.id === v || semAcento(x.nome) === semAcento(v)); if (!k) return toast('Na ação "Passar para um corretor", escreva o nome do corretor.'); entao.push({ t, corretorId: k.id }); }
+    else entao.push({ t }); }
+  if (!entao.length) return toast('Escolha ao menos uma ação.');
+  const se = { ...($('au-etapa').value ? { etapa: $('au-etapa').value } : {}), ...($('au-tipo').value ? { tipo: $('au-tipo').value } : {}), ...($('au-fonte').value ? { fonteId: $('au-fonte').value } : {}), ...($('au-quando').value === 'parado' ? { dias: Math.max(1, +$('au-dias').value || 3) } : {}) };
+  store.salvar('automacoes', id, { ...antes, nome, quando: AU_QUANDO[$('au-quando').value] ? $('au-quando').value : 'lead_novo', se, entao, ativa: false, criadaEm: antes.criadaEm || REF, criadaPor: quemSou() });
+  registrar('Comercial', `Automação ${antes.nome ? 'alterada' : 'criada'} (pausada): ${nome}.`); fecharDlg(); toast('Regra salva e pausada. Revise e ligue quando quiser.');
 }
 
 // ---------- Chat interno ----------
@@ -7722,7 +7995,7 @@ const MAN_G = {
     rotina: [['Toda semana', ['Backup completo.', 'Tickets de Tecnologia.']], ['Todo mês', ['Registro de alterações.']]] })
 };
 // Os manuais da gestão seguem os assuntos de sempre (o conteúdo de cada um), independentemente da área do menu.
-const MAN_TELAS = { base: ['central', 'agenda', 'chat'], comercial: ['comercial', 'flows', 'campanhas', 'compradores', 'prospeccao', 'rede', 'desempenho', 'rodizio'],
+const MAN_TELAS = { base: ['central', 'agenda', 'chat'], comercial: ['comercial', 'flows', 'marketing', 'campanhas', 'compradores', 'prospeccao', 'rede', 'desempenho', 'rodizio'],
   imoveis: ['im-venda', 'im-locacao', 'im-cuidado'], operacoes: ['locacao', 'financeiro', 'posvenda', 'pessoas'], gestao: ['reunioes', 'tickets', 'resultados', 'ideias'],
   diretoria: ['guerra', 'inteligencia', 'juridico', 'acessos'], tecnologia: ['dados'] };
 const AREA_DA_VIEW = v => Object.keys(MAN_G).find(k => (MAN_TELAS[k] || []).includes(v)) || 'base';
@@ -9997,7 +10270,7 @@ for (const p of BV_PERFIS) { const ini = AX_VIEWS[p].inicio, mais = AX_VIEWS[p].
   AX_VIEWS[p].inicio = feed => { const h = ini(feed), i = h.indexOf('</section>'); return i < 0 ? bvEntrada() + h : h.slice(0, i + 10) + bvEntrada() + h.slice(i + 10); };
   AX_VIEWS[p].mais = feed => mais(feed).replace('<div class="ax-lista">', `<div class="ax-lista"><button type="button" data-act="app-aba" data-aba="buscar">${ic('busca', 22, 'i')}<b>Buscar imóveis</b><small>Por voz ou por escrito, para comprar ou alugar</small>${ic('seta', 18, 's')}</button>`); }
 
-const RENDER = { quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
+const RENDER = { quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), radar: () => viewRadar(false), 'radar-c': () => viewRadar(true), fontes: () => viewFontes(), automacoes: () => viewAutomacoes(), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
   agenda: () => viewAgenda(false), 'agenda-c': () => viewAgenda(true), ideias: () => viewIdeias(false), 'ideias-c': () => viewIdeias(true), inicio: viewInicio, carteira: viewCarteira, extrato: viewExtrato, ia: () => cab('Elora AI', 'Lê a sua carteira, o extrato e as pendências.') + painelIA('corretor'), proprietario: viewProprietario, inquilino: viewInquilino };
 // ---------- Elora Casa+: a venda ou a locação abre uma jornada de serviços ----------
 // O cliente escolhe profissionais parceiros no app; a Elora recebe uma comissão do parceiro quando o serviço é feito
@@ -10555,13 +10828,13 @@ const PASTAS_EQ = (() => { const o = {}; let g = 'base'; for (const [v, t] of VI
 // Telas só do dono (antiga pasta Diretoria), em qualquer área do menu.
 const DONO_SO = ['guerra', 'inteligencia', 'juridico', 'acessos'];
 // Acessos gravados com as pastas antigas continuam valendo (cada pasta antiga vira as áreas novas onde as telas dela estão).
-const PASTAS_ANTIGAS = { comercial: ['clientes', 'equipe', 'analises', 'imoveis'], gestao: ['equipe', 'analises'], tecnologia: ['configuracoes'], diretoria: [] };
+const PASTAS_ANTIGAS = { comercial: ['clientes', 'marketing', 'equipe', 'analises', 'imoveis'], gestao: ['equipe', 'analises'], tecnologia: ['configuracoes'], diretoria: [] };
 const normPastas = ps => [...new Set((ps || []).flatMap(k => PASTAS_ANTIGAS[k] || [k]))];
-const PASTAS_NOME = { clientes: 'Clientes', imoveis: 'Imóveis', operacoes: 'Operações', equipe: 'Equipe', analises: 'Análises', configuracoes: 'Configurações' };
+const PASTAS_NOME = { clientes: 'Clientes', marketing: 'Marketing', imoveis: 'Imóveis', operacoes: 'Operações', equipe: 'Equipe', analises: 'Análises', configuracoes: 'Configurações' };
 const ACESSOS_PADRAO = [
   { id: 'rodrigo', nome: 'Rodrigo', papel: 'Dono', pastas: '*' },
   { id: 'pedro', nome: 'Pedro', papel: 'Operações', pastas: ['imoveis', 'operacoes', 'equipe', 'analises'] },
-  { id: 'fabiana', nome: 'Fabiana', papel: 'Corretores (venda e locação)', pastas: ['clientes', 'imoveis', 'equipe', 'analises'] },
+  { id: 'fabiana', nome: 'Fabiana', papel: 'Corretores (venda e locação)', pastas: ['clientes', 'marketing', 'imoveis', 'equipe', 'analises'] },
   { id: 'guilherme', nome: 'Guilherme', papel: 'Tecnologia (AI/Tech)', pastas: ['configuracoes', 'equipe', 'analises'] }];
 const acessosCfg = () => { const a = (DB.config || {}).acessos; return Array.isArray(a) && a.length ? a : ACESSOS_PADRAO; };
 const gestorAtual = () => { const id = prefLer('gestor'); return acessosCfg().find(x => x.id === id) || null; };
@@ -10608,7 +10881,7 @@ function render() {
   $('in-ref').value = REF;
   $('modo').textContent = store.modo === 'nuvem' ? 'Dados gravados no banco desta página, na sua conta.' : 'Dados gravados apenas neste navegador.';
   if (!estado.pronto) return;
-  sincronizarTickets();
+  sincronizarTickets(); if (!estado.auVarreu) { estado.auVarreu = true; setTimeout(() => { auVarredura().catch(() => {}); }, 2000); }
   if (estado.app) { const ap = AX_PERFIS[estado.perfil] ? estado.perfil : 'proprietario', ops = OPCOES_QUEM[ap](); estado.perfil = ap; estado.view = ap; if (!ops.some(o => o[0] === estado.quem[ap])) estado.quem[ap] = ops.length ? ops[0][0] : null; $('appx').innerHTML = viewApp(); trDom($('appx')); return; }
   if (estado.perfil === 'equipe' && !viewPermitida(estado.view)) { estado.view = primeiraPermitida(); try { history.replaceState(null, '', '#' + estado.view); } catch (e) {} }
   const p = estado.perfil, sq = $('sel-quem'); $('sel-perfil').value = p;
@@ -11191,7 +11464,18 @@ document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm
 // Sala de guerra: ações, formulários e categoria das dores.
 Object.assign(ACOES, {
   'qf-abrir': d => abrirQualif(d.id), 'qf-colar': d => abrirColar(d.id),
-  'zap-reg': d => { if (DB.leads[d.id]) { registrarAtendimento(d.id, HIST[d.t] ? d.t : 'mensagem', d.im || null, 'pelo WhatsApp'); if (d.fl != null) marcarFlow(d.id, d.fl); toast('Contato pelo WhatsApp registrado no histórico.'); } },
+  'zap-reg': d => { if (DB.leads[d.id]) { registrarAtendimento(d.id, HIST[d.t] ? d.t : 'mensagem', d.im || null, 'pelo WhatsApp'); if (d.fl != null) marcarFlow(d.id, d.fl); if (d.ga) marcarGatilho(d.id, d.ga); if (d.am) marcarAutoMsg(d.id, d.am); toast('Contato pelo WhatsApp registrado no histórico.'); } },
+  'radar-f': d => { estado.radarF = d.v || ''; render(); }, 'radar-k': d => { estado.radarK = d.v || ''; render(); },
+  'ga-feito': d => { marcarGatilho(d.id, d.ch); registrarAtendimento(d.id, 'mensagem', null, 'gatilho por etapa'); toast('Mensagem marcada como enviada.'); }, 'ga-pular': d => { marcarGatilho(d.id, d.ch); toast('Gatilho pulado.'); },
+  'ga-edit': () => { estado.gaEdit = !estado.gaEdit; render(); }, 'ga-padrao': () => { if (!ehGestor) return; salvarConfig({ gatilhos: [] }); estado.gaEdit = false; toast('Gatilhos de volta ao padrão.'); },
+  'am-feito': d => { marcarAutoMsg(d.id, d.k); registrarAtendimento(d.id, 'mensagem', null, 'sugerida pela automação'); toast('Mensagem marcada como enviada.'); }, 'am-pular': d => { marcarAutoMsg(d.id, d.k); toast('Sugestão descartada.'); },
+  'fonte-nova': () => abrirFonte(null), 'fonte-editar': d => abrirFonte(d.id), 'fonte-endereco': d => abrirEnderecoFonte(d.id),
+  'fonte-colar': d => { if (!estado.fonteColar || estado.fonteColar.id !== d.id) estado.fonteColar = { id: d.id, txt: '', itens: [] }; abrirColarFonte(d.id); },
+  'fonte-ler': d => { const t = ($('fo-colar') || {}).value || ''; const its = lerColados(t).slice(0, 200); estado.fonteColar = { id: d.id, txt: t, itens: its }; if (!its.length) toast('Não encontrei leads no texto. Confira o formato.'); abrirColarFonte(d.id); },
+  'fonte-importar': d => importarDaFonte(d.id),
+  'au-tab': d => { estado.auTab = d.tab; render(); }, 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
+  'au-ligar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; store.salvar('automacoes', d.id, { ...r, ativa: !r.ativa }); registrar('Comercial', `Automação ${r.ativa ? 'pausada' : 'ligada'}: ${r.nome}.`); toast(r.ativa ? 'Regra pausada.' : 'Regra ligada.'); if (!r.ativa) setTimeout(() => { auVarredura().catch(() => {}); }, 300); },
+  'au-apagar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; if (estado.confirmar !== 'au' + d.id) { estado.confirmar = 'au' + d.id; return render(); } estado.confirmar = null; store.apagar('automacoes', d.id); registrar('Comercial', `Automação apagada: ${r.nome}.`); toast('Regra apagada.'); },
   'gz-tab': d => { estado.gzTab = d.tab; estado.confirmar = null; render(); }, 'gz-cat': d => { estado.gzCat = d.v || ''; render(); },
   'gz-ir': d => girarGz(+d.n || 1), 'gz-pausa': () => { estado.gzPausa = !estado.gzPausa; render(); }, 'gz-sug-ia': () => sugestoesGuerraIA(),
   'gz-cc-novo': () => { if (ehGestor) abrirConcorrente(null); }, 'gz-cc-abrir': d => { if (ehGestor) abrirConcorrente(d.id); },
@@ -11222,6 +11506,12 @@ Object.assign(ACOES, {
   'gz-cmd': d => comandoGuerra(d), 'gz-nota': () => { if (ehGestor) abrirNotaElora(); },
 });
 document.addEventListener('submit', e => { const f = e.target; if (f.id !== 'frm-qualif' && f.id !== 'frm-colar') return; e.preventDefault(); e.stopImmediatePropagation(); if (f.id === 'frm-qualif') salvarQualif(f); else lerConversa(f); });
+document.addEventListener('submit', e => { const f = e.target; if (!['frm-fonte', 'frm-auto', 'frm-radar', 'frm-gatilhos'].includes(f.id || '')) return; e.preventDefault(); e.stopImmediatePropagation();
+  if (f.id === 'frm-fonte') salvarFonte(f);
+  else if (f.id === 'frm-auto') salvarAutomacao(f);
+  else if (f.id === 'frm-radar') { if (!ehGestor) return; const n = (k, a, b) => Math.max(a, Math.min(b, +$('rd-' + k).value || RADAR_PADRAO[k])); salvarConfig({ radarSla: { novoH: n('novoH', 1, 72), qualificado: n('qualificado', 1, 30), visita: n('visita', 1, 30), proposta: n('proposta', 1, 30) } }); toast('Prazos do radar salvos.'); }
+  else if (f.id === 'frm-gatilhos') { if (!ehGestor) return; const gs = gatilhosCfg().map((g, i) => ({ etapa: ['qualificado', 'visita', 'proposta'].includes($('ga-' + i + '-e').value) ? $('ga-' + i + '-e').value : g.etapa, d: Math.max(0, Math.min(60, +$('ga-' + i + '-d').value || 0)), t: $('ga-' + i + '-t').value.trim().slice(0, 60) || g.t, x: $('ga-' + i + '-x').value.trim().slice(0, 600) || g.x })); salvarConfig({ gatilhos: gs }); estado.gaEdit = false; toast('Gatilhos salvos.'); }
+});
 document.addEventListener('submit', e => { const f = e.target; if (!/^frm-gz-/.test(f.id || '')) return; e.preventDefault(); e.stopImmediatePropagation(); if (!ehGestor) return toast('Só os gestores alteram a sala de guerra.');
   if (f.id === 'frm-gz-cc') salvarConcorrente(f);
   else if (f.id === 'frm-gz-dor') salvarDores(f);
@@ -11473,11 +11763,249 @@ $('dlg').addEventListener('click', e => { const d = $('dlg'); if (e.target !== d
   if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) fecharDlg(); });
 window.addEventListener('hashchange', () => { const v = location.hash.slice(1); if (v === 'app') { if (!estado.app) abrirApp(); } else if (RENDER[v] && (v !== estado.view || estado.app)) ir(v); });
 
+// ---------- Marketing: visão geral, calendário de conteúdo, estúdio da Elora AI e presença digital (versão 43) ----------
+const MK_CANAIS = ['Instagram', 'Facebook', 'Google', 'WhatsApp', 'TikTok', 'LinkedIn', 'Portal'];
+const MK_FORMATOS = ['Post', 'Carrossel', 'Reels', 'Stories', 'Anúncio', 'Post no Google', 'Mensagem'];
+const MK_PUBLICOS = ['Proprietários', 'Locatários', 'Compradores', 'Empresas e RHs', 'Geral'];
+const MK_ST = { ideia: ['', 'Ideia'], producao: ['gold', 'Em produção'], agendado: ['warn', 'Agendado'], publicado: ['ok', 'Publicado'] };
+const MK_TEMAS = ['Seguro-fiança: alugar sem fiador', 'Recebimento do imóvel (24 itens)', 'Programa de manutenção e Selo Elora', 'App Elora: pagar por PIX ou cartão', 'Reajuste anual do aluguel', 'Documentos para alugar', 'Casa própria com renda até R$ 3.500', 'Mudança Plug & Play (luz, água, internet)', 'Quanto rende um imóvel alugado', 'Erros que deixam o imóvel vazio', 'Vistoria de entrada e de saída', 'IPTU e condomínio: quem paga o quê'];
+const MK_CHECK = [
+  ['cnpj', 'CNPJ aberto', 'Base'], ['creci', 'Número do CRECI-J informado no sistema (inscrição em andamento)', 'Base'], ['banco', 'Conta bancária da empresa', 'Base'], ['dominio', 'Domínio e e-mail da Elora', 'Base'],
+  ['marca', 'Kit de marca: logo, cores, modelos de post', 'Base'], ['fotos', 'Fotos profissionais da equipe', 'Base'], ['privacidade', 'Política de privacidade no site (LGPD)', 'Base'],
+  ['gmb', 'Perfil da Empresa no Google criado', 'Google'], ['gmbv', 'Perfil no Google verificado, com fotos, horário e serviços', 'Google'], ['gads', 'Conta no Google Ads', 'Google'],
+  ['ig', 'Instagram criado, bio com CRECI-J e link do WhatsApp', 'Redes'], ['meta', 'Gerenciador de Negócios da Meta e pixel no site', 'Redes'], ['estoque', '15 posts prontos em estoque', 'Redes'],
+  ['zap', 'WhatsApp Business com boas-vindas e ausência', 'Atendimento'], ['portais', 'Portais contratados (ZAP/Viva Real, OLX, Imovelweb, Chaves na Mão)', 'Atendimento'],
+  ['lista100', 'Lista de 100 proprietários para contato', 'Prospecção'], ['lista20', 'Lista de 20 empresas e RHs para contato', 'Prospecção']];
+const MK_METAS_PADRAO = { avaliacoes: 30, nota: 4.8, seguidores: 1500, leadsMes: 150, cpl: 25, captados: 30, contratos: 15, postsSemana: 3 };
+const MK_PLANO = [
+  ['Lançamento: chegou a Elora', 'Carrossel', 'Geral'], ['O recebimento: 24 itens antes de anunciar', 'Post', 'Proprietários'], ['Seguro-fiança: alugar sem fiador', 'Post', 'Locatários'],
+  ['App Elora: pagar o aluguel em 10 segundos', 'Reels', 'Locatários'], ['Bastidores: quem cuida do seu imóvel', 'Post', 'Geral'], ['Imóvel com histórico: programa de manutenção', 'Post', 'Proprietários'],
+  ['Imóvel da semana', 'Post', 'Locatários'], ['Casa própria com renda até R$ 3.500', 'Carrossel', 'Compradores'], ['Mudança Plug & Play', 'Post', 'Geral'],
+  ['5 erros que deixam o imóvel vazio', 'Carrossel', 'Proprietários'], ['Como funciona o reajuste anual', 'Post', 'Locatários'], ['Tem imóvel para alugar? Avaliação sem custo', 'Anúncio', 'Proprietários']];
+const MK_REGRAS = 'Regras da Elora para comunicação: tom profissional, persuasivo e humano, em português do Brasil; não invente dados, medidas, preços nem vizinhança; não cite nem compare concorrentes; não relacione imóveis a aviação; não use superlativos vazios ("imperdível", "maravilhoso"); não prometa aprovação de crédito; nenhuma taxa para o locatário além do aluguel e encargos legais; serviço de parceiro é oferta, nunca condição; a garantia de locação da Elora é o seguro-fiança. Não escreva número de CRECI, telefone nem nome de corretor: o sistema acrescenta o rodapé.';
+const mkCfg = () => ({ checklist: {}, metas: {}, hist: [], ...((DB.config || {}).mkt || {}) });
+const mkMetas = () => ({ ...MK_METAS_PADRAO, ...(mkCfg().metas || {}) });
+const mkUltimo = () => { const h = mkCfg().hist || []; return h.length ? h[h.length - 1] : {}; };
+const salvarMk = patch => salvarConfig({ mkt: { ...mkCfg(), ...patch } });
+const mkRodape = () => `\n\n${EMPRESA} · ${DB.config.creciJ ? 'CRECI ' + DB.config.creciJ : 'CRECI-J a informar'}`;
+const mkCreciOk = () => !!String(DB.config.creciJ || '').trim();
+const mkCheckFeito = k => k === 'creci' ? mkCreciOk() : k === 'estoque' ? lista('posts').filter(p => p.status !== 'ideia').length >= 15 : !!(mkCfg().checklist || {})[k];
+function mkNumeros() {
+  const m = mesRef(), de90 = diaMais(REF, -90), ls = lista('leads').filter(l => String(l.criadoEm || '').slice(0, 7) === m);
+  const cs = campanhasResumo(l => String(l.criadoEm || '').slice(0, 7) === m), inv = cs.reduce((s, c) => s + c.investC, 0), nl = cs.reduce((s, c) => s + c.leads, 0);
+  const captados = lista('imoveis').filter(i => !i.exemplo && i.autorizacaoEm && i.autorizacaoEm >= de90).length || lista('imoveis').filter(i => i.autorizacaoEm && i.autorizacaoEm >= de90).length;
+  const contratos = lista('contratos').filter(c => (c.inicio || '') >= de90 && (c.inicio || '') <= REF).length;
+  const ini = diaMais(REF, -((dt(REF).getUTCDay() + 6) % 7)), fim = diaMais(ini, 6), ps = lista('posts');
+  return { ls, inv, nl, cpl: nl ? Math.round(inv / nl) : null, captados, contratos, semana: ps.filter(p => p.status === 'publicado' && p.data >= ini && p.data <= fim).length,
+    mesPub: ps.filter(p => p.status === 'publicado' && String(p.data).slice(0, 7) === m).length, mesPlan: ps.filter(p => String(p.data).slice(0, 7) === m).length, ini, fim };
+}
+const mkBarra = (v, meta, inverso) => { if (v == null || !meta) return ''; const r = inverso ? (v <= meta ? 1 : meta / v) : Math.min(1, v / meta), c = r >= 1 ? 'var(--ok, #2e7d4f)' : r >= .5 ? 'var(--gold, #b8954a)' : 'var(--bad, #b3261e)';
+  return `<span style="display:block;height:6px;border-radius:3px;background:rgba(0,0,0,.08);margin-top:6px;padding:0;border:0" role="img" aria-label="${Math.round(r * 100)}% da meta"><span style="display:block;height:6px;border-radius:3px;width:${Math.max(2, Math.round(r * 100))}%;background:${c}"></span></span>`; };
+const mkPill = s => pill((MK_ST[s] || MK_ST.ideia)[0], (MK_ST[s] || MK_ST.ideia)[1]);
+const mkTrava = () => mkCreciOk() ? '' : `<section class="panel" style="border-left:4px solid var(--gold, #b8954a)"><h2>CRECI-J em andamento: aguardando o número</h2><p>Prepare tudo agora: calendário, peças, campanhas e listas. As peças da Elora AI já saem com o campo do CRECI-J no rodapé. No dia em que o número chegar, informe-o em Empresa e jurídico: ele entra em todas as peças e os anúncios podem ser marcados como publicados (Lei 6.530/78, art. 20, IV).</p><div class="acts">${bt('ir', 'Informar o número do CRECI-J', { view: 'juridico' }, '')}</div></section>`;
+
+function viewMarketing() {
+  const t = ['calendario', 'estudio', 'presenca'].includes(estado.mkTab) ? estado.mkTab : 'painel';
+  return cab('Marketing', 'Plano, calendário de conteúdo, peças com a Elora AI e presença digital da Elora.', bt('mk-novo', 'Novo post', {}, '')) +
+    abas('mk-tab', t, [['painel', 'Visão geral'], ['calendario', 'Calendário'], ['estudio', 'Estúdio Elora AI'], ['presenca', 'Presença e metas']]) + mkTrava() +
+    ({ painel: mkPainel, calendario: mkCalendario, estudio: mkEstudio, presenca: mkPresenca }[t])();
+}
+function mkPainel() {
+  const n = mkNumeros(), mt = mkMetas(), u = mkUltimo(), feitos = MK_CHECK.filter(([k]) => mkCheckFeito(k)).length;
+  const canais = Object.entries(n.ls.reduce((m, l) => { const c = l.canal || 'Não informado'; m[c] = (m[c] || 0) + 1; return m; }, {})).map(([nome, v]) => ({ nome, v, sub: 'leads no mês' })).sort((a, b) => b.v - a.v);
+  const semCanal = n.ls.filter(l => !l.canal && !l.campanhaId).length;
+  const prox = lista('posts').filter(p => p.data >= REF && p.data <= diaMais(REF, 7) && p.status !== 'publicado').sort((a, b) => a.data < b.data ? -1 : 1);
+  return `<div class="kpis">
+    <div><span>Leads no mês</span><b class="num">${n.ls.length}</b><em>meta ${mt.leadsMes}</em>${mkBarra(n.ls.length, mt.leadsMes)}</div>
+    <div><span>Custo por lead (campanhas)</span><b class="num">${n.cpl == null ? '—' : brl(n.cpl)}</b><em>meta até ${reais(mt.cpl)} · investido ${brl(n.inv)}</em>${n.cpl == null ? '' : mkBarra(n.cpl / 100, mt.cpl, true)}</div>
+    <div><span>Posts publicados na semana</span><b class="num">${n.semana}</b><em>meta ${mt.postsSemana} · ${n.mesPub} de ${n.mesPlan} no mês</em>${mkBarra(n.semana, mt.postsSemana)}</div>
+    <div><span>Avaliações no Google</span><b class="num">${u.avaliacoes ?? '—'}</b><em>${u.nota ? 'nota ' + String(u.nota).replace('.', ',') + ' · ' : ''}meta ${mt.avaliacoes}</em>${mkBarra(u.avaliacoes, mt.avaliacoes)}</div></div>
+  <div class="grid two">
+    <section class="panel"><h2>Próximos 7 dias · ${prox.length}</h2><div class="list">${prox.length ? prox.map(mkItem).join('') : vazio('Nada planejado para os próximos 7 dias. Abra o Calendário ou peça à Elora AI para sugerir a semana.')}</div>
+      <div class="acts">${bt('mk-tab', 'Abrir o calendário', { tab: 'calendario' })}${bt('mk-semana-ia', 'Sugerir a semana com a Elora AI')}</div></section>
+    <section class="panel"><h2>Leads do mês por canal</h2>${canais.length ? barrasH(canais, v => String(v)) : vazio('Nenhum lead neste mês.')}
+      ${semCanal ? `<p class="sub">${pill('warn', semCanal + ' sem canal nem campanha')} Sem o canal preenchido não dá para medir custo por lead nem retorno.</p>` : ''}
+      <div class="acts">${bt('ir', 'Campanhas e retorno', { view: 'campanhas' })}</div></section></div>
+  <section class="panel"><h2>Plano de 90 dias</h2><div class="tbl"><table>
+    <tr><th>Indicador</th><th class="r">Atual</th><th class="r">Meta</th><th style="width:30%">Progresso</th></tr>
+    ${[['Leads no mês', n.ls.length, mt.leadsMes], ['Imóveis captados com autorização (90 dias)', n.captados, mt.captados], ['Contratos de locação iniciados (90 dias)', n.contratos, mt.contratos], ['Avaliações no Google', u.avaliacoes, mt.avaliacoes], ['Seguidores no Instagram', u.seguidores, mt.seguidores]]
+      .map(([r, v, m]) => `<tr><td>${r}</td><td class="r num">${v ?? '—'}</td><td class="r num">${m}</td><td>${mkBarra(v, m)}</td></tr>`).join('')}
+    <tr><td>Base de lançamento (checklist)</td><td class="r num">${feitos}</td><td class="r num">${MK_CHECK.length}</td><td>${mkBarra(feitos, MK_CHECK.length)}</td></tr></table></div>
+    <p class="sub">Avaliações e seguidores são informados em Presença e metas. Os demais números vêm do sistema. Metas de partida do plano de lançamento; os gestores ajustam.</p></section>`;
+}
+function mkItem(p) {
+  const im = p.imovelId && DB.imoveis[p.imovelId], cp = p.campanhaId && DB.campanhas[p.campanhaId];
+  return `<div class="item"><h3>${esc(p.tema || 'Sem tema')}</h3><p>${fmtData(p.data)} · ${esc(p.canal || '—')} · ${esc(p.formato || '—')} · ${esc(p.publico || 'Geral')}${im ? ' · ' + esc(im.id) : ''}${cp ? ' · campanha ' + esc(cp.titulo) : ''}</p>
+    ${p.resultado && (p.resultado.alcance || p.resultado.leads) ? `<p class="sub">Alcance ${p.resultado.alcance || 0} · interações ${p.resultado.interacoes || 0} · leads ${p.resultado.leads || 0}</p>` : ''}
+    <div class="acts">${bt('mk-editar', 'Abrir', { id: p.id })}${p.status !== 'publicado' ? bt('mk-pub', 'Marcar publicado', { id: p.id }, '') : ''}${p.texto ? bt('mk-copiar', 'Copiar texto', { id: p.id }) : ''}</div><div class="side-r">${mkPill(p.status)}${p.formato === 'Anúncio' && !mkCreciOk() ? pill('gold', 'Aguarda nº do CRECI-J') : ''}</div></div>`;
+}
+function mkCalendario() {
+  const m = estado.mkMes || mesRef(), ps = lista('posts').filter(p => String(p.data).slice(0, 7) === m).sort((a, b) => a.data < b.data ? -1 : a.data > b.data ? 1 : 0);
+  const sem = {}; ps.forEach(p => { const d = dt(p.data), ini = diaMais(p.data, -((d.getUTCDay() + 6) % 7)); (sem[ini] = sem[ini] || []).push(p); });
+  const mt = mkMetas(), cont = Object.fromEntries(Object.keys(MK_ST).map(k => [k, ps.filter(p => (p.status || 'ideia') === k).length]));
+  return `<section class="panel"><div class="acts" style="justify-content:space-between;flex-wrap:wrap">
+      <div class="acts">${bt('mk-mes', '‹', { n: -1 })}<b style="padding:0 8px">${fmtMes(m)}</b>${bt('mk-mes', '›', { n: 1 })}</div>
+      <div class="acts">${bt('mk-novo', 'Novo post', {}, '')}${bt('mk-semana-ia', 'Sugerir a semana (IA)')}${lista('posts').length ? '' : bt('mk-plano', 'Carregar os 12 posts do plano')}</div></div>
+    <p class="sub">${Object.entries(cont).map(([k, v]) => `${MK_ST[k][1]}: ${v}`).join(' · ')} · meta de ${mt.postsSemana} publicações por semana.</p></section>
+  ${Object.keys(sem).length ? Object.entries(sem).map(([ini, xs]) => { const pub = xs.filter(p => p.status === 'publicado').length;
+    return `<section class="panel"><h2>Semana de ${fmtData(ini)} · ${xs.length} post(s) ${pub >= mt.postsSemana ? pill('ok', 'Meta da semana') : ini <= REF && diaMais(ini, 6) < REF ? pill('warn', `${pub} de ${mt.postsSemana} publicados`) : ''}</h2><div class="list">${xs.map(mkItem).join('')}</div></section>`; }).join('')
+    : `<section class="panel">${vazio('Nenhum post neste mês. Crie um post, carregue os 12 posts do plano de lançamento ou peça à Elora AI para sugerir a semana.')}</section>`}`;
+}
+function abrirPost(id, pre = {}) {
+  const p = id ? DB.posts[id] : { data: REF, canal: 'Instagram', formato: 'Post', publico: 'Geral', status: 'ideia', ...pre }; if (id && !p) return; const r = p.resultado || {};
+  const ims = lista('imoveis').filter(i => i.autorizacaoEm && i.vendaStatus !== 'vendido').sort((a, b) => a.id < b.id ? -1 : 1), cps = lista('campanhas');
+  const sel = (idc, ops, v) => `<select id="${idc}">${ops.map(o => `<option${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+  abrirDlg(`<h2>${id ? 'Post' : 'Novo post'}</h2><p class="sub">Planeje, escreva e registre o resultado. Toda peça publicada leva o CRECI-J da Elora.</p>
+    <form id="frm-mk-post" data-id="${esc(id || '')}"><div class="fgrid">
+      <div class="f"><label for="mp-data">Data *</label><input id="mp-data" type="date" required value="${esc(p.data || REF)}"></div>
+      <div class="f"><label for="mp-st">Situação</label><select id="mp-st">${Object.entries(MK_ST).map(([k, v]) => `<option value="${k}"${k === (p.status || 'ideia') ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></div>
+      <div class="f"><label for="mp-canal">Canal</label>${sel('mp-canal', MK_CANAIS, p.canal)}</div>
+      <div class="f"><label for="mp-fmt">Formato</label>${sel('mp-fmt', MK_FORMATOS, p.formato)}</div>
+      <div class="f"><label for="mp-pub">Público</label>${sel('mp-pub', MK_PUBLICOS, p.publico)}</div>
+      <div class="f"><label for="mp-im">Imóvel</label><select id="mp-im"><option value="">Nenhum (institucional)</option>${ims.map(i => `<option value="${esc(i.id)}"${i.id === p.imovelId ? ' selected' : ''}>${esc(i.id)} · ${esc(i.descricao || '')}</option>`).join('')}</select></div>
+      <div class="f"><label for="mp-cp">Campanha</label><select id="mp-cp"><option value="">Nenhuma</option>${cps.map(c => `<option value="${esc(c.id)}"${c.id === p.campanhaId ? ' selected' : ''}>${esc(c.titulo)}</option>`).join('')}</select></div></div>
+      <div class="f"><label for="mp-tema">Tema *</label><input id="mp-tema" type="text" maxlength="120" required value="${esc(p.tema || '')}" list="mp-temas"><datalist id="mp-temas">${MK_TEMAS.map(x => `<option value="${esc(x)}">`).join('')}</datalist></div>
+      <div class="f"><label for="mp-txt">Texto e legenda</label><textarea id="mp-txt" rows="6" maxlength="3000">${esc(p.texto || '')}</textarea></div>
+      <div class="acts" style="justify-content:flex-start">${bt('mk-ia-post', 'Escrever com a Elora AI')}</div>
+      <fieldset class="f"><legend>Resultado (depois de publicado)</legend><div class="fgrid">
+        <div class="f"><label for="mp-alc">Alcance</label><input id="mp-alc" type="number" min="0" step="1" value="${r.alcance ?? ''}"></div>
+        <div class="f"><label for="mp-int">Interações</label><input id="mp-int" type="number" min="0" step="1" value="${r.interacoes ?? ''}"></div>
+        <div class="f"><label for="mp-lds">Leads gerados</label><input id="mp-lds" type="number" min="0" step="1" value="${r.leads ?? ''}"></div></div></fieldset>
+      <p class="sub">Anúncio de imóvel só com autorização escrita do proprietário (a lista mostra só esses). Anúncio só vai a "Publicado" com o CRECI-J informado.</p>
+      <div class="acts" style="margin-top:14px">${id ? bt('mk-del', estado.confirmar === 'mk' + id ? 'Confirmar: apagar' : 'Apagar', { id }, 'danger') : ''}${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Salvar</button></div></form>`, true);
+}
+function salvarPost(f) {
+  const v = x => ($(x) ? $(x).value.trim() : ''), id = f.dataset.id || gzId('PO'), p0 = DB.posts[id] || {}, n = x => { const k = parseInt(v(x), 10); return k >= 0 ? k : null; };
+  if (!v('mp-tema') || !/^\d{4}-\d{2}-\d{2}$/.test(v('mp-data'))) return toast('Informe a data e o tema.');
+  const st = MK_ST[v('mp-st')] ? v('mp-st') : 'ideia', fmt = MK_FORMATOS.includes(v('mp-fmt')) ? v('mp-fmt') : 'Post';
+  if (st === 'publicado' && fmt === 'Anúncio' && !mkCreciOk()) return toast('Anúncio aguardando o número do CRECI-J: informe-o em Empresa e jurídico e publique (Lei 6.530/78, art. 20, IV).');
+  const im = v('mp-im'); if (im && !(DB.imoveis[im] || {}).autorizacaoEm) return toast('Imóvel sem autorização escrita do proprietário não pode ser divulgado.');
+  const o = { ...p0, id, data: v('mp-data'), status: st, canal: v('mp-canal'), formato: fmt, publico: v('mp-pub'), imovelId: im || null, campanhaId: v('mp-cp') || null, tema: v('mp-tema').slice(0, 120), texto: v('mp-txt').slice(0, 3000),
+    resultado: { alcance: n('mp-alc'), interacoes: n('mp-int'), leads: n('mp-lds') }, criadoEm: p0.criadoEm || REF, ...(st === 'publicado' && p0.status !== 'publicado' ? { publicadoEm: REF } : {}) };
+  store.salvar('posts', id, o); registrar('Comercial', `Marketing: ${p0.tema ? 'post atualizado' : 'post planejado'} "${o.tema}" (${o.canal}, ${fmtData(o.data)}, ${MK_ST[st][1].toLowerCase()}).`); fecharDlg(); toast('Post salvo.');
+}
+function mkPublicar(id) {
+  const p = DB.posts[id]; if (!p) return; if (p.formato === 'Anúncio' && !mkCreciOk()) return toast('Anúncio aguardando o número do CRECI-J: informe-o em Empresa e jurídico e publique (Lei 6.530/78, art. 20, IV).');
+  if (!mkCreciOk()) toast('Lembrete: até o número do CRECI-J chegar, publicação só no perfil pessoal de corretor com CRECI-F.');
+  store.salvar('posts', id, { ...p, status: 'publicado', publicadoEm: REF }); registrar('Comercial', `Marketing: publicado "${p.tema}" (${p.canal}).`);
+}
+function mkCarregarPlano() {
+  if (lista('posts').length) return toast('O calendário já tem posts.'); let d = REF; const dias = [2, 4, 6];
+  MK_PLANO.forEach(([tema, formato, publico], i) => { do { d = diaMais(d, 1); } while (!dias.includes(dt(d).getUTCDay()));
+    const id = gzId('PO'); store.salvar('posts', id, { id, data: d, status: 'ideia', canal: 'Instagram', formato, publico, tema, texto: '', imovelId: null, campanhaId: null, resultado: {}, criadoEm: REF, plano: true }); });
+  registrar('Comercial', 'Marketing: carregados os 12 posts do plano de lançamento no calendário (terças, quintas e sábados).'); estado.mkMes = mesRef(); toast('12 posts carregados como ideia. Revise as datas.');
+}
+async function mkIaPost() {
+  if (!amostra) return semIA(); const v = x => ($(x) ? $(x).value.trim() : ''), tema = v('mp-tema'); if (!tema) return toast('Escreva o tema primeiro.');
+  const im = DB.imoveis[v('mp-im')], dados = im ? { codigo: im.id, descricao: im.descricao, local: im.local, uso: im.tipo, aluguel_pedido: paraLocacao(im) ? im.pedido : undefined, preco_de_venda: aVenda(im) && !im.sobConsulta ? im.precoVenda : undefined, quartos: im.quartos, vagas: im.vagas, area_m2: im.area } : null;
+  const b = document.querySelector('[data-act=mk-ia-post]'); if (b) { b.disabled = true; b.textContent = 'A Elora AI está escrevendo…'; }
+  try {
+    const { text } = await amostra(`${MK_REGRAS}\nEscreva um ${v('mp-fmt')} para ${v('mp-canal')} da ${EMPRESA}, para o público "${v('mp-pub')}", sobre: ${tema}. ${['Reels', 'Stories'].includes(v('mp-fmt')) ? 'Entregue um roteiro com tempos (0–3 s, 3–15 s…), falas e o que aparece na tela, até 30 segundos, terminando com a chamada para o WhatsApp.' : v('mp-fmt') === 'Carrossel' ? 'Entregue o texto de 5 a 7 telas (uma frase curta por tela) e depois a legenda.' : 'Entregue o texto da arte (uma frase curta) e a legenda (até 5 frases) com chamada para o WhatsApp.'} ${dados ? 'Use só estes dados do imóvel: ' + JSON.stringify(dados) : ''} Texto simples, sem markdown, até 3 hashtags locais.${idiomaIA()}`, { cache: false, modelTier: 'quick' });
+    const el = $('mp-txt'); if (el) el.value = (text.trim() + mkRodape()).slice(0, 3000); toast('Texto escrito pela Elora AI. Revise antes de publicar.');
+  } catch (e) { toast(ERROS_IA[e && e.code] || 'A Elora AI não conseguiu escrever agora. Tente de novo.'); }
+  finally { const b2 = document.querySelector('[data-act=mk-ia-post]'); if (b2) { b2.disabled = false; b2.textContent = 'Escrever com a Elora AI'; } }
+}
+async function mkSemanaIA() {
+  if (!amostra) return semIA(); toast('A Elora AI está montando a semana…');
+  const oferta = lista('imoveis').filter(i => i.autorizacaoEm && i.vendaStatus !== 'vendido' && (paraLocacao(i) ? !contratoAtivoDo(i.id) : aVenda(i))).slice(0, 12).map(i => ({ codigo: i.id, descricao: i.descricao, local: i.local }));
+  const procura = Object.entries(lista('leads').filter(l => PROB[l.etapa]).reduce((m, l) => { const k = (l.regiao || '').split(',')[0].trim(); if (k) m[k] = (m[k] || 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const ja = lista('posts').filter(p => p.data >= diaMais(REF, -30)).map(p => p.tema).slice(-20);
+  try {
+    const r = await amostra.json(`${MK_REGRAS}\nMonte o calendário de conteúdo dos próximos 7 dias da ${EMPRESA}, começando em ${REF}, com 4 a 5 peças. Prioridade: captar proprietários; depois locatários e compradores. Equilibre educativo, prova de método (recebimento, manutenção, app), imóvel real e chamada direta. Não repita estes temas recentes: ${JSON.stringify(ja)}. Imóveis autorizados para divulgar: ${JSON.stringify(oferta)}. Bairros mais procurados pelos leads: ${JSON.stringify(procura)}.
+Responda só com JSON: {"posts":[{"data":"AAAA-MM-DD","canal":"${MK_CANAIS.join('|')}","formato":"${MK_FORMATOS.join('|')}","publico":"${MK_PUBLICOS.join('|')}","tema":"até 90 caracteres","imovel":"código ou vazio","texto":"texto da arte e legenda, até 600 caracteres"}]}`, { cache: false, modelTier: 'default' });
+    const xs = (r && Array.isArray(r.posts) ? r.posts : []).filter(x => x && /^\d{4}-\d{2}-\d{2}$/.test(x.data) && x.tema).slice(0, 7); if (!xs.length) throw { code: 'invalid_json' };
+    xs.forEach(x => { const id = gzId('PO'), im = x.imovel && DB.imoveis[x.imovel] && DB.imoveis[x.imovel].autorizacaoEm ? x.imovel : null;
+      store.salvar('posts', id, { id, data: x.data < REF ? REF : x.data, status: 'ideia', canal: MK_CANAIS.includes(x.canal) ? x.canal : 'Instagram', formato: MK_FORMATOS.includes(x.formato) ? x.formato : 'Post', publico: MK_PUBLICOS.includes(x.publico) ? x.publico : 'Geral',
+        tema: String(x.tema).slice(0, 120), texto: (String(x.texto || '').slice(0, 2600) + mkRodape()), imovelId: im, campanhaId: null, resultado: {}, criadoEm: REF, ia: true }); });
+    registrar('Comercial', `Marketing: a Elora AI sugeriu ${xs.length} posts para a semana (gravados como ideia).`); estado.mkTab = 'calendario'; estado.mkMes = xs[0].data.slice(0, 7); render(); toast(`${xs.length} posts sugeridos no calendário, como ideia. Revise antes de publicar.`);
+  } catch (e) { toast(ERROS_IA[e && e.code] || 'A Elora AI não conseguiu montar a semana agora. Tente de novo.'); }
+}
+function mkEstudio() {
+  const ims = lista('imoveis').filter(i => i.autorizacaoEm && i.vendaStatus !== 'vendido');
+  const sel = (idc, ops) => `<select id="${idc}">${ops.map(o => `<option>${esc(o)}</option>`).join('')}</select>`;
+  return `<div class="grid two">
+    <section class="panel"><h2>Peça sob medida</h2><p class="sub">A Elora AI escreve com as regras da marca. O CRECI-J entra no rodapé pelo sistema.</p>
+      <form id="frm-mk-peca"><div class="fgrid">
+        <div class="f"><label for="mk-tipo">Peça</label>${sel('mk-tipo', ['Post com legenda', 'Carrossel', 'Roteiro de Reels', 'Anúncio no Meta (título, texto, botão)', 'Anúncio no Google (títulos e descrições)', 'Post no Perfil do Google', 'Mensagem de WhatsApp', 'Abordagem para RH ou empresa'])}</div>
+        <div class="f"><label for="mk-pub">Público</label>${sel('mk-pub', MK_PUBLICOS)}</div></div>
+        <div class="f"><label for="mk-tema">Tema</label><input id="mk-tema" type="text" maxlength="160" list="mk-temas" placeholder="Ex.: seguro-fiança"><datalist id="mk-temas">${MK_TEMAS.map(x => `<option value="${esc(x)}">`).join('')}</datalist></div>
+        <div class="f"><label for="mk-im">Imóvel (opcional)</label><select id="mk-im"><option value="">Nenhum</option>${ims.map(i => `<option value="${esc(i.id)}">${esc(i.id)} · ${esc(i.descricao || '')}</option>`).join('')}</select></div>
+        <div class="acts" style="margin-top:12px"><button class="btn" type="submit">Escrever com a Elora AI</button></div></form></section>
+    <section class="panel"><h2>Atalhos</h2><div class="list">
+      <div class="item"><h3>Sugerir a semana</h3><p>4 a 5 posts com base nos imóveis autorizados e nos bairros mais procurados. Entram no calendário como ideia.</p><div class="acts">${bt('mk-semana-ia', 'Sugerir a semana', {}, '')}</div></div>
+      <div class="item"><h3>Responder avaliação do Google</h3><p>Cole a avaliação (positiva ou negativa) e receba uma resposta pública educada, sem expor dados do cliente.</p><div class="acts">${bt('mk-aval', 'Responder avaliação')}</div></div>
+      <div class="item"><h3>Leitura do marketing do mês</h3><p>A Elora AI lê leads por canal, campanhas e posts e diz o que cortar, o que escalar e o que testar.</p><div class="acts">${bt('mk-leitura', 'Ler o mês')}</div></div></div></section></div>`;
+}
+function mkPeca(f) {
+  const v = x => ($(x) ? $(x).value.trim() : ''), tema = v('mk-tema'), im = DB.imoveis[v('mk-im')]; if (!tema && !im) return toast('Informe o tema ou escolha um imóvel.');
+  const dados = im ? { codigo: im.id, descricao: im.descricao, local: im.local, uso: im.tipo, aluguel_pedido: paraLocacao(im) ? im.pedido : undefined, preco_de_venda: aVenda(im) && !im.sobConsulta ? im.precoVenda : undefined } : null, tipo = v('mk-tipo'), pub = v('mk-pub');
+  iaJanela(tipo, `${MK_REGRAS}\nEscreva: ${tipo}, para o público "${pub}" da ${EMPRESA} (Vale do Paraíba, SP). Tema: ${tema || 'divulgar o imóvel'}. ${dados ? 'Use só estes dados do imóvel: ' + JSON.stringify(dados) + '.' : ''} ${/Google \(/.test(tipo) ? 'Títulos com até 30 caracteres e descrições com até 90, em lista.' : ''} Texto simples, sem markdown.`,
+    { rodape: tipo.startsWith('Anúncio no Google') ? '' : mkRodape(), nota: 'Rodapé com o CRECI-J inserido pelo sistema (Lei 6.530/78, art. 20, IV). Revise antes de publicar.', salvar: 'Salvar no calendário', aoSalvar: t => { const id = gzId('PO');
+      store.salvar('posts', id, { id, data: REF, status: 'producao', canal: /Google/.test(tipo) ? 'Google' : /WhatsApp|RH/.test(tipo) ? 'WhatsApp' : 'Instagram', formato: /Anúncio/.test(tipo) ? 'Anúncio' : /Reels/.test(tipo) ? 'Reels' : /Carrossel/.test(tipo) ? 'Carrossel' : /Perfil do Google/.test(tipo) ? 'Post no Google' : /WhatsApp|RH/.test(tipo) ? 'Mensagem' : 'Post',
+        publico: pub, tema: (tema || (im ? 'Imóvel ' + im.id : tipo)).slice(0, 120), texto: (t.trim() + (tipo.startsWith('Anúncio no Google') ? '' : mkRodape())).slice(0, 3000), imovelId: im ? im.id : null, campanhaId: null, resultado: {}, criadoEm: REF, ia: true });
+      registrar('Comercial', `Marketing: peça da Elora AI salva no calendário (${tipo}).`); fecharDlg(); toast('Salvo no calendário como Em produção, com a data de hoje.'); } });
+}
+function mkAval() {
+  abrirDlg(`<h2>Responder avaliação do Google</h2><form id="frm-mk-aval"><div class="f"><label for="mk-av-txt">Avaliação do cliente *</label><textarea id="mk-av-txt" rows="5" maxlength="1500" required></textarea></div>
+    <div class="f"><label for="mk-av-n">Estrelas</label><select id="mk-av-n">${[5, 4, 3, 2, 1].map(n => `<option>${n}</option>`).join('')}</select></div>
+    <div class="acts" style="margin-top:12px">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Escrever resposta</button></div></form>`);
+}
+function mkLeitura() {
+  const n = mkNumeros(), cs = campanhasResumo().map(c => ({ campanha: c.titulo, canal: c.canal, investido: brl(c.investC), leads: c.leads, custo_por_lead: c.cplC == null ? null : brl(c.cplC), fechados: c.fechados, retorno: c.roi }));
+  const canais = n.ls.reduce((m, l) => { const c = l.canal || 'Não informado'; m[c] = (m[c] || 0) + 1; return m; }, {});
+  const posts = lista('posts').filter(p => String(p.data).slice(0, 7) === mesRef()).map(p => ({ tema: p.tema, canal: p.canal, formato: p.formato, status: p.status, resultado: p.resultado }));
+  iaJanela('Leitura do marketing do mês', `${MK_REGRAS}\nVocê é o gestor de marketing da ${EMPRESA}. Leia os números de ${fmtMes(mesRef())} e responda em até 10 linhas, texto simples: 1) o que está funcionando, 2) o que cortar, 3) o que escalar, 4) um teste para a próxima semana. Se a base for pequena, diga isso. Metas: ${JSON.stringify(mkMetas())}. Último registro de presença: ${JSON.stringify(mkUltimo())}. CRECI-J informado: ${mkCreciOk() ? 'sim' : 'não'}.
+Leads por canal: ${JSON.stringify(canais)}. Campanhas: ${JSON.stringify(cs)}. Posts do mês: ${JSON.stringify(posts)}.`, { nota: 'Leitura gerada pela IA com os números do sistema. A decisão é dos gestores.' });
+}
+function mkPresenca() {
+  const c = mkCfg(), mt = mkMetas(), h = (c.hist || []).slice(-6).reverse(), grupos = [...new Set(MK_CHECK.map(x => x[2]))];
+  return `<div class="grid two">
+    <section class="panel"><h2>Base de lançamento · ${MK_CHECK.filter(([k]) => mkCheckFeito(k)).length} de ${MK_CHECK.length}</h2>
+      ${grupos.map(g => `<h3>${g}</h3><div class="list">${MK_CHECK.filter(x => x[2] === g).map(([k, r]) => { const ok = mkCheckFeito(k), auto = k === 'creci' || k === 'estoque', em = (c.checklist || {})[k];
+        return `<div class="item"><h3>${esc(r)}</h3><p>${auto ? 'Marcado pelo sistema' : ok ? 'Feito em ' + fmtData(em) : 'Pendente'}</p><div class="acts">${!auto && ehGestor ? bt('mk-check', ok ? 'Desmarcar' : 'Feito', { k }, ok ? 'ghost' : '') : ''}</div><div class="side-r">${ok ? pill('ok', 'Feito') : pill('warn', 'Pendente')}</div></div>`; }).join('')}</div>`).join('')}</section>
+    <div>
+      <section class="panel"><h2>Números de fora do sistema</h2><p class="sub">Informe uma vez por semana. O histórico alimenta o painel e a leitura da Elora AI.</p>
+        <form id="frm-mk-num"><div class="fgrid">
+          <div class="f"><label for="mk-n-av">Avaliações no Google</label><input id="mk-n-av" type="number" min="0" step="1" value="${mkUltimo().avaliacoes ?? ''}"></div>
+          <div class="f"><label for="mk-n-nota">Nota no Google</label><input id="mk-n-nota" type="number" min="1" max="5" step="0.1" value="${mkUltimo().nota ?? ''}"></div>
+          <div class="f"><label for="mk-n-seg">Seguidores no Instagram</label><input id="mk-n-seg" type="number" min="0" step="1" value="${mkUltimo().seguidores ?? ''}"></div></div>
+          <div class="acts" style="margin-top:10px"><button class="btn" type="submit">Registrar hoje</button></div></form>
+        ${h.length ? `<div class="tbl"><table><tr><th>Data</th><th class="r">Avaliações</th><th class="r">Nota</th><th class="r">Seguidores</th></tr>${h.map(x => `<tr><td>${fmtData(x.em)}</td><td class="r num">${x.avaliacoes ?? '—'}</td><td class="r num">${x.nota ?? '—'}</td><td class="r num">${x.seguidores ?? '—'}</td></tr>`).join('')}</table></div>` : ''}</section>
+      <section class="panel"><h2>Metas do plano</h2>
+        <form id="frm-mk-metas"><div class="fgrid">${[['leadsMes', 'Leads por mês'], ['cpl', 'Custo por lead até (R$)'], ['postsSemana', 'Publicações por semana'], ['avaliacoes', 'Avaliações no Google'], ['nota', 'Nota no Google'], ['seguidores', 'Seguidores no Instagram'], ['captados', 'Imóveis captados em 90 dias'], ['contratos', 'Contratos de locação em 90 dias']]
+          .map(([k, r]) => `<div class="f"><label for="mk-m-${k}">${r}</label><input id="mk-m-${k}" type="number" min="0" step="${k === 'nota' ? '0.1' : '1'}" value="${mt[k]}"${ehGestor ? '' : ' disabled'}></div>`).join('')}</div>
+          ${ehGestor ? '<div class="acts" style="margin-top:10px"><button class="btn" type="submit">Salvar metas</button></div>' : '<p class="sub">Só os gestores alteram as metas.</p>'}</form></section>
+      <section class="panel"><h2>Regras da comunicação</h2><ul class="sub" style="padding-left:18px;margin:0">
+        <li>CRECI-J em toda peça; em vídeo e áudio, falado (Resolução COFECI 1.065/2007).</li><li>Imóvel só com autorização escrita do proprietário e recebimento aprovado.</li>
+        <li>Preço, metragem e fotos iguais ao cadastro (CDC, art. 37).</li><li>Sem citar concorrentes (CONAR).</li><li>Depoimento só de cliente real, com autorização de imagem; nunca avaliação em troca de vantagem.</li>
+        <li>Leads só com consentimento e para o fim informado (LGPD); lista comprada não entra.</li><li>Sem relação do imóvel com aviação; tom profissional e persuasivo.</li></ul></section></div></div>`;
+}
+RENDER.marketing = viewMarketing;
+Object.assign(ACOES, {
+  'mk-tab': d => { estado.mkTab = d.tab; estado.confirmar = null; if (estado.view !== 'marketing') return ir('marketing'); render(); },
+  'mk-novo': () => abrirPost(null), 'mk-editar': d => abrirPost(d.id), 'mk-pub': d => mkPublicar(d.id), 'mk-plano': () => mkCarregarPlano(),
+  'mk-mes': d => { estado.mkMes = somaMeses((estado.mkMes || mesRef()) + '-01', +d.n || 0).slice(0, 7); render(); },
+  'mk-copiar': d => { const p = DB.posts[d.id]; if (!p || !p.texto) return; try { navigator.clipboard.writeText(p.texto).then(() => toast('Texto copiado.'), () => toast('Não consegui copiar. Abra o post e copie à mão.')); } catch (e) { toast('Não consegui copiar. Abra o post e copie à mão.'); } },
+  'mk-del': d => { if (!DB.posts[d.id]) return; if (estado.confirmar !== 'mk' + d.id) { estado.confirmar = 'mk' + d.id; return abrirPost(d.id); } estado.confirmar = null; const t0 = DB.posts[d.id].tema; store.apagar('posts', d.id); registrar('Comercial', `Marketing: post apagado "${t0}".`); fecharDlg(); toast('Post apagado.'); },
+  'mk-ia-post': () => mkIaPost(), 'mk-semana-ia': () => mkSemanaIA(), 'mk-aval': () => mkAval(), 'mk-leitura': () => mkLeitura(),
+  'mk-check': d => { if (!ehGestor) return; const ck = { ...(mkCfg().checklist || {}) }; if (ck[d.k]) delete ck[d.k]; else ck[d.k] = REF; salvarMk({ checklist: ck }); const r = (MK_CHECK.find(x => x[0] === d.k) || [])[1]; registrar('Comercial', `Marketing: ${ck[d.k] ? 'feito' : 'desmarcado'} "${r}".`); },
+});
+document.addEventListener('submit', e => { const f = e.target; if (!/^frm-mk-/.test(f.id || '')) return; e.preventDefault(); e.stopImmediatePropagation(); const v = x => ($(x) ? $(x).value.trim() : '');
+  if (f.id === 'frm-mk-post') return salvarPost(f);
+  if (f.id === 'frm-mk-peca') return mkPeca(f);
+  if (f.id === 'frm-mk-aval') { const txt = v('mk-av-txt'); if (!txt) return; return iaJanela('Resposta à avaliação', `${MK_REGRAS}\nEscreva a resposta pública da ${EMPRESA} a esta avaliação de ${v('mk-av-n')} estrela(s) no Google, em até 4 frases, educada e específica. Se for negativa: agradeça, reconheça sem discutir, não exponha dados nem detalhes do contrato e convide a falar no WhatsApp da Elora. Se for positiva: agradeça de forma pessoal, sem exageros. Não invente fatos. Avaliação: ${JSON.stringify(txt.slice(0, 1500))}`, { nota: 'Revise antes de publicar. Não responda com dados pessoais do cliente (LGPD).' }); }
+  if (f.id === 'frm-mk-num') { const n = x => { const k = parseFloat(v(x)); return k >= 0 ? k : null; }, o = { em: REF, avaliacoes: n('mk-n-av'), nota: n('mk-n-nota') != null ? Math.min(5, n('mk-n-nota')) : null, seguidores: n('mk-n-seg') };
+    const hs = (mkCfg().hist || []).filter(x => x.em !== REF); hs.push(o); salvarMk({ hist: hs.slice(-60) }); registrar('Comercial', `Marketing: números registrados (Google ${o.avaliacoes ?? '—'} avaliações, nota ${o.nota ?? '—'}; Instagram ${o.seguidores ?? '—'} seguidores).`); return toast('Números registrados.'); }
+  if (f.id === 'frm-mk-metas') { if (!ehGestor) return toast('Só os gestores alteram as metas.'); const m = {}; Object.keys(MK_METAS_PADRAO).forEach(k => { const x = parseFloat(v('mk-m-' + k)); if (x >= 0) m[k] = x; }); salvarMk({ metas: m }); registrar('Comercial', 'Marketing: metas do plano atualizadas.'); toast('Metas salvas.'); }
+}, true);
+
 const inicial = location.hash.slice(1); if (RENDER[inicial]) { estado.view = inicial; estado.perfil = perfilDe(inicial); }
 if (inicial === 'app') abrirApp(); else render();
 store.iniciar();
 (() => { let tok = null; try { tok = new URLSearchParams(location.search).get('e'); } catch (e) {} if (!tok || !/^[a-z0-9]{6,20}$/.test(tok)) return;
   const t = setInterval(async () => { if (!estado.pronto) return; clearInterval(t); const e = DB.envios[tok]; if (!e) return; await registrarAbertura(tok, navigator.userAgent); if (DB.imoveis[e.imovelId]) abrirAnuncio(e.imovelId); }, 300); })();
 </script>
+
+
 
 </body></html>
