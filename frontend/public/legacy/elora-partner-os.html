@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 70). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 71). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -1004,7 +1004,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 /*ENGINE-START*/
 const pad = n => String(n).padStart(2, '0');
 const hojeISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes', 'lotes', 'posts', 'fontes', 'automacoes', 'autoexec', 'aprovacoes'];
+const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes', 'lotes', 'posts', 'fontes', 'automacoes', 'autoexec', 'aprovacoes', 'empresas'];
 const CONFIG_PADRAO = { custoDiretoPct: 25, participacaoPct: 40, gestaoPct: 5, margemMinPct: 55, vendaDeducaoPct: 0, vendaCaptPct: 40, vendaTetoPct: 50, divisaoCaptPct: 60, indicacaoMaxPct: 25, creciJ: '', responsavel: '', vendaPct: 6, vendaCorretorPct: 40, locCorretorPct: 20, pctLeadElora: 40, pctLeadProprio: 45, diaPagamento: 10, repasseDias: 5, soSeguroFianca: false,
   aceiteMin: 15, rodizioAuto: false, rodizioPausado: false, whatsapp: '', site: '',
   rodizioHorario: false, rodizioDias: [1, 2, 3, 4, 5], rodizioIni: '08:00', rodizioFim: '18:00', cubValor: 0, cubMes: '', funil: [], pixTipo: '', pixChave: '', pixNome: '', pixCidade: '', cartaoLink: '' };
@@ -1044,7 +1044,7 @@ const fmtData = s => /^\d{4}-\d{2}-\d{2}/.test(s || '') ? s.slice(8, 10) + '/' +
 const brl = cent => (cent / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const pct = n => (+n).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%';
 
-const CHAVE_MIN = { posts: 'tema', corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId', lotes: 'comp', fontes: 'nome', automacoes: 'nome', autoexec: 'regra', aprovacoes: 'tipo' };
+const CHAVE_MIN = { posts: 'tema', corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId', lotes: 'comp', fontes: 'nome', automacoes: 'nome', autoexec: 'regra', aprovacoes: 'tipo', empresas: 'nome' };
 // Cache por identidade: toda gravação troca o objeto da coleção (DB[col] = {...}), então o cache nunca fica velho.
 const LISTA_CACHE = new Map(), IDX_CACHE = new Map();
 const listaBase = col => { const src = DB[col] || {}, c = LISTA_CACHE.get(col); if (c && c.src === src) return c.arr;
@@ -3413,7 +3413,7 @@ const VIEWS = {
     ['#', 'Clientes'], ['comercial', 'Funil'], ['radar', 'Radar'], ['casamento', 'Melhores opções'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['pessoas', 'Pessoas'],
     ['#', 'Imóveis'], ['im-locacao', 'Para locação'], ['im-venda', 'À venda'], ['im-cuidado', 'Recebimento e manutenção'], ['prospeccao', 'Captação'],
     ['#', 'Dinheiro'], ['locacao', 'Contratos de locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'],
-    ['#', 'Marketing'], ['marketing', 'Marketing'], ['campanhas', 'Campanhas'],
+    ['#', 'Marketing'], ['marketing', 'Marketing'], ['campanhas', 'Campanhas'], ['paginas', 'Páginas de bairro'], ['relocacao', 'Parcerias de relocação'],
     ['#', 'Empresa'], ['mapa', 'Mapa da empresa'], ['reunioes', 'Reuniões'], ['tickets', 'Tickets e Kanban'], ['rede', 'Corretores'], ['rodizio', 'Rodízio e funil'], ['ideias', 'Projeto Boa Ideia'],
     ['#', 'Análises'], ['central', 'Dashboard'], ['desempenho', 'Comercial'], ['resultados', 'Resultados e OKRs'], ['inteligencia', 'Inteligência'], ['guerra', 'Sala de guerra'],
     ['#', 'Configurações'], ['automacoes', 'Robôs'], ['fontes', 'Fontes de captação'], ['integracoes', 'Integrações'], ['juridico', 'Empresa e jurídico'], ['acessos', 'Acessos'], ['dados', 'Dados']],
@@ -3427,7 +3427,7 @@ const VIEWS = {
 };
 // Telas irmãs: uma entrada no menu e abas no alto da tela.
 const GRUPOS_TELA = [['Hoje', ['meudia', 'aprovacoes', 'agenda']], ['Clientes', ['comercial', 'radar', 'casamento', 'compradores', 'flows', 'pessoas']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado', 'prospeccao']],
-  ['Dinheiro', ['locacao', 'financeiro', 'posvenda']], ['Marketing', ['marketing', 'campanhas']], ['Empresa', ['mapa', 'reunioes', 'tickets', 'rede', 'rodizio', 'ideias']],
+  ['Dinheiro', ['locacao', 'financeiro', 'posvenda']], ['Marketing', ['marketing', 'campanhas', 'paginas', 'relocacao']], ['Empresa', ['mapa', 'reunioes', 'tickets', 'rede', 'rodizio', 'ideias']],
   ['Análises', ['central', 'desempenho', 'resultados', 'inteligencia', 'guerra']], ['Configurações', ['automacoes', 'fontes', 'integracoes', 'juridico', 'acessos', 'dados']],
   ['Hoje', ['inicio', 'agenda-c', 'flows-c', 'radar-c']], ['Clientes', ['crm-c', 'leads-c', 'compradores-c']], ['Imóveis', ['imoveis-c', 'capt-c', 'prosp-c']],
   ['Meus ganhos', ['carteira', 'extrato', 'poschaves-c']], ['Elora', ['treino-c', 'ideias-c', 'ia']]];
@@ -5082,7 +5082,7 @@ const urlCaptacao = () => `${String((DB.config || {}).siteUrl || 'https://SEU-DO
 const leadsDaFonte = fid => lista('leads').filter(l => l.fonteId === fid);
 function viewFontes() {
   const fs = lista('fontes'), tot = fs.reduce((s, f) => s + leadsDaFonte(f.id).length, 0);
-  return cab('Fontes de captação', 'De onde chegam os leads: site, portais, formulários e anúncios. Cada fonte leva o lead direto ao funil, com o canal, a campanha e o corretor certos, e as automações entram em ação.', ehGestor ? bt('fonte-nova', 'Nova fonte', {}, '') : '') + `
+  return cab('Fontes de captação', 'De onde chegam os leads: site, portais, formulários e anúncios. Cada fonte leva o lead direto ao funil, com o canal, a campanha e o corretor certos, e as automações entram em ação.', bt('meta-modelo', 'Formulário do Meta') + (ehGestor ? bt('fonte-nova', 'Nova fonte', {}, '') : '')) + `
   <section class="panel"><h2>Fontes · ${fs.length}</h2>${fs.length ? `<div class="list" id="fontes-lista">${fs.map(f => { const ls = leadsDaFonte(f.id), ct = ls.filter(l => l.etapa === 'contrato').length, k = DB.corretores[f.corretorId];
     return `<div class="item"><h3>${esc(f.nome)}</h3><p>${esc(FONTE_TIPOS[f.tipo] || 'Outro')} · canal ${esc(f.canal || 'Site')} · ${esc(f.negocio || 'Locação')} · ${k ? 'vai para ' + esc(k.nome) : 'vai ao rodízio'}${f.campanhaId && DB.campanhas[f.campanhaId] ? ' · campanha ' + esc(DB.campanhas[f.campanhaId].titulo) : ''}</p>
       <p>${ls.length} lead(s) recebido(s) · ${ct} viraram contrato${f.ultimoEm ? ' · último em ' + fmtData(f.ultimoEm) : ''}</p>
@@ -5122,12 +5122,20 @@ function abrirEnderecoFonte(id) {
 // ou blocos "Campo: valor" de e-mail de portal, separados por linha em branco.
 const FONTE_CAMPOS = { nome: ['nome', 'name', 'nome completo', 'full_name', 'cliente'], telefone: ['telefone', 'phone', 'celular', 'whatsapp', 'fone', 'tel'], email: ['email', 'e-mail', 'mail'],
   quer: ['mensagem', 'message', 'interesse', 'quer', 'procura', 'comentario', 'comentário', 'observacao', 'observação'], regiao: ['bairro', 'regiao', 'região', 'cidade', 'bairros'], valorMax: ['valor', 'valor_max', 'valormax', 'orcamento', 'orçamento', 'budget', 'preco', 'preço'],
-  imovel: ['imovel', 'imóvel', 'codigo', 'código', 'ref', 'referencia', 'referência'] };
-const campoDe = k => { const c = semAcento(String(k || '')).replace(/[^a-z_ ]/g, '').trim(); for (const [f, ns] of Object.entries(FONTE_CAMPOS)) if (ns.some(n => semAcento(n) === c)) return f; return null; };
+  imovel: ['imovel', 'imóvel', 'codigo', 'código', 'ref', 'referencia', 'referência'], renda: ['renda', 'renda_familiar', 'renda_mensal'], prazo: ['prazo', 'para_quando'], negocio: ['alugar_ou_comprar', 'negocio', 'interesse_tipo'], tipoImovel: ['tipo_de_imovel', 'tipo_imovel'], quartos: ['quartos', 'dormitorios'] };
+// Perguntas personalizadas do Meta chegam com o texto da pergunta no cabeçalho: reconhece pela palavra-chave.
+const CAMPO_CHAVE = [[/renda/, 'renda'], [/para_?quando|prazo|precisa_do_imovel/, 'prazo'], [/alugar_ou_comprar|alugar|comprar/, 'negocio'], [/tipo_de_imovel|qual_tipo/, 'tipoImovel'], [/quartos|dormit/, 'quartos'], [/bairro|regiao/, 'regiao'], [/orcamento|valor/, 'valorMax'], [/phone|telefone|whats/, 'telefone'], [/full_name|nome/, 'nome'], [/e_?mail/, 'email']];
+const campoDe = k => { const c = semAcento(String(k || '')).replace(/[^a-z_ ]/g, '').trim(); for (const [f, ns] of Object.entries(FONTE_CAMPOS)) if (ns.some(n => semAcento(n) === c)) return f; const u = c.replace(/ /g, '_'); for (const [re, f] of CAMPO_CHAVE) if (re.test(u)) return f; return null; };
 function normLead(o) {
   const r = {}; for (const [k, v] of Object.entries(o || {})) { const f = campoDe(k); if (f && v != null && String(v).trim() && !r[f]) r[f] = String(v).trim().slice(0, 400); }
   if (r.valorMax) { const n = parseFloat(String(r.valorMax).replace(/[^\d,.]/g, '').replace(/\.(?=\d{3}\b)/g, '').replace(',', '.')); r.valorMax = isFinite(n) && n > 0 ? Math.round(n) : undefined; }
-  if (r.nome) r.nome = r.nome.slice(0, 80); return r;
+  if (r.nome) r.nome = r.nome.slice(0, 80);
+  if (r.telefone) r.telefone = r.telefone.replace(/^p:/i, '');
+  if (r.renda) { const xs = String(r.renda).replace(/\./g, '').match(/\d+/g) || []; const ns = xs.map(Number).filter(n => n > 0); r.renda = ns.length ? Math.round(/acima/i.test(r.renda) ? ns[0] : ns.length > 1 ? (ns[0] + ns[1]) / 2 : ns[0]) * (/mil/i.test(String(r.renda)) && ns[0] < 1000 ? 1000 : 1) : undefined; }
+  if (r.prazo) { const t = semAcento(r.prazo); r.prazo = /mais|acima|pesquis/.test(t) ? 'mais' : /30|imediat|\bja\b|urgente/.test(t) ? 'ja' : /3 meses|90/.test(t) ? 'tres' : 'mais'; }
+  if (r.negocio) r.negocio = /compr/i.test(r.negocio) ? 'Compra' : /alug|loca/i.test(r.negocio) ? 'Locação' : undefined;
+  if (r.quartos) { const n = parseInt(r.quartos, 10); r.quartos = n > 0 ? n : undefined; }
+  return r;
 }
 function lerColados(txt) {
   const t = String(txt || '').trim(); if (!t) return [];
@@ -5151,7 +5159,8 @@ async function importarDaFonte(id) {
   for (const x of st.itens.slice(0, 200)) { if (!(x.nome && (x.telefone || x.email))) continue; const dup = duplicados('leads', x)[0];
     if (dup) { await store.salvar('leads', dup.id, { ...histLead(dup, 'origem', `Novo contato pela fonte ${f.nome}${x.quer ? ': ' + x.quer : ''}`.slice(0, 400)), contatoEm: dup.contatoEm }); hist++; continue; }
     const im = x.imovel && DB.imoveis[String(x.imovel).toUpperCase()] ? String(x.imovel).toUpperCase() : null, lid = novoId('leads');
-    await store.salvar('leads', lid, { nome: x.nome, telefone: x.telefone || '', email: x.email || '', quer: x.quer || 'Contato pela fonte ' + f.nome, regiao: x.regiao || '', ...(x.valorMax ? { valorMax: x.valorMax } : {}), tipo: f.negocio || 'Locação',
+    const qf = { ...(x.renda ? { renda: x.renda } : {}), ...(x.prazo ? { muda: x.prazo } : {}) }, querTxt = x.quer || [x.tipoImovel, x.quartos ? x.quartos + ' dormitórios' : '', x.regiao].filter(Boolean).join(' · ');
+    await store.salvar('leads', lid, { nome: x.nome, telefone: x.telefone || '', email: x.email || '', quer: querTxt || 'Contato pela fonte ' + f.nome, regiao: x.regiao || '', ...(x.valorMax ? { valorMax: x.valorMax } : {}), ...(x.quartos ? { quartosMin: x.quartos } : {}), ...(Object.keys(qf).length ? { qualif: qf } : {}), tipo: x.negocio || f.negocio || 'Locação',
       canal: f.canal || 'Site', origem: 'imobiliaria', fonteId: f.id, ...(f.campanhaId ? { campanhaId: f.campanhaId } : {}), ...(im ? { imovelId: im } : {}), etapa: 'novo', prioridade: 'normal', criadoEm: REF, criadoQ: q,
       hist: [{ em: REF, t: 'origem', txt: `Fonte: ${f.nome}`, ...(im ? { im } : {}) }] });
     if (f.corretorId) distribuirPara(lid, f.corretorId, 'fonte ' + f.nome); novos++; }
@@ -5412,6 +5421,7 @@ const MASC_FORMAS = {
   feijao: '<path d="M8 30c0-10 6-17 15-17 4 0 6 2 9 2 6 0 10 5 10 13 0 10-8 16-18 16S8 39 8 30z"/>',
   cogumelo: '<path d="M5 25C5 13 14 6 24 6s19 7 19 19c0 3-2 4-5 4H34v11a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V29h-4c-3 0-5-1-5-4z"/>',
   coracao: '<path d="M24 44C13 37 5 30 5 20a9.5 9.5 0 0 1 19-4 9.5 9.5 0 0 1 19 4c0 10-8 17-19 24z"/>',
+  balao: '<path d="M24 6c10 0 18 7 18 16s-8 16-18 16c-2 0-4 0-6-1l-8 5 2-7c-4-3-6-8-6-13C6 13 14 6 24 6z"/>',
   fantasma: '<path d="M8 43V24C8 14 15 7 24 7s16 7 16 17v19c0 1-1 2-2 1l-3-3-3 3-3-3-3 3-3-3-3 3-3-3-3 3c-1 1-2 0-2-1z"/>',
 };
 // rosto: o = olhos (pontos, grandes, bravo, pisca, sono), b = boca (sorri, o, reta, nada), c = bochechas
@@ -5430,6 +5440,7 @@ const MASC = {
   'b:casamais': { f: 'cogumelo', cor: '#F5A37A', o: 'pontos', b: 'sorri', c: 1 },
   'b:prosp': { f: 'feijao', cor: '#D9A33A', o: 'grandes', b: 'sorri' },
   'b:match': { f: 'coracao', cor: '#E5484D', o: 'grandes', b: 'sorri', c: 1 },
+  'b:reloc': { f: 'balao', cor: '#2F9E8F', o: 'pisca', b: 'sorri' },
 };
 const MASC_EXTRA = [['bolha', '#7FC8F8'], ['capsula', '#F7A6C4'], ['quad', '#B9A1F2'], ['gota', '#7DD3A8'], ['hexa', '#F6C177'], ['tri', '#8FB3FF']];
 // ---------- Mascote de cada pessoa: quem usa o sistema escolhe o seu (guardado em config.mascotes) ----------
@@ -5524,6 +5535,7 @@ function mapaMembros() {
   const sem = lista('leads').filter(l => PROB[l.etapa] && !l.corretorId).length;
   ms.push({ id: 'b:rodizio', tipo: 'robo', nome: 'Rodízio de leads', papel: 'Distribui leads aos corretores', deptos: ['comercial'], evs: [], ult: { em: null }, status: c.rodizioAuto && !c.rodizioPausado ? `Ligado · ${sem} lead(s) sem corretor` : `Desligado · ${sem} lead(s) sem corretor`, parado: !(c.rodizioAuto && !c.rodizioPausado) });
   { const mts = lista('aprovacoes').filter(a => String(a.id).startsWith('AP-MT-')); ms.push({ id: 'b:match', tipo: 'robo', nome: 'Agente casamenteiro', papel: 'Casa cliente qualificado com os melhores imóveis', deptos: ['comercial'], evs: mts.map(a => ({ em: a.criadoEm, txt: a.titulo })), ult: ult(mts.map(a => ({ em: a.criadoEm, txt: a.titulo }))), status: matchAuto() ? `Ligado · ${mts.length} mensagem(ns) preparada(s)` : 'Pausado', parado: !matchAuto() }); }
+  { const ra = (DB.config || {}).relocacaoAgente || {}, es = lista('empresas').filter(e => e.por === 'agente'); ms.push({ id: 'b:reloc', tipo: 'robo', nome: 'Agente de relocação', papel: 'Tarefa agendada · todo dia 6h31', deptos: ['marketing'], evs: es.map(e => ({ em: (e.em || '') + 'T06:31:00', txt: e.nome })), ult: { em: ra.em || null, txt: ra.n != null ? ra.n + ' empresa(s) nova(s)' : '' }, status: `${lista('empresas').filter(e => !['parceira', 'descartada'].includes(e.status)).length} empresa(s) em aberto · ${lista('empresas').filter(e => e.status === 'parceira').length} parceira(s)` }); }
   ms.push({ id: 'b:radar', tipo: 'robo', nome: 'Radar de leads', papel: 'Vigia prazos de atendimento', deptos: ['comercial'], evs: [], ult: { em: new Date().toISOString() }, status: `${rad.length} lead(s) pedindo ação` });
   ms.push({ id: 'b:gatilhos', tipo: 'robo', nome: 'Gatilhos por etapa', papel: 'Prepara mensagens do dia', deptos: ['comercial'], evs: [], ult: { em: new Date().toISOString() }, status: `${gat} mensagem(ns) para hoje` });
   ms.push({ id: 'b:aprov', tipo: 'robo', nome: 'Porteiro de aprovações', papel: 'Segura o que sai da empresa', deptos: ['gestao'], evs: lista('aprovacoes').map(a => ({ em: a.criadoEm, txt: `Pedido: ${a.titulo}` })), ult: ult(lista('aprovacoes').map(a => ({ em: a.criadoEm, txt: a.titulo }))), status: `${pend} pedido(s) aguardando` });
@@ -5599,7 +5611,7 @@ function ofDeptoDaTela(v) {
 }
 let OF_ROOM = null, OF_PEERS = [], OF_ULT_EV = null, OF_EU = { view: null, nome: null };
 const OF_POS = {};
-const OF_APELIDO = { 'b:rodizio': 'Rodízio', 'b:radar': 'Radar leads', 'b:gatilhos': 'Gatilhos', 'b:aprov': 'Aprovações', 'b:ai': 'Elora AI', 'b:concorrentes': 'Concorrência', 'b:inovacao': 'Inovação', 'b:monitor': 'Monitor', 'b:tickets': 'Tickets', 'b:integ': 'Integrações', 'b:cobranca': 'Cobrança', 'b:casamais': 'Casa+', 'b:prosp': 'Captação', 'b:match': 'Casamenteiro' };
+const OF_APELIDO = { 'b:rodizio': 'Rodízio', 'b:radar': 'Radar leads', 'b:gatilhos': 'Gatilhos', 'b:aprov': 'Aprovações', 'b:ai': 'Elora AI', 'b:concorrentes': 'Concorrência', 'b:inovacao': 'Inovação', 'b:monitor': 'Monitor', 'b:tickets': 'Tickets', 'b:integ': 'Integrações', 'b:cobranca': 'Cobrança', 'b:casamais': 'Casa+', 'b:prosp': 'Captação', 'b:match': 'Casamenteiro', 'b:reloc': 'Relocação' };
 (async () => { try { const r = await window.claude.use('room'); if (!r) return; OF_ROOM = r;
   r.onPeers(ch => { OF_PEERS = ch.peers.filter(p => p.kind === 'viewer'); if (estado.view === 'mapa') ofPosicionar(); }, () => { OF_ROOM = null; });
   ofPresenca(); } catch (e) { OF_ROOM = null; } })();
@@ -5840,6 +5852,126 @@ function viewCasamento() {
 }
 
 document.addEventListener('submit', e => { const f = e.target; if (!f.classList || !f.classList.contains('ach-tel')) return; e.preventDefault(); salvarContatoAchado(f); });
+// ---------- Motor de demanda ----------
+// 1) Parcerias de relocação: o agente diário acha empresas contratando, expandindo ou trazendo gente para o Vale.
+const EM_EVENTO = { contratacao: 'Contratando', expansao: 'Expansão', nova_unidade: 'Nova unidade', transferencia: 'Transferência de equipe', evento: 'Evento ou programa', outro: 'Outro' };
+const EM_ST = { nova: ['gold', 'Nova'], contatada: ['', 'Contatada'], reuniao: ['warn', 'Reunião marcada'], parceira: ['ok', 'Parceira'], descartada: ['', 'Descartada'] };
+function viewRelocacao() {
+  const xs = lista('empresas'), f = estado.emF || 'abertas', vis = xs.filter(e => f === 'todas' || (f === 'abertas' ? !['parceira', 'descartada'].includes(e.status) : e.status === f)).sort((a, b) => String(b.em || '').localeCompare(String(a.em || '')));
+  const ag = (DB.config || {}).relocacaoAgente || {}, n = k => xs.filter(e => e.status === k).length;
+  return cab('Parcerias de relocação', 'Empresas contratando, expandindo ou trazendo equipes para a região. Cada parceria fechada vira uma fonte de clientes com renda comprovada: a Elora passa a ser a imobiliária de quem chega para trabalhar.', bt('em-nova', 'Nova empresa', {}, '')) +
+  `<div class="kpis"><div><span>Novas</span><b>${n('nova')}</b></div><div><span>Em conversa</span><b>${n('contatada') + n('reuniao')}</b></div><div><span>Parceiras</span><b>${n('parceira')}</b><em>${lista('leads').filter(l => xs.some(e => e.fonteId && e.fonteId === l.fonteId)).length} lead(s) vindos delas</em></div><div><span>Agente</span><b>${ag.em ? fmtData(String(ag.em).slice(0, 10)) : '—'}</b><em>${ag.em ? `${ag.n || 0} nova(s) na última busca` : 'ainda não rodou'}</em></div></div>
+  ${ag.resumo ? `<div class="banner"><span>${esc(String(ag.resumo).slice(0, 500))}</span></div>` : ''}
+  <section class="panel"><div class="chips" role="group" aria-label="Filtrar">${[['abertas', 'Em aberto'], ['parceira', 'Parceiras'], ['descartada', 'Descartadas'], ['todas', 'Todas']].map(([k, t]) => `<button type="button" data-act="em-f" data-f="${k}" aria-pressed="${f === k}">${t}</button>`).join('')}</div>
+  ${vis.length ? `<div class="list" id="em-lista">${vis.map(e => { const st = EM_ST[e.status] || EM_ST.nova;
+    return `<div class="item"><h3>${esc(e.nome)}${e.setor ? ' · ' + esc(e.setor) : ''}</h3><p>${esc(EM_EVENTO[e.evento] || 'Outro')}${e.cidade ? ' · ' + esc(e.cidade) : ''}${e.vagas ? ` · ${+e.vagas} vaga(s)` : ''}${e.em ? ' · ' + fmtData(e.em) : ''}${e.por === 'agente' ? ' · achada pelo agente' : ''}</p>
+      ${e.resumo ? `<p>${esc(e.resumo)}</p>` : ''}${e.notas ? `<p><b>Notas:</b> ${esc(e.notas)}</p>` : ''}
+      <div class="acts">${e.fonte && urlOk(e.fonte) ? `<a class="btn sm ghost" href="${esc(e.fonte)}" target="_blank" rel="noopener">Ver a notícia</a>` : ''}${e.site && urlOk(e.site) ? `<a class="btn sm ghost" href="${esc(e.site)}" target="_blank" rel="noopener">Site da empresa</a>` : ''}
+        ${bt('em-msg', 'Proposta de parceria', { id: e.id }, 'elora')}${e.status === 'nova' ? bt('em-st', 'Contatei', { id: e.id, s: 'contatada' }) : ''}${['nova', 'contatada'].includes(e.status) ? bt('em-st', 'Reunião marcada', { id: e.id, s: 'reuniao' }) : ''}
+        ${e.status !== 'parceira' && e.status !== 'descartada' ? bt('em-st', 'Virou parceira', { id: e.id, s: 'parceira' }) : ''}${e.status === 'parceira' && e.fonteId ? bt('fonte-colar', 'Receber leads desta parceria', { id: e.fonteId }) : ''}${bt('em-editar', 'Editar', { id: e.id })}${e.status !== 'descartada' ? bt('em-st', 'Descartar', { id: e.id, s: 'descartada' }) : ''}</div>
+      <div class="side-r">${pill(st[0], st[1])}</div></div>`; }).join('')}</div>` : vazio('Nenhuma empresa neste filtro.')}</section>`;
+}
+function abrirEmpresaRel(id) {
+  const e = id ? DB.empresas[id] || {} : {};
+  abrirDlg(`<h2>${id ? 'Editar empresa' : 'Nova empresa'}</h2><form id="frm-em" data-id="${esc(id || '')}"><div class="fgrid">
+    <div class="f"><label for="rl-nome">Empresa *</label><input id="rl-nome" maxlength="80" required value="${esc(e.nome || '')}"></div>
+    <div class="f"><label for="rl-setor">Setor</label><input id="rl-setor" maxlength="60" value="${esc(e.setor || '')}"></div>
+    <div class="f"><label for="rl-cid">Cidade</label><input id="rl-cid" maxlength="60" value="${esc(e.cidade || '')}"></div>
+    <div class="f"><label for="rl-ev">O que está acontecendo</label><select id="rl-ev">${Object.entries(EM_EVENTO).map(([k, t]) => `<option value="${k}"${e.evento === k ? ' selected' : ''}>${t}</option>`).join('')}</select></div>
+    <div class="f w"><label for="rl-res">Resumo</label><textarea id="rl-res" maxlength="600">${esc(e.resumo || '')}</textarea></div>
+    <div class="f"><label for="rl-fonte">Link da notícia (https)</label><input id="rl-fonte" maxlength="400" value="${esc(e.fonte || '')}"></div>
+    <div class="f"><label for="rl-site">Site da empresa (https)</label><input id="rl-site" maxlength="400" value="${esc(e.site || '')}"></div>
+    <div class="f w"><label for="rl-notas">Notas da conversa</label><textarea id="rl-notas" maxlength="600">${esc(e.notas || '')}</textarea></div></div>
+    <div class="acts">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Salvar</button></div></form>`, true);
+}
+function salvarEmpresaRel(f) {
+  const v = k => ($(k).value || '').trim(), id = f.dataset.id || 'EM-' + Date.now().toString(36); if (!v('rl-nome')) return toast('Informe a empresa.');
+  const e0 = DB.empresas[id] || { status: 'nova', em: REF, por: quemLog() || 'equipe' };
+  store.salvar('empresas', id, { ...e0, nome: v('rl-nome'), setor: v('rl-setor'), cidade: v('rl-cid'), evento: v('rl-ev'), resumo: v('rl-res'), fonte: urlOk(v('rl-fonte')) ? v('rl-fonte') : '', site: urlOk(v('rl-site')) ? v('rl-site') : '', notas: v('rl-notas') });
+  fecharDlg(); toast('Empresa salva.');
+}
+async function mudarEmpresa(id, s) {
+  const e = DB.empresas[id]; if (!e) return; const o = { ...e, status: s, [s + 'Em']: REF };
+  if (s === 'parceira' && !e.fonteId) { const fid = 'FO-REL-' + auHash(id); await store.salvar('fontes', fid, { nome: 'Relocação · ' + e.nome, tipo: 'parceiro', canal: 'Parceria ' + e.nome, negocio: 'Locação', ativa: true, criadaEm: REF }); o.fonteId = fid; }
+  await store.salvar('empresas', id, o); registrar('Comercial', `Relocação: ${e.nome} ${EM_ST[s] ? EM_ST[s][1].toLowerCase() : s}.`);
+  toast(s === 'parceira' ? 'Parceria registrada. Criei a fonte de captação dela: os leads da empresa entram com o canal da parceria.' : 'Atualizado.');
+}
+const propostaRelocacao = e => `Olá! Sou ${quemSou()}. Vi que a ${e.nome} está ${({ contratacao: 'contratando', expansao: 'em expansão', nova_unidade: 'abrindo uma nova unidade', transferencia: 'trazendo equipes' })[e.evento] || 'crescendo'}${e.cidade ? ' em ' + e.cidade : ' no Vale do Paraíba'}.\n\nA ${EMPRESA} oferece um programa de relocação para quem chega para trabalhar aqui, sem custo para a empresa:\n- atendimento dedicado antes da mudança, com opções selecionadas pelo orçamento e pelo bairro ideal para o trajeto;\n- visitas por vídeo, contrato com assinatura digital e vistoria com fotos;\n- garantia sem fiador (seguro-fiança) para quem acabou de chegar;\n- um contato único para o RH acompanhar cada colaborador.\n\nPodemos conversar 15 minutos esta semana?`;
+// 2) Páginas por bairro: página pronta para anúncio, com números do bairro, imóveis da carteira, simulador e formulário que cai na Fonte.
+function bairrosParaPagina() {
+  const m = {}; const add = (b, k) => { const n = String(b || '').split(',')[0].trim(); if (n.length < 3) return; const c = semAcento(n); (m[c] = m[c] || { nome: n, ofertaL: 0, ofertaV: 0, alug: [], venda: [], procura: 0 })[k]++; return m[c]; };
+  for (const im of lista('imoveis')) { if (!emOferta(im)) continue; const b = String(bairro(im) || '').split(',')[0].trim(); if (b.length < 3) continue; const c = semAcento(b); const o = m[c] = m[c] || { nome: b, ofertaL: 0, ofertaV: 0, alug: [], venda: [], procura: 0 };
+    if (+im.pedido > 0 && paraLocacao(im)) { o.ofertaL++; o.alug.push(+im.pedido); } if (+im.precoVenda > 0) { o.ofertaV++; o.venda.push(+im.precoVenda); } }
+  for (const l of lista('leads')) if (PROB[l.etapa]) for (const o of Object.values(m)) if (semAcento([l.quer, l.regiao].join(' ')).includes(semAcento(o.nome))) o.procura++;
+  const med = a => { const s = [...a].sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : null; };
+  return Object.values(m).map(o => ({ ...o, medAlug: med(o.alug), medVenda: med(o.venda) })).sort((a, b) => (b.ofertaL + b.ofertaV + b.procura) - (a.ofertaL + a.ofertaV + a.procura));
+}
+function viewPaginas() {
+  const bs = bairrosParaPagina(), fs = lista('fontes').filter(f => f.ativa !== false);
+  return cab('Páginas de bairro', 'Uma página por bairro, pronta para receber o tráfego dos anúncios (Google, Instagram, Facebook): números do bairro, imóveis da carteira, simulador "quanto posso pagar" e formulário de qualificação que entra direto no funil pela fonte escolhida.', '') +
+  `<section class="panel"><h2>Bairros com oferta ou procura · ${bs.length}</h2>${bs.length ? `<div class="tbl"><table id="pg-tab"><thead><tr><th>Bairro</th><th class="r">Para alugar</th><th class="r">Aluguel típico</th><th class="r">À venda</th><th class="r">Venda típica</th><th class="r">Procura</th><th></th></tr></thead><tbody>${bs.slice(0, 30).map(o => `<tr><td>${esc(o.nome)}</td><td class="r num">${o.ofertaL}</td><td class="r num">${o.medAlug ? brl(cent(o.medAlug)) : '—'}</td><td class="r num">${o.ofertaV}</td><td class="r num">${o.medVenda ? brl(cent(o.medVenda)) : '—'}</td><td class="r num">${o.procura}</td><td>${bt('pg-gerar', 'Gerar página', { b: o.nome }, 'elora')}</td></tr>`).join('')}</tbody></table></div>` : vazio('Cadastre imóveis em oferta para gerar as páginas.')}
+  <p class="sub">${fs.length ? '' : 'Crie uma fonte de captação (ex.: "Anúncios Google") para receber os leads destas páginas. '}O formulário da página envia para a plataforma da Elora; funciona assim que a plataforma estiver no ar com o domínio. Até lá, a página mostra o WhatsApp da Elora como alternativa.</p></section>`;
+}
+function abrirGerarPagina(b) {
+  const fs = lista('fontes').filter(f => f.ativa !== false);
+  abrirDlg(`<h2>Página do ${esc(b)}</h2><form id="frm-pg" data-b="${esc(b)}"><div class="fgrid">
+    <div class="f"><label for="pg-neg">Foco</label><select id="pg-neg"><option value="ambos">Alugar e comprar</option><option value="Locação">Só alugar</option><option value="Compra">Só comprar</option></select></div>
+    <div class="f"><label for="pg-fonte">Fonte dos leads</label><select id="pg-fonte">${fs.map(f => `<option value="${esc(f.id)}">${esc(f.nome)}</option>`).join('') || '<option value="">Nenhuma fonte cadastrada</option>'}</select></div>
+    <div class="f w"><label for="pg-cod">Código da fonte (gerado na plataforma)</label><input id="pg-cod" maxlength="64" placeholder="ex.: k7m2…" autocomplete="off"><small>O código fica só nesta página gerada. Sem ele, o formulário leva o cliente ao WhatsApp da Elora.</small></div></div>
+    <div class="acts">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Baixar a página</button></div></form>`);
+}
+function paginaBairro(b, foco, codigo) {
+  const o = bairrosParaPagina().find(x => semAcento(x.nome) === semAcento(b)) || { nome: b }, c = DB.config || {}, site = String(c.siteUrl || '').replace(/\/+$/, '');
+  const cod = String(codigo || '').replace(/[^a-z0-9]/gi, '').slice(0, 64), endpoint = site && cod ? `${site}/api/v1/captacao/receber/${cod}` : '';
+  const zap = soDigitos(c.whatsapp || ''), ims = lista('imoveis').filter(im => emOferta(im) && semAcento(String(bairro(im) || '')).includes(semAcento(b)) && (foco === 'ambos' || (foco === 'Compra' ? +im.precoVenda > 0 : +im.pedido > 0 && paraLocacao(im)))).slice(0, 6);
+  const rs = v => brl(cent(v)).replace(/,00$/, '');
+  const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+  const card = im => `<article><h3>${e(im.descricao)}</h3><p>${[im.quartos ? im.quartos + ' dorm.' : '', im.area ? im.area + ' m²' : '', im.vagas ? im.vagas + ' vaga(s)' : ''].filter(Boolean).join(' · ')}</p><b>${im.sobConsulta ? 'Valor sob consulta' : [+im.pedido > 0 && paraLocacao(im) && foco !== 'Compra' ? rs((im.pedido)) + '/mês' : '', +im.precoVenda > 0 && foco !== 'Locação' ? rs((im.precoVenda)) : ''].filter(Boolean).join(' · ')}</b><small>Ref. ${e(im.id)}</small></article>`;
+  const cfg = JSON.stringify({ endpoint, zap, bairro: o.nome, foco }).replace(/</g, '\\u003c');
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Imóveis no ${e(o.nome)} | ${e(EMPRESA)}</title>
+<meta name="description" content="Imóveis ${foco === 'Compra' ? 'à venda' : foco === 'Locação' ? 'para alugar' : 'para alugar e comprar'} no ${e(o.nome)}. Veja quanto você pode pagar e receba opções selecionadas pela ${e(EMPRESA)}.">
+<style>:root{--v:#3F4D3E;--o:#86703F;--f:#F8F7F3;--t:#1E2A1F;--m:#5A6459}*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--t);background:var(--f)}
+header{background:var(--v);color:#F8F7F3;padding:40px 20px}header div,main{max-width:960px;margin:0 auto}header small{letter-spacing:.2em;text-transform:uppercase;color:#CBB79C;font-size:12px}h1{font:400 34px/1.15 Georgia,serif;margin:8px 0}header p{color:#DCE3D8;max-width:60ch}
+main{padding:24px 20px 60px;display:grid;gap:28px}.n{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.n div{background:#fff;border:1px solid #D3D0C6;border-radius:10px;padding:14px}.n span{display:block;font-size:13px;color:var(--m)}.n b{font-size:clamp(17px,5vw,22px);overflow-wrap:anywhere}
+h2{font:400 24px Georgia,serif;margin:0 0 10px}.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}article{background:#fff;border:1px solid #D3D0C6;border-radius:10px;padding:14px}article h3{margin:0 0 4px;font-size:16px}article p{margin:0;color:var(--m);font-size:14px}article small{display:block;color:var(--m);font-size:12px;margin-top:6px}
+form,.s{background:#fff;border:1px solid #D3D0C6;border-radius:12px;padding:18px;display:grid;gap:12px}label{display:grid;gap:4px;font-size:14px;font-weight:600}input,select{font:inherit;padding:10px;border:1px solid #D3D0C6;border-radius:8px;width:100%}button{font:inherit;font-weight:700;background:var(--v);color:#fff;border:0;border-radius:8px;padding:12px 16px;cursor:pointer}
+.r{background:#EBE1CD;border-radius:8px;padding:12px;font-weight:600}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:600px){.two{grid-template-columns:1fr}h1{font-size:28px}}.hp{position:absolute;left:-5000px}.ok{color:#2A6542;font-weight:700}.er{color:#93352A}footer{text-align:center;color:var(--m);font-size:13px;padding:20px}</style></head>
+<body><header><div><small>${e(EMPRESA)}</small><h1>Morar no ${e(o.nome)}</h1><p>Opções selecionadas para o seu orçamento, visita marcada no mesmo dia e contrato com assinatura digital.</p></div></header>
+<main><section class="n">${o.ofertaL != null ? `<div><span>Para alugar agora</span><b>${o.ofertaL || 0}</b></div>` : ''}${o.medAlug && foco !== 'Compra' ? `<div><span>Aluguel típico na carteira</span><b>${rs((o.medAlug))}</b></div>` : ''}${o.medVenda && foco !== 'Locação' ? `<div><span>Venda típica na carteira</span><b>${rs((o.medVenda))}</b></div>` : ''}${o.ofertaV != null && foco !== 'Locação' ? `<div><span>À venda agora</span><b>${o.ofertaV || 0}</b></div>` : ''}</section>
+${ims.length ? `<section><h2>Alguns imóveis disponíveis</h2><div class="g">${ims.map(card).join('')}</div></section>` : ''}
+<section class="s"><h2>Quanto posso pagar?</h2><div class="two"><label>Renda mensal da família (R$)<input id="sr" type="number" min="0" step="100" inputmode="numeric"></label><label>Entrada disponível para compra (R$, opcional)<input id="se" type="number" min="0" step="1000" inputmode="numeric"></label></div><div class="r" id="sres">Digite a renda para ver o valor.</div><small>Estimativa: aluguel com condomínio de até 1/3 da renda; financiamento com parcela de até 30% da renda, 30 anos e juros de 11% ao ano. Quem aprova o crédito é o banco.</small></section>
+<form id="f" novalidate><h2>Receba opções no ${e(o.nome)}</h2><div class="two"><label>Nome *<input name="nome" required maxlength="80" autocomplete="name"></label><label>WhatsApp *<input name="telefone" required maxlength="20" inputmode="tel" autocomplete="tel"></label></div>
+<div class="two"><label>Você quer<select name="interesse">${foco !== 'Compra' ? '<option>Alugar</option>' : ''}${foco !== 'Locação' ? '<option>Comprar</option>' : ''}</select></label><label>Para quando<select name="prazo"><option>Em até 30 dias</option><option>Em até 3 meses</option><option>Mais de 3 meses</option></select></label></div>
+<div class="two"><label>Orçamento (R$)<input name="orcamento" id="fo" type="number" min="0" inputmode="numeric"></label><label>E-mail (opcional)<input name="email" type="email" maxlength="120" autocomplete="email"></label></div>
+<input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><label style="font-weight:400;display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="ok" required style="width:auto;margin-top:4px"> Autorizo a ${e(EMPRESA)} a falar comigo sobre imóveis por WhatsApp, telefone ou e-mail. Posso pedir para parar a qualquer momento.</label>
+<button type="submit">Quero receber as opções</button><p id="fm" aria-live="polite"></p></form></main><footer>${e(EMPRESA)} · ${e(o.nome)}</footer>
+<script>(function(){var C=${cfg};var b=function(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0})};
+function sim(){var r=+document.getElementById('sr').value||0,en=+document.getElementById('se').value||0,o=document.getElementById('sres');if(!r){o.textContent='Digite a renda para ver o valor.';return}var al=Math.floor(r/3/50)*50,p=r*.3,i=.11/12,n=360,fin=p*(1-Math.pow(1+i,-n))/i,tot=Math.floor((fin+en)/1000)*1000;o.textContent=(C.foco!=='Compra'?'Aluguel com condomínio de até '+b(al)+' por mês. ':'')+(C.foco!=='Locação'?'Imóvel de até cerca de '+b(tot)+' (financiamento + entrada).':'');var f=document.getElementById('fo');if(f&&!f.value)f.value=C.foco==='Compra'?tot:al}
+document.getElementById('sr').oninput=sim;document.getElementById('se').oninput=sim;
+document.getElementById('f').onsubmit=function(ev){ev.preventDefault();var f=ev.target,m=document.getElementById('fm'),d=new FormData(f);if(!d.get('nome')||String(d.get('telefone')).replace(/\\D/g,'').length<10||!d.get('ok')){m.className='er';m.textContent='Preencha nome, WhatsApp com DDD e a autorização.';return}
+var r=document.getElementById('sr').value,msg='Quer '+String(d.get('interesse')).toLowerCase()+' no '+C.bairro+' · prazo: '+d.get('prazo')+(r?' · renda informada: R$ '+r:'');
+var zap=function(){if(C.zap){location.href='https://wa.me/'+(C.zap.length<=11?'55':'')+C.zap+'?text='+encodeURIComponent('Olá! '+msg+'. Meu nome é '+d.get('nome')+'.');}else{m.className='er';m.textContent='Não foi possível enviar agora. Tente de novo em instantes.'}};
+if(!C.endpoint){zap();return}var body={nome:d.get('nome'),telefone:d.get('telefone'),email:d.get('email')||'',mensagem:msg,bairro:C.bairro,orcamento:d.get('orcamento')||'',website:d.get('website')||''};
+fetch(C.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(x){if(x.status===202||x.ok){f.reset();m.className='ok';m.textContent='Recebemos! Um corretor da Elora fala com você em breve.'}else zap()}).catch(zap)}})();<\/script></body></html>`;
+}
+// 3) Formulário do Meta (Lead Ads): perguntas que já qualificam; o CSV baixado do Meta é lido pela Fonte.
+const META_PERGUNTAS = [['Nome completo', 'padrão do Meta', ''], ['Telefone', 'padrão do Meta', ''], ['E-mail', 'padrão do Meta', ''],
+  ['Você quer alugar ou comprar?', 'múltipla escolha', 'Alugar · Comprar'], ['Em qual bairro você procura?', 'resposta curta', ''], ['Qual tipo de imóvel?', 'múltipla escolha', 'Apartamento · Casa · Casa em condomínio · Sala ou loja'],
+  ['Quantos quartos você precisa?', 'múltipla escolha', '1 · 2 · 3 · 4 ou mais'], ['Qual é o seu orçamento?', 'resposta curta', 'aluguel por mês ou valor do imóvel'], ['Qual é a renda mensal da família?', 'múltipla escolha', 'Até R$ 3.500 · R$ 3.500 a 7.000 · R$ 7.000 a 12.000 · R$ 12.000 a 20.000 · Acima de R$ 20.000'],
+  ['Para quando você precisa do imóvel?', 'múltipla escolha', 'Em até 30 dias · Em até 3 meses · Mais de 3 meses']];
+function abrirModeloMeta() {
+  const tem = lista('fontes').find(f => /meta|instagram|facebook/i.test(f.nome));
+  abrirDlg(`<h2>Formulário do Meta (Instagram e Facebook)</h2><p class="sub">Crie no Gerenciador de Anúncios um formulário instantâneo do tipo <b>Mais volume</b> ou <b>Intenção maior</b> (este pede confirmação e traz leads melhores) com estas perguntas, nesta ordem:</p>
+    <div class="tbl"><table class="tight"><thead><tr><th>Pergunta</th><th>Tipo</th><th>Opções</th></tr></thead><tbody>${META_PERGUNTAS.map(([p, t, o]) => `<tr><td>${esc(p)}</td><td>${esc(t)}</td><td>${esc(o)}</td></tr>`).join('')}</tbody></table></div>
+    <ol class="steps"><li>Na política de privacidade do formulário, use a página da Elora; no texto de consentimento, diga que a Elora vai falar sobre imóveis por WhatsApp.</li><li>Todo dia (ou a cada campanha), em <b>Meta Business Suite → Central de leads</b>, baixe os leads em CSV.</li><li>Aqui, em <b>Fontes de captação</b>, abra <b>Receber leads</b> da fonte "Meta Lead Ads" e cole o conteúdo do CSV. O sistema lê nome, telefone, bairro, orçamento, renda, prazo, quartos e tipo, e o lead já entra qualificado.</li></ol>
+    ${axNota('Com a plataforma no ar e o app da Meta aprovado, a mesma leitura passa a ser automática (sem baixar CSV).', 'escudo')}
+    <div class="acts">${tem ? '' : bt('meta-fonte', 'Criar a fonte "Meta Lead Ads"', {}, '')}${bt('fechar', 'Fechar')}</div>`, true);
+}
+
+document.addEventListener('submit', e => { const f = e.target; if (!f || !f.id) return;
+  if (f.id === 'frm-em') { e.preventDefault(); salvarEmpresaRel(f); }
+  if (f.id === 'frm-pg') { e.preventDefault(); const cod = ($('pg-cod').value || '').trim(), fid = $('pg-fonte').value, b = f.dataset.b, foco = $('pg-neg').value;
+    entregar(`elora-${semAcento(b).replace(/[^a-z0-9]+/g, '-')}.html`, paginaBairro(b, foco, cod)); registrar('Comercial', `Página do bairro ${b} gerada${fid && DB.fontes[fid] ? ' para a fonte ' + DB.fontes[fid].nome : ''}.`); fecharDlg(); } });
 // ---------- Chat interno ----------
 const CHAT_CANAIS = () => [['geral', 'Geral'], ...DEPTOS.map(d => [semAcento(d).replace(/[^a-z]/g, ''), nd(d)])];
 const chatNome = () => estado.perfil === 'corretor' && DB.corretores[eu()] ? DB.corretores[eu()].nome : (prefLer('chatNome') || '');
@@ -10981,7 +11113,7 @@ for (const p of BV_PERFIS) { const ini = AX_VIEWS[p].inicio, mais = AX_VIEWS[p].
   AX_VIEWS[p].inicio = feed => { const h = ini(feed), i = h.indexOf('</section>'); return i < 0 ? bvEntrada() + h : h.slice(0, i + 10) + bvEntrada() + h.slice(i + 10); };
   AX_VIEWS[p].mais = feed => mais(feed).replace('<div class="ax-lista">', `<div class="ax-lista"><button type="button" data-act="app-aba" data-aba="buscar">${ic('busca', 22, 'i')}<b>Buscar imóveis</b><small>Por voz ou por escrito, para comprar ou alugar</small>${ic('seta', 18, 's')}</button>`); }
 
-const RENDER = { casamento: () => viewCasamento(), mapa: () => viewMapa(), meudia: () => viewMeuDia(), aprovacoes: () => viewAprovacoes(), integracoes: () => viewIntegracoes(), quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), radar: () => viewRadar(false), 'radar-c': () => viewRadar(true), fontes: () => viewFontes(), automacoes: () => viewAutomacoes(), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
+const RENDER = { paginas: () => viewPaginas(), relocacao: () => viewRelocacao(), casamento: () => viewCasamento(), mapa: () => viewMapa(), meudia: () => viewMeuDia(), aprovacoes: () => viewAprovacoes(), integracoes: () => viewIntegracoes(), quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), radar: () => viewRadar(false), 'radar-c': () => viewRadar(true), fontes: () => viewFontes(), automacoes: () => viewAutomacoes(), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
   agenda: () => viewAgenda(false), 'agenda-c': () => viewAgenda(true), ideias: () => viewIdeias(false), 'ideias-c': () => viewIdeias(true), inicio: viewInicio, carteira: viewCarteira, extrato: viewExtrato, ia: () => cab('Elora AI', 'Lê a sua carteira, o extrato e as pendências.') + painelIA('corretor'), proprietario: viewProprietario, inquilino: viewInquilino };
 // ---------- Elora Casa+: a venda ou a locação abre uma jornada de serviços ----------
 // O cliente escolhe profissionais parceiros no app; a Elora recebe uma comissão do parceiro quando o serviço é feito
@@ -12185,7 +12317,10 @@ Object.assign(ACOES, {
   'fonte-colar': d => { if (!estado.fonteColar || estado.fonteColar.id !== d.id) estado.fonteColar = { id: d.id, txt: '', itens: [] }; abrirColarFonte(d.id); },
   'fonte-ler': d => { const t = ($('fo-colar') || {}).value || ''; const its = lerColados(t).slice(0, 200); estado.fonteColar = { id: d.id, txt: t, itens: its }; if (!its.length) toast('Não encontrei leads no texto. Confira o formato.'); abrirColarFonte(d.id); },
   'fonte-importar': d => importarDaFonte(d.id),
-  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-masc': () => abrirMeuMascote(), 'ach-colar': () => abrirColarAnuncio(), 'ach-f': d => { estado.achF = d.f; render(); },
+  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-masc': () => abrirMeuMascote(), 'ach-colar': () => abrirColarAnuncio(), 'em-nova': () => abrirEmpresaRel(null), 'em-editar': d => abrirEmpresaRel(d.id), 'em-f': d => { estado.emF = d.f; render(); }, 'em-st': d => mudarEmpresa(d.id, d.s),
+  'em-msg': d => { const e = DB.empresas[d.id]; if (!e) return; abrirDlg(`<h2>Proposta de parceria · ${esc(e.nome)}</h2><p class="sub">Para o RH ou a área de pessoas da empresa (e-mail ou LinkedIn corporativo).</p><div class="f"><textarea id="ach-m" rows="12" class="ax-code">${esc(propostaRelocacao(e))}</textarea></div><div class="acts">${bt('ach-mcop', 'Copiar', {}, '')}${bt('fechar', 'Fechar')}</div>`, true); },
+  'pg-gerar': d => abrirGerarPagina(d.b), 'meta-modelo': () => abrirModeloMeta(),
+  'meta-fonte': async () => { if (!ehGestor) return toast('Só gestores criam fontes.'); await store.salvar('fontes', 'FO-META', { nome: 'Meta Lead Ads', tipo: 'redes', canal: 'Instagram/Facebook', negocio: 'Locação', ativa: true, criadaEm: REF }); fecharDlg(); toast('Fonte "Meta Lead Ads" criada.'); }, 'ach-f': d => { estado.achF = d.f; render(); },
   'mt-auto': () => { if (!ehGestor) return; const v = !matchAuto(); salvarConfig({ matchAuto: v }); registrar('Comercial', `Agente casamenteiro ${v ? 'ligado' : 'pausado'}.`); toast(v ? 'Agente casamenteiro ligado.' : 'Agente casamenteiro pausado.'); if (v) casarVarredura(); },
   'mt-agora': d => { casarLead(DB.leads[d.id], true).then(ok => toast(ok ? 'Mensagem com as opções enviada para a Central de aprovações.' : 'Essas opções já estão na Central de aprovações.')).catch(() => toast('Não consegui preparar agora.')); }, 'ach-botao': () => abrirBotaoNavegador(), 'ach-ler': () => criarAchadoColado(),
   'bm-copiar': () => { const t = $('bm-cod'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(() => toast('Código copiado.'), () => { t.select(); toast('Selecionado: use Ctrl+C para copiar.'); }); },
