@@ -70,3 +70,11 @@ Gestão, Tecnologia, Diretoria). Cada membro aparece com um ícone: **bonequinho
   gravação no banco.
 - O registro de alterações passou a guardar **quem** fez (nome do gestor ou do corretor). Registros antigos têm só o perfil.
 - Testes: `docs/testes/mapa.cjs`, 10 verificações.
+
+### Escritório ao vivo (versão 65)
+
+No alto do Mapa, uma planta com a Recepção e as 8 salas. Cada aba aberta do sistema publica sua presença ao vivo
+(nome, tela e sala) pela capacidade `room` do artefato; o bonequinho anda até a sala da tela em que a pessoa está.
+Quem está fora do sistema fica apagado na sala de origem. Robôs ativos se mexem nas salas deles; cada atividade nova
+registrada voa como um pacote até a sala do setor. Nada disso é gravado: a presença some quando a pessoa fecha a página.
+Testes: `docs/testes/escritorio.cjs` (9 verificações, com presença simulada).

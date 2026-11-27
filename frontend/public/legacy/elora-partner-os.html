@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 64). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 65). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -475,6 +475,29 @@ button.ax-card{text-align:left;width:100%;cursor:pointer;font:inherit;color:inhe
 @media (max-width:1180px){.mp-deptos{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:860px){.mp-topo{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.mp-deptos{grid-template-columns:minmax(0,1fr)}.mp-cerebro div{grid-template-columns:minmax(0,1fr)}}
+/* Escritório ao vivo */
+.of-wrap h2{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}.of-wrap h2 .pill{white-space:normal;letter-spacing:0;text-transform:none}
+.of{position:relative;overflow:hidden;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.of-sala{position:relative;border:1px solid var(--line);border-radius:12px;background:repeating-linear-gradient(0deg,transparent 0 27px,color-mix(in srgb,var(--line) 45%,transparent) 27px 28px),repeating-linear-gradient(90deg,transparent 0 27px,color-mix(in srgb,var(--line) 45%,transparent) 27px 28px),var(--bg);padding:8px 10px;min-height:110px;transition:min-height .4s ease,box-shadow .3s}
+.of-sala.rec{grid-column:1/-1;min-height:96px;border-style:dashed}
+.of-sala b{display:block;font:600 12.5px/1.2 var(--ui)} .of-sala small{font-size:10.5px;color:var(--muted)}
+.of-sala.pisca{box-shadow:0 0 0 3px var(--gold)}
+.of-av{position:absolute;inset:0;pointer-events:none}
+.of-a{position:absolute;left:0;top:0;width:52px;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;padding:0;color:inherit;pointer-events:auto;cursor:pointer;transition:transform 1.4s cubic-bezier(.4,.1,.2,1),opacity .4s}
+.of-a .mp-ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;box-shadow:0 2px 5px rgba(0,0,0,.15)}
+.of-a.mp-hum .mp-ic{background:var(--green-soft);color:var(--green)} .of-a.mp-bot .mp-ic{background:var(--gold-soft);color:var(--gold);border-radius:10px}
+.of-a small{font:600 10px/1.1 var(--ui);max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:color-mix(in srgb,var(--surface) 85%,transparent);border-radius:4px;padding:1px 3px}
+.of-a.fora{opacity:.42;filter:grayscale(.7)}
+.of-a.vivo.mp-hum .mp-ic{box-shadow:0 0 0 3px var(--c1),0 2px 6px rgba(0,0,0,.2);animation:of-anda 1.6s ease-in-out infinite}
+.of-a.eu.mp-hum .mp-ic{box-shadow:0 0 0 3px var(--gold),0 2px 6px rgba(0,0,0,.2)}
+.of-a.vivo.mp-bot .mp-ic{animation:of-bot 2.4s ease-in-out infinite}
+.of-pk{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);transition:transform 1.3s cubic-bezier(.5,0,.3,1),opacity 1.3s;pointer-events:none;z-index:2}
+@keyframes of-anda{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes of-bot{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.of-a,.of-pk{transition:none}.of-a .mp-ic{animation:none!important}}
+@media (max-width:1180px){.of{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.of{grid-template-columns:minmax(0,1fr)}}
+
 
 
 .ax-pend{display:flex;flex-direction:column}
@@ -5373,6 +5396,7 @@ function viewMapa() {
   const ms = mapaMembros(), f = estado.mapaF || 'todos', vis = ms.filter(m => f === 'todos' || m.tipo === f), hum = ms.filter(m => m.tipo === 'humano').length, rob = ms.length - hum;
   const hoje = REF, leadsHoje = lista('leads').filter(l => l.criadoEm === hoje).length, decis = lista('aprovacoes').filter(a => a.decisao && String(a.decisao.em).slice(0, 10) === hoje).length;
   const tHoje = lista('tarefas').filter(t => t.status === 'pendente' && t.data === hoje).length, pend = aqPendentes(), msgs = gatilhoFila(null).length + autoMsgFila(null).length;
+  setTimeout(() => { try { ofPosicionar(); } catch (e) {} }, 0);
   const feed = ms.flatMap(m => m.evs.filter(e => tMs2(e.em)).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 3).map(e => ({ ...e, m }))).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 14);
   const rotinas = [['Varredura das automações', 'a cada 5 min'], ['Monitor da operação', '8h32 às 18h32'], ['Radar de concorrentes', '8h50'], ['Agente de inovação', 'seg e qui 6h47'], ['Radar e gatilhos', 'ao abrir o sistema']];
   return cab('Mapa da empresa', 'Quem é quem, onde trabalha e o que está fazendo. Pessoa aparece com o bonequinho, robô com o mini bot. Atualiza sozinho.', `<span class="pill ok" id="mp-vivo">● ao vivo · ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>`) +
@@ -5380,6 +5404,7 @@ function viewMapa() {
       <div class="chips" role="group" aria-label="Mostrar">${[['todos', 'Todos'], ['humano', 'Pessoas'], ['robo', 'Robôs']].map(([k, t]) => `<button type="button" data-act="mapa-f" data-f="${k}" aria-pressed="${f === k}">${t}</button>`).join('')}</div>
       <p class="mp-leg"><span class="mp-hum">${ICO_HUMANO} Pessoa</span><span class="mp-bot">${ICO_ROBO} Robô</span><span><i class="on"></i> ativo nas últimas 24 h</span><span><i class="pa"></i> pausado</span></p></section>
     <section class="mp-cerebro"><h2>Segundo cérebro · hoje</h2><div><span>leads novos <b>${leadsHoje}</b></span><span>decisões <b>${decis}</b></span><span>tarefas <b>${tHoje}</b></span><span>mensagens a enviar <b>${msgs}</b></span><span>aguardando aprovação <b>${pend.length}</b></span><span>leads pedindo ação <b>${radarLista(null).length}</b></span></div></section></div>
+  ${ofHtml()}
   <div class="mp-deptos" id="mp-deptos">${MAPA_DEPTOS.map(([id, nome, verbo], i) => { const xs = vis.filter(m => m.deptos.includes(id)); return `<section class="mp-d"><header><span>${String(i + 1).padStart(2, '0')}</span><h3>${esc(nome)}</h3><em>${esc(verbo)}</em></header>
       ${xs.length ? xs.map(mapaCartao).join('') : '<p class="empty">Ninguém neste filtro.</p>'}<footer>${xs.filter(m => m.tipo === 'humano').length} pessoa(s) · ${xs.filter(m => m.tipo === 'robo').length} robô(s)</footer></section>`; }).join('')}</div>
   <div class="grid two"><section class="panel"><h2>Rotinas dos robôs</h2><div class="mp-rot">${rotinas.map(([t, h]) => `<div><span class="mp-bot">${ICO_ROBO}</span><b>${esc(t)}</b><small>${esc(h)}</small></div>`).join('')}</div></section>
@@ -5398,6 +5423,84 @@ function abrirMembro(id) {
 }
 // Atualiza o mapa a cada 30 s enquanto ele está na tela (sem atrapalhar quem está digitando ou com janela aberta).
 setInterval(() => { try { if (estado.view === 'mapa' && !document.querySelector('dialog[open]') && !(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) render(); } catch (e) {} }, 30000);
+
+// ---------- Escritório ao vivo: pessoas andam até a sala da tela em que estão; robôs trabalham nas salas deles ----------
+// A posição das pessoas vem da presença ao vivo (quem está com o sistema aberto e em qual tela). Quem não está com o
+// sistema aberto fica parado e apagado na sala de origem. Cada atividade nova registrada vira um "pacote" que voa até a sala.
+const OF_SETOR = { Comercial: 'comercial', Corretores: 'comercial', Marketing: 'marketing', 'Imóveis': 'imoveis', 'Locação': 'operacoes', Financeiro: 'operacoes', 'Pós-venda': 'casamais', 'Gestão': 'gestao', Dados: 'tecnologia', Tecnologia: 'tecnologia', 'Jurídico': 'diretoria' };
+// Tela → sala. Telas de "Hoje" ficam na recepção.
+function ofDeptoDaTela(v) {
+  const m = { marketing: 'marketing', campanhas: 'marketing', 'im-locacao': 'imoveis', 'im-venda': 'imoveis', 'im-cuidado': 'imoveis', prospeccao: 'imoveis', 'capt-c': 'imoveis', 'prosp-c': 'imoveis', 'imoveis-c': 'imoveis',
+    locacao: 'operacoes', financeiro: 'operacoes', posvenda: 'casamais', 'poschaves-c': 'casamais', rede: 'gestao', rodizio: 'gestao', tickets: 'gestao', reunioes: 'gestao', ideias: 'gestao', 'ideias-c': 'gestao', 'treino-c': 'gestao',
+    desempenho: 'diretoria', resultados: 'diretoria', inteligencia: 'diretoria', guerra: 'diretoria', juridico: 'diretoria', acessos: 'tecnologia', integracoes: 'tecnologia', dados: 'tecnologia' };
+  if (m[v]) return m[v];
+  if (['comercial', 'radar', 'compradores', 'flows', 'fontes', 'automacoes', 'pessoas', 'crm-c', 'leads-c', 'compradores-c', 'radar-c', 'flows-c', 'carteira', 'extrato'].includes(v)) return 'comercial';
+  return 'recepcao';
+}
+let OF_ROOM = null, OF_PEERS = [], OF_ULT_EV = null, OF_EU = { view: null, nome: null };
+const OF_POS = {};
+const OF_APELIDO = { 'b:rodizio': 'Rodízio', 'b:radar': 'Radar leads', 'b:gatilhos': 'Gatilhos', 'b:aprov': 'Aprovações', 'b:ai': 'Elora AI', 'b:concorrentes': 'Concorrência', 'b:inovacao': 'Inovação', 'b:monitor': 'Monitor', 'b:tickets': 'Tickets', 'b:integ': 'Integrações', 'b:cobranca': 'Cobrança', 'b:casamais': 'Casa+', 'b:prosp': 'Captação' };
+(async () => { try { const r = await window.claude.use('room'); if (!r) return; OF_ROOM = r;
+  r.onPeers(ch => { OF_PEERS = ch.peers.filter(p => p.kind === 'viewer'); if (estado.view === 'mapa') ofPosicionar(); }, () => { OF_ROOM = null; });
+  ofPresenca(); } catch (e) { OF_ROOM = null; } })();
+function ofPresenca() {
+  if (!OF_ROOM) return; let nome = ''; try { nome = quemLog() || (estado.perfil === 'equipe' ? 'Equipe' : estado.perfil === 'corretor' ? 'Corretor' : 'Cliente do app'); } catch (e) { nome = 'Equipe'; }
+  const view = estado.app ? 'app' : estado.view || 'central';
+  if (OF_EU.view === view && OF_EU.nome === nome) return; OF_EU = { view, nome };
+  OF_ROOM.presence({ nome: String(nome).slice(0, 60), perfil: estado.app ? 'app' : estado.perfil || 'equipe', view: String(view).slice(0, 40), depto: estado.app ? 'casamais' : ofDeptoDaTela(view), em: new Date().toISOString() }).catch(() => {});
+}
+setInterval(() => { try { ofPresenca(); } catch (e) {} }, 1500);
+function ofHtml() {
+  const salas = [['recepcao', 'Recepção', 'Hoje, Dashboard, Agenda'], ...MAPA_DEPTOS.map(d => [d[0], d[1], d[2]])];
+  return `<section class="panel of-wrap"><h2>Escritório ao vivo <span class="pill ${OF_ROOM ? 'ok' : ''}" id="of-st">${OF_ROOM ? '● conectado' : 'presença ao vivo indisponível nesta abertura'}</span></h2>
+    <div class="of" id="of">${salas.map(([id, n, v]) => `<div class="of-sala${id === 'recepcao' ? ' rec' : ''}" data-sala="${id}"><b>${esc(n)}</b><small>${esc(v)}</small></div>`).join('')}<div class="of-av" id="of-av" aria-live="polite"></div></div>
+    <p class="sub">Pessoas com o sistema aberto andam até a sala da tela em que estão (bonequinho aceso). Quem está fora do sistema fica apagado na sala de origem. Robôs ativos piscam trabalhando; cada atividade nova registrada voa como um pacote até a sala do setor.</p></section>`;
+}
+function ofSlot(salaEl, i, n, ofR) {
+  const r = salaEl.getBoundingClientRect(), cols = Math.max(1, Math.floor((r.width - 16) / 58)), lin = Math.floor(i / cols), col = i % cols;
+  return { x: r.left - ofR.left + 12 + col * 58 + 4, y: r.top - ofR.top + 48 + lin * 58 };
+}
+function ofPosicionar() {
+  const of = $('of'), lay = $('of-av'); if (!of || !lay) return; const ofR = of.getBoundingClientRect(); const st = $('of-st'); if (st) { st.className = 'pill' + (OF_ROOM ? ' ok' : ''); st.textContent = OF_ROOM ? `● conectado · ${OF_PEERS.length} com o sistema aberto` : 'presença ao vivo indisponível nesta abertura'; }
+  const ms = mapaMembros(), on = new Map(); for (const p of OF_PEERS) { const pr = p.presence || {}; if (!pr.nome) continue; on.set(semAcento(String(pr.nome)) + '|' + p.peer, p); }
+  const itens = [];
+  // Pessoas online (uma por aba aberta) na sala da tela atual.
+  const onNomes = new Set();
+  for (const p of on.values()) { const pr = p.presence; const salas = ['recepcao', ...MAPA_DEPTOS.map(d => d[0])]; const sala = salas.includes(pr.depto) ? pr.depto : 'recepcao'; onNomes.add(semAcento(String(pr.nome)));
+    itens.push({ id: 'p:' + p.peer, tipo: 'humano', nome: String(pr.nome), sala, vivo: true, eu: p.sameTab, dica: `${pr.nome}${p.sameTab ? ' (você)' : ''} · agora em ${(MAPA_DEPTOS.find(d => d[0] === sala) || [, 'Recepção'])[1]}${pr.view ? ' · tela ' + pr.view : ''}` }); }
+  // Pessoas fora do sistema: sala de origem, apagadas.
+  for (const m of ms.filter(x => x.tipo === 'humano')) if (!onNomes.has(semAcento(m.nome))) itens.push({ id: 'h:' + m.id, tipo: 'humano', nome: m.nome, sala: m.deptos[0], vivo: false, membro: m.id, dica: `${m.nome} · fora do sistema · última ação ${haQuanto(m.ult.em)}` });
+  for (const m of ms.filter(x => x.tipo === 'robo')) itens.push({ id: 'r:' + m.id, tipo: 'robo', nome: m.nome, sala: m.deptos[0], vivo: !m.parado, membro: m.id, dica: `${m.nome} · ${m.status || m.papel}` });
+  const porSala = {}; for (const it of itens) (porSala[it.sala] = porSala[it.sala] || []).push(it);
+  const vivos = new Set();
+  for (const [sala, xs] of Object.entries(porSala)) { const el = of.querySelector(`[data-sala="${sala}"]`); if (!el) continue;
+    xs.forEach((it, i) => { const alvo = ofSlot(el, i, xs.length, ofR); vivos.add(it.id); let a = lay.querySelector(`[data-av="${CSS.escape(it.id)}"]`);
+      if (!a) { a = document.createElement('button'); a.type = 'button'; a.dataset.av = it.id; const ini = OF_POS[it.id] || alvo; a.style.transform = `translate(${ini.x}px,${ini.y}px)`; lay.appendChild(a); }
+      a.className = `of-a ${it.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}${it.vivo ? ' vivo' : ' fora'}${it.eu ? ' eu' : ''}`; a.title = it.dica; a.setAttribute('aria-label', it.dica);
+      if (it.membro) { a.dataset.act = 'mapa-membro'; a.dataset.id = it.membro; } else { delete a.dataset.act; }
+      a.innerHTML = `<span class="mp-ic">${it.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}</span><small></small>`; a.querySelector('small').textContent = (OF_APELIDO[it.membro] || it.nome.split(' ')[0]).slice(0, 12);
+      requestAnimationFrame(() => { a.style.transform = `translate(${alvo.x}px,${alvo.y}px)`; }); OF_POS[it.id] = alvo; }); }
+  for (const a of [...lay.querySelectorAll('.of-a')]) if (!vivos.has(a.dataset.av)) a.remove();
+  // Altura das salas cresce com quem está nelas.
+  for (const el of of.querySelectorAll('.of-sala')) { const n = (porSala[el.dataset.sala] || []).length, cols = Math.max(1, Math.floor((el.getBoundingClientRect().width - 16) / 58)); el.style.minHeight = (60 + Math.max(1, Math.ceil(n / cols)) * 58) + 'px'; }
+  ofPacotes();
+}
+// Pacote voando: atividade nova desde a última olhada (registro de alterações, automações e aprovações).
+function ofPacotes() {
+  const of = $('of'), lay = $('of-av'); if (!of || !lay) return;
+  const evs = [...(DB.log || []).slice(0, 10).map(x => ({ em: x.q, de: x.quem ? 'h:' : null, quem: x.quem, sala: OF_SETOR[x.setor] || 'gestao' })),
+    ...lista('autoexec').map(x => ({ em: x.em, de: 'r:a:' + x.regra, sala: 'comercial' })), ...lista('aprovacoes').map(a => ({ em: (a.decisao || {}).em || a.criadoEm, de: 'r:b:aprov', sala: 'gestao' }))].filter(e => tMs2(e.em)).sort((a, b) => tMs2(a.em) - tMs2(b.em));
+  if (!evs.length) return; const ult = tMs2(evs[evs.length - 1].em); if (OF_ULT_EV == null) { OF_ULT_EV = ult; return; }
+  const novos = evs.filter(e => tMs2(e.em) > OF_ULT_EV).slice(-6); OF_ULT_EV = Math.max(OF_ULT_EV, ult); const ofR = of.getBoundingClientRect();
+  novos.forEach((e, i) => { const dest = of.querySelector(`[data-sala="${e.sala}"]`); if (!dest) return; const dr = dest.getBoundingClientRect();
+    let orig = null; if (e.de && e.de.startsWith('r:')) orig = lay.querySelector(`[data-av="${CSS.escape(e.de)}"]`);
+    if (!orig && e.quem) orig = [...lay.querySelectorAll('.of-a.mp-hum')].find(a => semAcento(a.title).startsWith(semAcento(e.quem)));
+    const or = orig ? orig.getBoundingClientRect() : { left: ofR.left + 20, top: ofR.top + 20, width: 0, height: 0 };
+    const p = document.createElement('i'); p.className = 'of-pk'; p.style.transform = `translate(${or.left - ofR.left + or.width / 2}px,${or.top - ofR.top + or.height / 2}px)`; lay.appendChild(p);
+    setTimeout(() => { p.style.transform = `translate(${dr.left - ofR.left + dr.width / 2}px,${dr.top - ofR.top + 18}px)`; p.style.opacity = '0.2'; }, 60 + i * 350);
+    setTimeout(() => { p.remove(); dest.classList.add('pisca'); setTimeout(() => dest.classList.remove('pisca'), 900); }, 1500 + i * 350); });
+}
+window.addEventListener('resize', () => { if (estado.view === 'mapa') ofPosicionar(); });
 
 // ---------- Chat interno ----------
 const CHAT_CANAIS = () => [['geral', 'Geral'], ...DEPTOS.map(d => [semAcento(d).replace(/[^a-z]/g, ''), nd(d)])];

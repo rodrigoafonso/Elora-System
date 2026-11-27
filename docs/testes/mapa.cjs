@@ -24,7 +24,7 @@ const chk = (c, m) => { if (c) ok++; else falhas.push(m); console.log(c ? 'OK ' 
   await p.locator('#mp-deptos .mp-bot').first().click(); await p.waitForTimeout(200); chk(await p.locator('#dlg .tl, #dlg .empty').count() > 0, 'Rastro do robô abre');
   await p.screenshot({ path: S('m2-membro.png') }); await p.keyboard.press('Escape');
   await p.locator('[data-act="mapa-f"][data-f="todos"]').click(); await p.waitForTimeout(200);
-  await p.setViewportSize({ width: 390, height: 844 }); await p.waitForTimeout(300); const w = await p.evaluate('document.documentElement.scrollWidth'); chk(w <= 390, 'Celular sem rolagem lateral (' + w + ')');
+  await p.setViewportSize({ width: 390, height: 844 }); await p.waitForTimeout(300); console.log('largos', await p.evaluate(() => [...document.querySelectorAll('main *')].filter(e => e.getBoundingClientRect().right > 392).slice(0, 5).map(e => e.tagName + '.' + e.className + ' ' + Math.round(e.getBoundingClientRect().right)).join(' | '))); const w = await p.evaluate('document.documentElement.scrollWidth'); chk(w <= 390, 'Celular sem rolagem lateral (' + w + ')');
   await p.screenshot({ path: S('m3-mapa-mobile.png'), fullPage: true });
   chk(!errs.length, 'Sem erros: ' + errs.join(' / '));
   console.log(`\n${ok} ok, ${falhas.length} falha(s)`); await b.close(); })();
