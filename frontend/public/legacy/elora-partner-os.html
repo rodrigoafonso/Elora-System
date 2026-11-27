@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 65). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 66). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -5351,7 +5351,7 @@ function mapaMembros() {
   for (const g of acessosCfg()) {
     const ps = g.pastas === '*' ? MAPA_DEPTOS.map(d => d[0]) : MAPA_DEPTOS.filter(d => d[3].some(p => normPastas(g.pastas).includes(p))).map(d => d[0]);
     const evs = [...noLog(g.nome).map(x => ({ em: x.q, txt: x.txt })), ...lista('aprovacoes').filter(a => a.decisao && semAcento(a.decisao.nome) === semAcento(g.nome)).map(a => ({ em: a.decisao.em, txt: `${a.status === 'recusado' ? 'Recusou' : 'Aprovou'}: ${a.titulo}` }))];
-    ms.push({ id: 'g:' + g.id, tipo: 'humano', nome: g.nome, papel: g.papel || 'Gestor', deptos: g.pastas === '*' ? ['diretoria', 'gestao'] : ps.length ? ps : ['gestao'], evs, ult: ult(evs), status: null });
+    ms.push({ id: 'g:' + g.id, tipo: 'humano', nome: g.nome, papel: g.papel || 'Gestor', deptos: g.pastas === '*' ? ['diretoria', 'gestao'] : semAcento(String(((DB.config || {}).heads || {})['Gestão'] || '')).startsWith(semAcento(g.nome)) ? ['gestao', ...ps.filter(x => x !== 'gestao')] : ps.length ? ps : ['gestao'], evs, ult: ult(evs), status: null });
   }
   for (const k of lista('corretores')) {
     const ls = lista('leads').filter(l => l.corretorId === k.id), abertos = ls.filter(l => PROB[l.etapa]), atras = radarLista(k.id).length;
