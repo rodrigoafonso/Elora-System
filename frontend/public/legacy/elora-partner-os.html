@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 61). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 64). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -19,6 +19,7 @@ history.replaceState=function(a,b,u){rs(a,b,u);avisar();};})();
 </script>
 </head>
 <body>
+
 
 
 
@@ -445,6 +446,36 @@ button.ax-card{text-align:left;width:100%;cursor:pointer;font:inherit;color:inhe
 .pa-cats{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px 14px}.pa-cats legend{font-size:12.5px;font-weight:600;margin-bottom:6px;padding:0}.pa-cats label{display:flex;align-items:center;gap:6px;font-size:13px}
 .manuais .man>div{min-width:0}.manuais .man .btn{justify-self:start;margin-top:6px}.manuais .man.dest{border-color:var(--gold);background:var(--gold-soft)}
 .manuais .man h3{margin:0;font-size:13.5px}.manuais .man p{margin:0;font-size:12px;color:var(--muted)}
+/* Mapa da empresa */
+.mp-topo{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+.mp-eq{background:var(--side);color:var(--side-ink);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.mp-eq h2{font:400 24px/1.1 var(--display)} .mp-eq p{color:var(--side-muted);font-size:13px} .mp-eq b{color:var(--side-ink)}
+.mp-eq .chips button{background:var(--side-on);color:var(--side-ink);border-color:var(--side-line)} .mp-eq .chips button[aria-pressed="true"]{background:var(--side-gold);color:var(--side);border-color:var(--side-gold)}
+.mp-leg{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center} .mp-leg span{display:inline-flex;align-items:center;gap:6px} .mp-leg svg{width:16px;height:16px}
+.mp-leg .mp-hum{color:#9fd3b0} .mp-leg .mp-bot{color:var(--side-gold)}
+.mp-leg i,.mp-ic i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--line)} .mp-leg i.on,.mp-ic i.on{background:var(--c1);box-shadow:0 0 0 3px color-mix(in srgb,var(--c1) 25%,transparent)} .mp-leg i.pa,.mp-ic i.pa{background:var(--muted)}
+.mp-cerebro{background:#141a14;color:#e8e4d9;border-radius:12px;padding:18px;font:500 12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.mp-cerebro h2{font:600 11px/1.2 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:#cbb79c;margin-bottom:10px}
+.mp-cerebro div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 16px} .mp-cerebro span{color:#a0a99c} .mp-cerebro b{color:#e8e4d9;margin-left:4px}
+.mp-deptos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;position:relative}
+.mp-d{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0;border-top:3px solid var(--green)}
+.mp-d header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 8px;align-items:baseline} .mp-d header span{font:600 10px var(--ui);color:var(--muted)}
+.mp-d header h3{font:600 14px/1.2 var(--ui)} .mp-d header em{font-style:normal;font-size:10.5px;color:var(--muted)}
+.mp-d footer{margin-top:auto;padding-top:6px;border-top:1px dashed var(--line);font:500 11px ui-monospace,Menlo,monospace;color:var(--muted)}
+.mp-m{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;text-align:left;border:1px solid transparent;background:none;border-radius:9px;padding:6px;color:inherit;font:inherit;width:100%}
+.mp-m:hover,.mp-m:focus-visible{background:var(--sunken);border-color:var(--line)} .mp-m.off{opacity:.62}
+.mp-ic{position:relative;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.mp-hum .mp-ic{background:var(--green-soft);color:var(--green)} .mp-bot .mp-ic{background:var(--gold-soft);color:var(--gold)}
+.mp-ic i{position:absolute;right:-2px;bottom:-2px;border:2px solid var(--surface);width:11px;height:11px}
+.mp-tx{display:flex;flex-direction:column;min-width:0} .mp-tx b{font-size:12.5px;font-weight:600;line-height:1.3} .mp-tx small{font-size:11px;color:var(--muted);line-height:1.35;overflow-wrap:anywhere}
+.mp-rot{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px} .mp-rot div{display:grid;justify-items:center;text-align:center;gap:4px;padding:10px;border:1px solid var(--line);border-radius:10px}
+.mp-rot b{font-size:12.5px} .mp-rot small{font-size:11px;color:var(--muted)} .mp-rot .mp-bot,.mp-feed .mp-bot{color:var(--gold)} .mp-feed .mp-hum{color:var(--green)}
+.mp-feed{display:grid} .mp-feed>div{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:12.5px} .mp-feed>div:first-child{border-top:0}
+.mp-feed time{font-size:11px;color:var(--muted);white-space:nowrap} .mp-feed svg{width:18px;height:18px}
+@media (max-width:1180px){.mp-deptos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.mp-topo{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.mp-deptos{grid-template-columns:minmax(0,1fr)}.mp-cerebro div{grid-template-columns:minmax(0,1fr)}}
+
 
 .ax-pend{display:flex;flex-direction:column}
 .ax-pend>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
@@ -894,7 +925,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 /*ENGINE-START*/
 const pad = n => String(n).padStart(2, '0');
 const hojeISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes', 'lotes', 'posts', 'fontes', 'automacoes', 'autoexec'];
+const COLS = ['corretores', 'pessoas', 'imoveis', 'contratos', 'leads', 'chamados', 'ideias', 'avaliacoes', 'tarefas', 'campanhas', 'lancamentos', 'tickets', 'okrs', 'cobrancas', 'concorrentes', 'prospects', 'reunioes', 'parceiros', 'servicos', 'pacotes', 'empresas', 'envios', 'rascunhos', 'inovacoes', 'apresentacoes', 'lotes', 'posts', 'fontes', 'automacoes', 'autoexec', 'aprovacoes'];
 const CONFIG_PADRAO = { custoDiretoPct: 25, participacaoPct: 40, gestaoPct: 5, margemMinPct: 55, vendaDeducaoPct: 0, vendaCaptPct: 40, vendaTetoPct: 50, divisaoCaptPct: 60, indicacaoMaxPct: 25, creciJ: '', responsavel: '', vendaPct: 6, vendaCorretorPct: 40, locCorretorPct: 20, pctLeadElora: 40, pctLeadProprio: 45, diaPagamento: 10, repasseDias: 5, soSeguroFianca: false,
   aceiteMin: 15, rodizioAuto: false, rodizioPausado: false, whatsapp: '', site: '',
   rodizioHorario: false, rodizioDias: [1, 2, 3, 4, 5], rodizioIni: '08:00', rodizioFim: '18:00', cubValor: 0, cubMes: '', funil: [], pixTipo: '', pixChave: '', pixNome: '', pixCidade: '', cartaoLink: '' };
@@ -934,7 +965,7 @@ const fmtData = s => /^\d{4}-\d{2}-\d{2}/.test(s || '') ? s.slice(8, 10) + '/' +
 const brl = cent => (cent / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const pct = n => (+n).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%';
 
-const CHAVE_MIN = { posts: 'tema', corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId', lotes: 'comp', fontes: 'nome', automacoes: 'nome', autoexec: 'regra' };
+const CHAVE_MIN = { posts: 'tema', corretores: 'nome', pessoas: 'nome', leads: 'nome', imoveis: 'descricao', chamados: 'titulo', contratos: 'inicio', ideias: 'titulo', avaliacoes: 'status', tickets: 'titulo', okrs: 'objetivo', tarefas: 'titulo', campanhas: 'titulo', lancamentos: 'descricao', cobrancas: 'descricao', concorrentes: 'nome', prospects: 'etapa', reunioes: 'data', parceiros: 'nome', servicos: 'status', pacotes: 'tipo', empresas: 'nome', envios: 'imovelId', rascunhos: 'status', inovacoes: 'titulo', apresentacoes: 'leadId', lotes: 'comp', fontes: 'nome', automacoes: 'nome', autoexec: 'regra', aprovacoes: 'tipo' };
 // Cache por identidade: toda gravação troca o objeto da coleção (DB[col] = {...}), então o cache nunca fica velho.
 const LISTA_CACHE = new Map(), IDX_CACHE = new Map();
 const listaBase = col => { const src = DB[col] || {}, c = LISTA_CACHE.get(col); if (c && c.src === src) return c.arr;
@@ -3298,14 +3329,14 @@ const estado = { simC: { capt: 2, alug: 3000, conv: 60 }, pronto: false, perfil:
 const VIEWS = {
   // Menu por pergunta do dia a dia: Hoje, Clientes, Imóveis, Operações, Equipe, Análises e Configurações.
   // Telas irmãs viram abas de uma entrada só (GRUPOS_TELA); o endereço de cada tela continua o mesmo.
-  equipe: [['#', 'Hoje'], ['central', 'Dashboard'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
+  equipe: [['#', 'Hoje'], ['meudia', 'Meu dia'], ['mapa', 'Mapa da empresa'], ['central', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
     ['#', 'Clientes'], ['comercial', 'Funil de atendimento'], ['radar', 'Radar'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['fontes', 'Fontes de captação'], ['automacoes', 'Automações'], ['pessoas', 'Pessoas'],
     ['#', 'Marketing'], ['marketing', 'Marketing'], ['campanhas', 'Campanhas'],
     ['#', 'Imóveis'], ['im-locacao', 'Para locação'], ['im-venda', 'À venda'], ['im-cuidado', 'Recebimento e manutenção'], ['prospeccao', 'Captação'],
     ['#', 'Operações'], ['locacao', 'Locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'],
     ['#', 'Equipe'], ['rede', 'Corretores'], ['rodizio', 'Rodízio e funil'], ['tickets', 'Tickets e Kanban'], ['reunioes', 'Reuniões'], ['ideias', 'Projeto Boa Ideia'],
     ['#', 'Análises'], ['desempenho', 'Comercial'], ['resultados', 'Resultados e OKRs'], ['inteligencia', 'Inteligência'], ['guerra', 'Sala de guerra'],
-    ['#', 'Configurações'], ['juridico', 'Empresa e jurídico'], ['acessos', 'Acessos'], ['dados', 'Dados']],
+    ['#', 'Configurações'], ['juridico', 'Empresa e jurídico'], ['acessos', 'Acessos'], ['integracoes', 'Integrações'], ['dados', 'Dados']],
   corretor: [['#', 'Hoje'], ['inicio', 'Início'], ['agenda-c', 'Agenda'], ['flows-c', 'Mensagens do dia'], ['radar-c', 'Radar'], ['chat-c', 'Chat da equipe'],
     ['#', 'Clientes'], ['crm-c', 'Funil'], ['leads-c', 'Meus leads'], ['compradores-c', 'Compradores'],
     ['#', 'Imóveis'], ['imoveis-c', 'Imóveis em oferta'], ['capt-c', 'Minhas captações'], ['prosp-c', 'Prospecção'],
@@ -3316,7 +3347,7 @@ const VIEWS = {
 };
 // Telas irmãs: uma entrada no menu e abas no alto da tela.
 const GRUPOS_TELA = [['Atendimentos', ['comercial', 'radar', 'compradores', 'flows']], ['Entrada de leads', ['fontes', 'automacoes']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado']], ['Corretores', ['rede', 'rodizio']],
-  ['Marketing', ['marketing', 'campanhas']], ['Relatórios', ['desempenho', 'resultados']], ['Inteligência', ['inteligencia', 'guerra']], ['Configurações', ['juridico', 'acessos', 'dados']],
+  ['Marketing', ['marketing', 'campanhas']], ['Relatórios', ['desempenho', 'resultados']], ['Inteligência', ['inteligencia', 'guerra']], ['Configurações', ['juridico', 'acessos', 'integracoes', 'dados']],
   ['Atendimentos', ['crm-c', 'leads-c', 'compradores-c']], ['Captação', ['capt-c', 'prosp-c']], ['Carteira e extrato', ['carteira', 'extrato']]];
 const grupoDe = v => GRUPOS_TELA.find(g => g[1].includes(v)) || null;
 const OCULTAS_MENU = ['chat', 'chat-c'];   // o chat fica no alto de cada tela, ao lado do sino
@@ -3492,7 +3523,8 @@ function erroDb(e) {
     : c === 'revoked' ? 'O acesso aos dados foi encerrado nesta página.' : 'Não foi possível falar com o banco agora. Tente de novo.');
 }
 function registrar(setor, txt) {
-  DB.log = [{ q: new Date().toISOString(), setor, txt, por: estado.perfil !== 'equipe' ? estado.perfil : ehGestor ? 'gestor' : 'colaborador' }, ...DB.log].slice(0, 300);
+  const quem = (() => { try { return quemLog(); } catch (e) { return ''; } })();
+  DB.log = [{ q: new Date().toISOString(), setor, txt, por: estado.perfil !== 'equipe' ? estado.perfil : ehGestor ? 'gestor' : 'colaborador', ...(quem ? { quem } : {}) }, ...DB.log].slice(0, 300);
   store.sistema('log', { itens: DB.log });
 }
 const salvarConfig = patch => { DB.config = { ...DB.config, ...patch }; agendar(); return store.sistema('config', DB.config); };
@@ -4944,7 +4976,7 @@ function itemAutoMsg({ l, k, m }) {
   return `<div class="item"><h3>${esc(l.nome)} · ${esc(m.t || 'Mensagem sugerida')}</h3><p>Sugerida pela automação em ${fmtData(m.em)}</p><div class="memo pre">${esc(m.x)}</div>
     <div class="acts">${zapBt(l.telefone, m.x, 'Enviar no WhatsApp', { id: l.id, t: 'mensagem' }).replace('data-act="zap-reg"', `data-act="zap-reg" data-am="${esc(k)}"`)}${bt('am-feito', 'Já enviei', { id: l.id, k })}${bt('am-pular', 'Descartar', { id: l.id, k })}</div></div>`;
 }
-function marcarAutoMsg(id, k) { const l = DB.leads[id]; if (!l || !(l.autoMsg || {})[k]) return; store.salvar('leads', id, { ...l, autoMsg: { ...l.autoMsg, [k]: { ...l.autoMsg[k], feito: REF } } }); }
+function marcarAutoMsg(id, k, como = 'enviado', modo = 'WhatsApp aberto pelo sistema com o texto aprovado; enviado pela pessoa') { const l = DB.leads[id]; if (!l || !(l.autoMsg || {})[k]) return; const m = l.autoMsg[k]; store.salvar('leads', id, { ...l, autoMsg: { ...l.autoMsg, [k]: { ...m, feito: REF, ...(como !== 'enviado' ? { descartado: true } : {}) } } }); if (m.apId) aqEnviado(m.apId, como === 'enviado' ? modo : 'descartado por quem atende', como).catch(() => {}); }
 function painelGatilhos(soC) {
   const kid = soC ? eu() : null, gs = gatilhoFila(kid), ms = autoMsgFila(kid), cfg = gatilhosCfg(), ed = ehGestor && !soC && estado.gaEdit;
   return `<section class="panel"><h2>Gatilhos por etapa · ${gs.length}</h2>${gs.length ? `<div class="list" id="ga-fila">${gs.slice(0, 40).map(itemGatilho).join('')}</div>` : vazio('Nenhum gatilho por etapa para hoje.')}
@@ -5061,7 +5093,7 @@ async function auExecutar(r, l, chave, extra = {}) {
   const feitos = []; let lead = DB.leads[l.id]; AU_RODANDO = true;
   try { for (const [i, a] of (r.entao || []).entries()) { const aid = xid + '-' + i;
       if (a.t === 'tarefa') { if (!DB.tarefas[aid]) await store.salvar('tarefas', aid, { titulo: auTexto(a.titulo || 'Falar com {nome}', lead, extra).slice(0, 240), tipo: 'ligacao', data: somaDias(REF, Math.max(0, +a.prazo || 0)), ...(lead.corretorId ? { corretorId: lead.corretorId } : {}), leadId: lead.id, status: 'pendente', auto: r.id }); feitos.push('tarefa criada'); }
-      else if (a.t === 'mensagem') { lead = DB.leads[lead.id]; if (!(lead.autoMsg || {})[aid]) { await store.salvar('leads', lead.id, { ...lead, autoMsg: { ...(lead.autoMsg || {}), [aid]: { t: r.nome, x: auTexto(a.texto, lead, extra), em: REF } } }); } feitos.push('mensagem sugerida'); }
+      else if (a.t === 'mensagem') { lead = DB.leads[lead.id]; if (!(lead.autoMsg || {})[aid]) await aqPedir('AP-' + aid, { tipo: 'mensagem', titulo: r.nome, conteudo: auTexto(a.texto, lead, extra), canal: 'whatsapp', origem: 'Automação ' + r.nome, ref: { col: 'leads', id: lead.id, k: aid } }); feitos.push('mensagem enviada para aprovação'); }
       else if (a.t === 'etapa' && ETAPAS[a.etapa] && lead.etapa !== a.etapa && a.etapa !== 'perdido' && a.etapa !== 'contrato') { lead = DB.leads[lead.id]; await store.salvar('leads', lead.id, { ...histLead(lead, 'etapa', 'Etapa: ' + ETAPAS[a.etapa] + ' (automação)'), etapa: a.etapa }); feitos.push('etapa: ' + ETAPAS[a.etapa]); }
       else if (a.t === 'prioridade') { lead = DB.leads[lead.id]; if (lead.prioridade !== 'alta') await store.salvar('leads', lead.id, { ...lead, prioridade: 'alta' }); feitos.push('prioridade alta'); }
       else if (a.t === 'aviso') { const q = new Date(AGORA()).toISOString(), m = { canal: a.canal || 'corretores', q, autor: 'Automação', txt: auTexto(a.texto || 'Atenção ao lead {nome}.', lead, extra), ref: lead.id };
@@ -5132,6 +5164,241 @@ function salvarAutomacao(f) {
   registrar('Comercial', `Automação ${antes.nome ? 'alterada' : 'criada'} (pausada): ${nome}.`); fecharDlg(); toast('Regra salva e pausada. Revise e ligue quando quiser.');
 }
 
+// ---------- Central de aprovações ----------
+// Tudo o que sai da empresa (mensagem a cliente, publicação) passa por aqui antes. Cada decisão guarda quem decidiu,
+// quando e o texto exato aprovado. O envio continua sendo feito por uma pessoa (o WhatsApp abre com o texto pronto).
+const AQ_TIPO = { mensagem: 'Mensagem ao cliente', post: 'Publicação' };
+const AQ_ST = { pendente: ['gold', 'Aguardando aprovação'], aprovado: ['ok', 'Aprovado, aguardando envio'], enviado: ['ok', 'Enviado'], recusado: ['bad', 'Recusado'], descartado: ['', 'Descartado'] };
+const fmtDataHora = iso => { const x = String(iso || ''); if (x.length < 16) return x ? fmtData(x.slice(0, 10)) : '—'; const d = new Date(x); if (isNaN(d)) return fmtData(x.slice(0, 10)); const z = n => String(n).padStart(2, '0'); return `${fmtData(`${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`)} ${z(d.getHours())}:${z(d.getMinutes())}`; };
+const aqAgora = () => new Date(AGORA()).toISOString();
+const aqLista = st => lista('aprovacoes').filter(a => !st || a.status === st).sort((a, b) => String(b.criadoEm).localeCompare(String(a.criadoEm)));
+const aqPendentes = () => aqLista('pendente');
+// Pedido de aprovação (idempotente pelo id).
+async function aqPedir(id, dados) {
+  if ((DB.aprovacoes || {})[id]) return false;
+  await store.salvar('aprovacoes', id, { ...dados, status: 'pendente', criadoEm: aqAgora(), hist: [{ em: aqAgora(), t: 'Pedido criado', por: dados.pedidoPor || 'Sistema' }] });
+  return true;
+}
+function aqHist(a, t, por, extra = {}) { return { ...a, ...extra, hist: [...(a.hist || []), { em: aqAgora(), t, por }].slice(-30) }; }
+function aqItem(a) {
+  const st = AQ_ST[a.status] || ['', a.status], l = a.ref && a.ref.col === 'leads' ? DB.leads[a.ref.id] : null, p = a.ref && a.ref.col === 'posts' ? DB.posts[a.ref.id] : null;
+  const alvo = l ? `Para ${esc(l.nome)}${l.telefone ? '' : ' (sem telefone)'}` : p ? `${esc(p.canal || 'Rede social')} · ${fmtData(p.data)}` : '';
+  const dec = a.decisao ? `<p>${a.status === 'recusado' ? 'Recusado' : 'Aprovado'} por <b>${esc(a.decisao.nome)}</b> em ${fmtDataHora(a.decisao.em)}${a.decisao.motivo ? ' · motivo: ' + esc(a.decisao.motivo) : ''}</p>` : '';
+  const env = a.envio ? `<p>${a.status === 'descartado' ? 'Descartado' : 'Enviado'} por ${esc(a.envio.por || '—')} em ${fmtDataHora(a.envio.em)} · ${esc(a.envio.modo || '')}</p>` : '';
+  return `<div class="item"><h3>${esc(AQ_TIPO[a.tipo] || a.tipo)} · ${esc(a.titulo || '')}</h3><p>${alvo}${a.origem ? ' · origem: ' + esc(a.origem) : ''} · pedido em ${fmtDataHora(a.criadoEm)}</p>
+    <div class="memo pre">${esc(a.decisao && a.decisao.texto ? a.decisao.texto : a.conteudo || '')}</div>${dec}${env}
+    <div class="acts">${a.status === 'pendente' && ehGestor ? bt('aq-abrir', 'Revisar e decidir', { id: a.id }, 'elora') : ''}${l ? bt('atendimento', 'Atendimento', { id: l.id }) : ''}${p ? bt('mk-editar', 'Abrir a publicação', { id: p.id }) : ''}</div>
+    <div class="side-r">${pill(st[0], st[1])}</div></div>`;
+}
+function viewAprovacoes() {
+  const tab = estado.aqTab || 'pendentes', pend = aqPendentes(), lotes = lista('lotes').filter(x => x.status === 'aguarda');
+  const hist = lista('aprovacoes').filter(a => a.status !== 'pendente').sort((a, b) => String((b.decisao || {}).em || b.criadoEm).localeCompare(String((a.decisao || {}).em || a.criadoEm)));
+  return cab('Central de aprovações', 'Nada sai da Elora sem aprovação: mensagens sugeridas pelas automações, publicações e lotes de repasse esperam aqui. Cada decisão registra quem aprovou, quando e o texto exato.', '') +
+    `${abas('aq-tab', tab, [['pendentes', `Aguardando · ${pend.length + lotes.length}`], ['historico', `Registro · ${hist.length}`]])}
+    ${tab === 'historico' ? `<section class="panel"><h2>Registro de decisões e envios</h2>${hist.length ? `<div class="list" id="aq-hist">${hist.slice(0, 150).map(aqItem).join('')}</div>` : vazio('Nenhuma decisão registrada ainda.')}</section>`
+    : `<section class="panel"><h2>Mensagens e publicações · ${pend.length}</h2>${pend.length ? `<div class="list" id="aq-fila">${pend.map(aqItem).join('')}</div>` : vazio('Nada aguardando aprovação.')}
+      ${ehGestor ? '' : '<p class="sub">Só gestores decidem. Você vê a fila para acompanhar.</p>'}</section>
+      <section class="panel"><h2>Lotes de repasse · ${lotes.length}</h2>${lotes.length ? `<div class="list">${lotes.map(x => `<div class="item"><h3>Lote de ${esc(fmtMes(x.comp))}</h3><p>Preparado por ${esc((x.preparadoPor || {}).nome || '—')} · a aprovação exige outra pessoa (dupla aprovação)</p><div class="acts">${bt('lote-abrir', 'Abrir o lote', { id: x.id }, 'elora')}</div><div class="side-r">${pill('gold', 'Aguardando aprovação')}</div></div>`).join('')}</div>` : vazio('Nenhum lote de repasse aguardando.')}</section>`}`;
+}
+function abrirAprovacao(id) {
+  const a = DB.aprovacoes[id]; if (!a || !ehGestor) return; if (a.status !== 'pendente') return toast('Este pedido já foi decidido.');
+  const l = a.ref && a.ref.col === 'leads' ? DB.leads[a.ref.id] : null;
+  abrirDlg(`<h2>${esc(AQ_TIPO[a.tipo] || a.tipo)} · ${esc(a.titulo || '')}</h2>
+    <p class="sub">${l ? `Para ${esc(l.nome)}${l.telefone ? '' : ' · este lead não tem telefone: a mensagem não poderá ser enviada pelo WhatsApp'}` : ''}${a.origem ? ' · origem: ' + esc(a.origem) : ''}</p>
+    <div class="fgrid"><div class="f w"><label for="aq-txt">Texto que será enviado (pode ajustar antes de aprovar)</label><textarea id="aq-txt" rows="8" maxlength="2000">${esc(a.conteudo || '')}</textarea></div>
+      <div class="f"><label for="aq-quem">Quem aprova *</label><input id="aq-quem" type="text" maxlength="60" value="${esc(quemOpera())}"></div>
+      <div class="f"><label for="aq-motivo">Motivo (obrigatório para recusar)</label><input id="aq-motivo" type="text" maxlength="200"></div></div>
+    <p class="sub">Aprovar não envia nada: libera o envio para quem atende, com este texto. O registro guarda o texto aprovado.</p>
+    <div class="acts">${bt('fechar', 'Cancelar')}${bt('aq-recusar', 'Recusar', { id }, 'danger')}${bt('aq-aprovar', 'Aprovar', { id }, '')}</div>`, true);
+}
+async function aqDecidir(id, aprova) {
+  const a = DB.aprovacoes[id]; if (!a || !ehGestor || a.status !== 'pendente') return;
+  const nome = ($('aq-quem') || {}).value ? $('aq-quem').value.trim().slice(0, 60) : '', texto = (($('aq-txt') || {}).value || a.conteudo || '').trim().slice(0, 2000), motivo = (($('aq-motivo') || {}).value || '').trim().slice(0, 200);
+  if (!nome) return toast('Informe quem está decidindo.');
+  if (a.pedidoPor && semAcento(a.pedidoPor) === semAcento(nome)) return toast('Quem pediu não pode aprovar o próprio pedido.');
+  if (aprova && !texto) return toast('O texto não pode ficar vazio.');
+  if (!aprova && !motivo) return toast('Escreva o motivo da recusa.');
+  const decisao = { nome, conta: meuIdConta || null, em: aqAgora(), ...(aprova ? { texto, editado: texto !== (a.conteudo || '').trim() } : { motivo }) };
+  await store.salvar('aprovacoes', id, aqHist(a, aprova ? 'Aprovado' : 'Recusado', nome, { status: aprova ? 'aprovado' : 'recusado', decisao }));
+  if (aprova && a.tipo === 'mensagem' && a.ref && DB.leads[a.ref.id]) { const l = DB.leads[a.ref.id]; await store.salvar('leads', l.id, { ...l, autoMsg: { ...(l.autoMsg || {}), [a.ref.k || id]: { t: a.titulo, x: texto, em: REF, apId: id } } }); }
+  if (aprova && a.tipo === 'post' && a.ref && DB.posts[a.ref.id]) { const p = DB.posts[a.ref.id]; await store.salvar('posts', p.id, { ...p, aprovacao: { id, por: nome, em: decisao.em } }); }
+  registrar('Gestão', `Aprovação: ${aprova ? 'aprovado' : 'recusado'} "${a.titulo}" por ${nome}${aprova ? '' : ' (' + motivo + ')'}.`);
+  fecharDlg(); toast(aprova ? 'Aprovado. O envio fica liberado para quem atende.' : 'Recusado. O motivo ficou registrado.');
+}
+// Envio (ou descarte) feito por uma pessoa depois da aprovação.
+async function aqEnviado(apId, modo, como = 'enviado') {
+  const a = (DB.aprovacoes || {})[apId]; if (!a || a.status !== 'aprovado') return;
+  const por = quemOpera() || (DB.corretores[eu()] || {}).nome || 'Equipe';
+  await store.salvar('aprovacoes', apId, aqHist(a, como === 'enviado' ? 'Enviado' : 'Descartado', por, { status: como, envio: { em: aqAgora(), por, modo } }));
+}
+async function aqPedirPost(id) {
+  const p = DB.posts[id]; if (!p) return; const apId = 'AP-' + auHash('post|' + id + '|' + (p.texto || p.tema || ''));
+  if ((DB.aprovacoes || {})[apId] && DB.aprovacoes[apId].status === 'pendente') return toast('Esta publicação já está na Central de aprovações.');
+  const nova = (DB.aprovacoes || {})[apId] ? 'AP-' + auHash(apId + Date.now()) : apId;
+  await aqPedir(nova, { tipo: 'post', titulo: p.tema || 'Publicação', conteudo: p.texto || p.tema || '', canal: p.canal || '', origem: 'Marketing', pedidoPor: quemOpera() || 'Equipe', ref: { col: 'posts', id } });
+  registrar('Comercial', `Marketing: "${p.tema}" enviado para aprovação.`); toast('Enviado para a Central de aprovações. Depois de aprovado, marque como publicado.');
+}
+// ---------- Meu dia: resumo pessoal ----------
+function viewMeuDia() {
+  const g = gestorAtual(), nome = g ? g.nome : souDono ? 'Rodrigo' : '', ts = lista('tarefas').filter(t => t.status === 'pendente');
+  const hoje = ts.filter(t => t.data === REF).sort((a, b) => String(a.hora || '').localeCompare(String(b.hora || ''))), atras = ts.filter(t => t.data && t.data < REF);
+  const reun = lista('reunioes').filter(r => r.data === REF), rad = radarLista(null), urg = rad.filter(x => x.r.grav >= 2), pend = aqPendentes(), lotes = lista('lotes').filter(x => x.status === 'aguarda');
+  const msgs = gatilhoFila(null).length + autoMsgFila(null).length;
+  const linhaT = t => `<div class="item"><h3>${t.hora ? esc(t.hora) + ' · ' : ''}${esc(t.titulo)}</h3><p>${fmtData(t.data)}${t.corretorId && DB.corretores[t.corretorId] ? ' · ' + esc(DB.corretores[t.corretorId].nome) : ''}</p>${t.leadId && DB.leads[t.leadId] ? `<div class="acts">${bt('atendimento', 'Atendimento', { id: t.leadId })}</div>` : ''}</div>`;
+  return cab(nome ? `Meu dia · ${esc(nome)}` : 'Meu dia', `Resumo de ${fmtData(REF)}: compromissos, leads que pedem ação, tarefas e o que espera aprovação.`, ehGestor ? bt('ir', 'Central de aprovações', { view: 'aprovacoes' }, pend.length + lotes.length ? 'elora' : '') : '') +
+    `<div class="kpis" id="md-kpis"><button data-act="ir" data-view="agenda"><span>Compromissos hoje</span><b>${hoje.length + reun.length}</b><em>${reun.length} reunião(ões)</em></button>
+      <button data-act="ir" data-view="radar"><span>Leads que pedem ação</span><b>${rad.length}</b><em>${urg.length} muito atrasado(s)</em></button>
+      <button data-act="ir" data-view="agenda"><span>Tarefas atrasadas</span><b>${atras.length}</b><em>pendentes antes de hoje</em></button>
+      <button data-act="ir" data-view="aprovacoes"><span>Aguardando aprovação</span><b>${pend.length + lotes.length}</b><em>${msgs} mensagem(ns) para enviar hoje</em></button></div>
+    <div class="grid two"><section class="panel"><h2>Compromissos de hoje</h2>${reun.length || hoje.length ? `<div class="list">${reun.map(r => `<div class="item"><h3>${r.hora ? esc(r.hora) + ' · ' : ''}${esc(r.titulo || 'Reunião')}</h3><p>${esc(r.local || 'Local a definir')}</p><div class="acts">${bt('re-abrir', 'Abrir', { id: r.id })}</div></div>`).join('')}${hoje.map(linhaT).join('')}</div>` : vazio('Nada marcado para hoje.')}</section>
+      <section class="panel"><h2>Leads que pedem ação</h2>${rad.length ? `<div class="list">${rad.slice(0, 6).map(({ l, r }) => `<div class="item"><h3>${esc(l.nome)}</h3><p>${esc(r.txt)}${DB.corretores[l.corretorId] ? ' · ' + esc(DB.corretores[l.corretorId].nome) : ' · sem corretor'}</p><div class="acts">${bt('atendimento', 'Atendimento', { id: l.id })}</div><div class="side-r">${r.grav >= 2 ? pill('bad', 'Muito atrasado') : pill('warn', 'Atrasado')}</div></div>`).join('')}</div>${rad.length > 6 ? `<div class="acts">${bt('ir', `Ver os ${rad.length} no Radar`, { view: 'radar' })}</div>` : ''}` : vazio('Nenhum lead atrasado.')}</section></div>
+    <div class="grid two"><section class="panel"><h2>Tarefas atrasadas · ${atras.length}</h2>${atras.length ? `<div class="list">${atras.sort((a, b) => a.data < b.data ? -1 : 1).slice(0, 8).map(linhaT).join('')}</div>` : vazio('Nenhuma tarefa atrasada.')}</section>
+      <section class="panel"><h2>Aguardando aprovação · ${pend.length + lotes.length}</h2>${pend.length || lotes.length ? `<div class="list">${pend.slice(0, 5).map(a => `<div class="item"><h3>${esc(AQ_TIPO[a.tipo] || a.tipo)} · ${esc(a.titulo)}</h3><p>${esc(a.origem || '')} · ${fmtDataHora(a.criadoEm)}</p>${ehGestor ? `<div class="acts">${bt('aq-abrir', 'Revisar e decidir', { id: a.id }, 'elora')}</div>` : ''}</div>`).join('')}${lotes.map(x => `<div class="item"><h3>Lote de repasse de ${esc(fmtMes(x.comp))}</h3><div class="acts">${bt('lote-abrir', 'Abrir o lote', { id: x.id })}</div></div>`).join('')}</div>` : vazio('Nada esperando decisão.')}</section></div>`;
+}
+// ---------- Revisão semanal: o que funcionou, o que pede atenção, sugestões ----------
+function revisaoSemanal(fim = REF) {
+  const a = painelSemana(fim), b = painelSemana(somaDias(fim, -7)), soma = o => o.residencial + o.comercial;
+  const fl = (p, i) => p.direc.funilLocacao[i][1], m = [
+    ['Leads de locação', fl(a, 0), fl(b, 0)], ['Visitas', fl(a, 1), fl(b, 1)], ['Propostas', fl(a, 2), fl(b, 2)], ['Contratos novos', soma(a.kpi.novasLocacoes), soma(b.kpi.novasLocacoes)],
+    ['Novas captações', soma(a.kpi.novasCaptacoes), soma(b.kpi.novasCaptacoes)], ['Contatos de prospecção', a.direc.contatosSemana || 0, b.direc.contatosSemana || 0]];
+  const bom = [], aten = [], sug = [];
+  for (const [t, x, y] of m) { if (x > y) bom.push(`${t}: ${x} (semana anterior ${y})`); else if (x < y) aten.push(`${t} caiu: ${x} (semana anterior ${y})`); }
+  if (a.kpi.rescisoes) aten.push(`${a.kpi.rescisoes} rescisão(ões) na semana`);
+  const rad = radarLista(null), urg = rad.filter(x => x.r.grav >= 2).length; if (urg) aten.push(`${urg} lead(s) muito atrasado(s) no Radar`);
+  const pend = aqPendentes().filter(x => dias(String(x.criadoEm).slice(0, 10), fim) >= 1).length; if (pend) aten.push(`${pend} pedido(s) esperando aprovação há mais de 1 dia`);
+  const tAtr = lista('tarefas').filter(t => t.status === 'pendente' && t.data && t.data < fim).length; if (tAtr) aten.push(`${tAtr} tarefa(s) atrasada(s)`);
+  if (a.direc.metaContatos && (a.direc.contatosSemana || 0) < a.direc.metaContatos) sug.push(`Prospecção abaixo da meta (${a.direc.contatosSemana || 0} de ${a.direc.metaContatos}): reserve um bloco diário de ligações para captação.`);
+  if (fl(a, 0) && !fl(a, 1)) sug.push('Entraram leads e ninguém visitou: revise as mensagens de convite para visita em Sequências.');
+  if (fl(a, 1) && !fl(a, 2)) sug.push('Houve visitas sem proposta: ligue para quem visitou e pergunte o que faltou.');
+  if (urg) sug.push('Comece a semana zerando o Radar: primeiro os leads muito atrasados.');
+  if (a.direc.emOferta && a.direc.giro != null && a.direc.giro < 5) sug.push(`Giro da oferta baixo (${String(a.direc.giro).replace('.', ',')}%): revise preço e anúncio dos imóveis parados há mais tempo.`);
+  if (pend) sug.push('Defina um horário fixo do dia para os gestores decidirem a Central de aprovações.');
+  if (!sug.length) sug.push('Mantenha o ritmo: repita o que funcionou e confira o Radar todo dia.');
+  return { ini: a.ini, fim: a.fim, m, bom, aten, sug };
+}
+function revisaoHtml(r) {
+  const lst = (xs, v) => xs.length ? `<ul class="steps">${xs.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : `<p class="empty">${v}</p>`;
+  return `<section class="panel" id="rv-sem"><h2>Revisão da semana · ${fmtData(r.ini)} a ${fmtData(r.fim)}</h2>
+    <div class="tbl"><table class="tight"><thead><tr><th>Indicador</th><th class="r">Esta semana</th><th class="r">Anterior</th></tr></thead><tbody>${r.m.map(([t, x, y]) => `<tr><td>${esc(t)}</td><td class="r num">${x}</td><td class="r num">${y}</td></tr>`).join('')}</tbody></table></div>
+    <div class="grid three"><div><h3>O que funcionou</h3>${lst(r.bom, 'Nenhum indicador subiu.')}</div><div><h3>Pede atenção</h3>${lst(r.aten, 'Nada fora do normal.')}</div><div><h3>Sugestões para a próxima semana</h3>${lst(r.sug, '')}</div></div>
+    <p class="sub">Calculada pelo sistema com os números da semana (regras fixas, sem IA). Use na pauta da reunião semanal.</p></section>`;
+}
+const revisaoTexto = r => `Revisão da semana (${fmtData(r.ini)} a ${fmtData(r.fim)})\nO que funcionou:\n${(r.bom.length ? r.bom : ['nenhum indicador subiu']).map(x => '- ' + x).join('\n')}\nPede atenção:\n${(r.aten.length ? r.aten : ['nada fora do normal']).map(x => '- ' + x).join('\n')}\nSugestões:\n${r.sug.map(x => '- ' + x).join('\n')}`;
+// ---------- Integrações: o que está ligado, o que é manual e o que falta ----------
+function integracoes() {
+  const c = DB.config || {}, nuvem = store.modo === 'nuvem';
+  return [
+    ['Banco de dados do sistema', nuvem ? 'ok' : 'warn', nuvem ? 'Conectado' : 'Só neste navegador', 'Os dados ficam no banco desta página (Claude).', nuvem ? '' : 'Abra a página pelo Claude, na conta da Elora.'],
+    ['Elora AI', amostra ? 'ok' : 'warn', amostra ? 'Conectada' : 'Indisponível nesta abertura', 'Escreve textos, atas e análises. Nunca envia nada sozinha.', amostra ? '' : 'Abra a página pelo Claude e permita a Elora AI.'],
+    ['WhatsApp', c.whatsapp ? 'gold' : 'warn', 'Manual', 'O sistema abre o WhatsApp com o texto aprovado; quem envia é a pessoa. O envio fica registrado.', 'Envio automático: conta na API oficial do WhatsApp Business (Meta), número verificado e as variáveis WHATSAPP_TOKEN e WHATSAPP_PHONE_ID no servidor da plataforma.' + (c.whatsapp ? '' : ' Informe também o WhatsApp comercial em Empresa e jurídico.')],
+    ['E-mail', 'gold', 'Manual', 'O botão de e-mail abre o seu programa de e-mail com o texto pronto.', 'Envio automático: domínio da Elora com e-mail próprio e um serviço de envio (SMTP_HOST, SMTP_USER, SMTP_PASSWORD no servidor).'],
+    ['Agenda (Google ou Outlook)', '', 'Não conectada', 'Tarefas e reuniões ficam na Agenda do sistema.', 'Projeto no Google Cloud ou Microsoft 365 com OAuth (GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET) e a plataforma no ar.'],
+    ['Instagram e Facebook', '', 'Não conectada', 'Publicação manual: o post aprovado é copiado e publicado pela equipe, que marca "publicado".', 'Conta comercial ligada a uma página, app na Meta com permissão de publicação (META_APP_ID, META_APP_SECRET, META_PAGE_TOKEN).'],
+    ['Anúncios pagos (Meta e Google)', '', 'Não conectada', 'O sistema não altera campanhas nem gasta dinheiro. Investimento é lançado à mão em Campanhas.', 'Conta de anúncios e acesso de leitura à API de anúncios (META_ADS_TOKEN). Alteração de campanha só com aprovação.'],
+    ['Formulário do site e portais', '', 'Aguardando a plataforma', 'Leads entram colando a lista em Fontes de captação.', 'Plataforma no ar com o endereço POST /api/v1/captacao/receber/{código} e o domínio da Elora.'],
+    ['Portais (ZAP, Viva Real, OLX)', '', 'Não conectada', 'Anúncio feito no painel de cada portal.', 'Contrato com o portal e o arquivo XML de carga (feed) gerado pela plataforma.'],
+    ['Banco e PIX', c.pixChave ? 'gold' : '', c.pixChave ? 'PIX manual' : 'Não conectado', 'QR Code PIX com a chave da Elora; a baixa do pagamento é feita pela equipe.', 'Conta PJ com API de cobrança (boleto e PIX com baixa automática) e as credenciais do banco parceiro.'],
+  ];
+}
+function viewIntegracoes() {
+  const it = integracoes();
+  return cab('Integrações', 'O que está ligado, o que é feito à mão e o que falta para cada conexão. Nenhuma integração é simulada: o que não está conectado aparece como tal.', '') +
+    `<section class="panel"><h2>Conexões · ${it.filter(x => x[1] === 'ok').length} ligada(s) de ${it.length}</h2><div class="list" id="ig-lista">${it.map(([n, cls, st, hoje, falta]) => `<div class="item"><h3>${esc(n)}</h3><p>${esc(hoje)}</p>${falta ? `<p><b>Para conectar:</b> ${esc(falta)}</p>` : ''}<div class="side-r">${pill(cls, st)}</div></div>`).join('')}</div>
+    <p class="sub">Chaves e senhas nunca ficam nesta página: vão em variáveis de ambiente do servidor da plataforma (arquivo .env.example no repositório).</p></section>`;
+}
+
+// ---------- Mapa da empresa: pessoas e robôs por departamento, com o que cada um está fazendo ----------
+// Tudo vem dos dados do sistema (registro de alterações, leads, automações, aprovações, tarefas agendadas).
+// Robô = função automática do sistema ou tarefa agendada. Nada é inventado: sem registro, aparece "sem registro".
+const ICO_HUMANO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="7" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="currentColor"/></svg>';
+const ICO_ROBO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="2.5" r="1.5" fill="currentColor"/><rect x="4" y="6" width="16" height="13" rx="4" fill="currentColor"/><circle cx="9" cy="12" r="1.8" fill="var(--surface)"/><circle cx="15" cy="12" r="1.8" fill="var(--surface)"/><path d="M9 16h6" stroke="var(--surface)" stroke-width="1.6" stroke-linecap="round"/><path d="M2 11v4M22 11v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const tMs2 = x => { const d = new Date(x); return isNaN(d) ? 0 : d.getTime(); };
+const haQuanto = x => { const ms = tMs2(x); if (!ms) return 'sem registro'; const m = Math.max(0, Math.round((Date.now() - ms) / 60000)); return m < 1 ? 'agora' : m < 60 ? `há ${m} min` : m < 1440 ? `há ${Math.round(m / 60)} h` : `há ${Math.round(m / 1440)} dia(s)`; };
+const donoNome = () => (acessosCfg().find(x => x.pastas === '*') || {}).nome || 'Dono';
+const quemLog = () => estado.perfil === 'corretor' ? (DB.corretores[eu()] || {}).nome || 'Corretor' : (gestorAtual() || {}).nome || (souDono ? donoNome() : '');
+// Departamentos do mapa (visão de negócio) e as pastas de acesso que levam cada gestor até eles.
+const MAPA_DEPTOS = [
+  ['comercial', 'Comercial', 'vender', ['clientes']], ['marketing', 'Marketing', 'divulgar', ['marketing']], ['imoveis', 'Imóveis e captação', 'captar', ['imoveis']],
+  ['operacoes', 'Locação e financeiro', 'receber e repassar', ['operacoes']], ['casamais', 'Elora Casa+', 'servir', ['operacoes']], ['gestao', 'Gestão', 'organizar', []],
+  ['tecnologia', 'Tecnologia', 'conectar', ['configuracoes']], ['diretoria', 'Diretoria', 'decidir', []]];
+function mapaMembros() {
+  const c = DB.config || {}, log = DB.log || [], ms = [], noLog = nome => log.filter(x => x.quem && semAcento(x.quem) === semAcento(nome));
+  const ult = arr => arr.reduce((a, b) => tMs2(b.em) > tMs2(a.em) ? b : a, { em: null, txt: '' });
+  // Pessoas: gestores (Acessos) e corretores.
+  for (const g of acessosCfg()) {
+    const ps = g.pastas === '*' ? MAPA_DEPTOS.map(d => d[0]) : MAPA_DEPTOS.filter(d => d[3].some(p => normPastas(g.pastas).includes(p))).map(d => d[0]);
+    const evs = [...noLog(g.nome).map(x => ({ em: x.q, txt: x.txt })), ...lista('aprovacoes').filter(a => a.decisao && semAcento(a.decisao.nome) === semAcento(g.nome)).map(a => ({ em: a.decisao.em, txt: `${a.status === 'recusado' ? 'Recusou' : 'Aprovou'}: ${a.titulo}` }))];
+    ms.push({ id: 'g:' + g.id, tipo: 'humano', nome: g.nome, papel: g.papel || 'Gestor', deptos: g.pastas === '*' ? ['diretoria', 'gestao'] : ps.length ? ps : ['gestao'], evs, ult: ult(evs), status: null });
+  }
+  for (const k of lista('corretores')) {
+    const ls = lista('leads').filter(l => l.corretorId === k.id), abertos = ls.filter(l => PROB[l.etapa]), atras = radarLista(k.id).length;
+    const evs = [...noLog(k.nome).map(x => ({ em: x.q, txt: x.txt })), ...ls.flatMap(l => (l.hist || []).slice(0, 3).map(h => ({ em: h.em, txt: `${HIST[h.t] || h.t}: ${l.nome}` })))];
+    ms.push({ id: 'k:' + k.id, tipo: 'humano', nome: k.nome, papel: `Corretor(a) ${k.nivel || ''}`.trim(), deptos: ['comercial'], evs, ult: ult(evs), status: `${abertos.length} lead(s) em atendimento${atras ? ` · ${atras} pedindo ação` : ''}` });
+  }
+  // Robôs: funções automáticas do sistema.
+  const ex = lista('autoexec');
+  for (const r of lista('automacoes')) { const e = ex.filter(x => x.regra === r.id).map(x => ({ em: x.em, txt: `${x.leadNome}: ${(x.acoes || []).join(', ')}` }));
+    ms.push({ id: 'a:' + r.id, tipo: 'robo', nome: r.nome, papel: 'Automação', deptos: ['comercial'], evs: e, ult: ult(e), status: r.ativa ? `Ligada · ${+r.execucoes || 0} execução(ões)` : 'Pausada', parado: !r.ativa }); }
+  const rad = radarLista(null), gat = gatilhoFila(null).length + autoMsgFila(null).length, pend = aqPendentes().length;
+  const sem = lista('leads').filter(l => PROB[l.etapa] && !l.corretorId).length;
+  ms.push({ id: 'b:rodizio', tipo: 'robo', nome: 'Rodízio de leads', papel: 'Distribui leads aos corretores', deptos: ['comercial'], evs: [], ult: { em: null }, status: c.rodizioAuto && !c.rodizioPausado ? `Ligado · ${sem} lead(s) sem corretor` : `Desligado · ${sem} lead(s) sem corretor`, parado: !(c.rodizioAuto && !c.rodizioPausado) });
+  ms.push({ id: 'b:radar', tipo: 'robo', nome: 'Radar de leads', papel: 'Vigia prazos de atendimento', deptos: ['comercial'], evs: [], ult: { em: new Date().toISOString() }, status: `${rad.length} lead(s) pedindo ação` });
+  ms.push({ id: 'b:gatilhos', tipo: 'robo', nome: 'Gatilhos por etapa', papel: 'Prepara mensagens do dia', deptos: ['comercial'], evs: [], ult: { em: new Date().toISOString() }, status: `${gat} mensagem(ns) para hoje` });
+  ms.push({ id: 'b:aprov', tipo: 'robo', nome: 'Porteiro de aprovações', papel: 'Segura o que sai da empresa', deptos: ['gestao'], evs: lista('aprovacoes').map(a => ({ em: a.criadoEm, txt: `Pedido: ${a.titulo}` })), ult: ult(lista('aprovacoes').map(a => ({ em: a.criadoEm, txt: a.titulo }))), status: `${pend} pedido(s) aguardando` });
+  const ai = { id: 'b:ai', tipo: 'robo', nome: 'Elora AI', papel: 'Escreve textos, atas e análises', deptos: ['marketing', 'diretoria'], evs: [], ult: { em: null }, status: amostra ? 'Disponível · só escreve, não envia' : 'Indisponível nesta abertura', parado: !amostra };
+  ms.push(ai);
+  const rd = (c.guerra || {}).radarDia; ms.push({ id: 'b:concorrentes', tipo: 'robo', nome: 'Radar de concorrentes e mercado', papel: 'Tarefa agendada · todo dia 8h50', deptos: ['marketing', 'diretoria'], evs: rd && rd.em ? [{ em: rd.em + 'T08:50:00', txt: 'Resumo do mercado gravado' }] : [], ult: { em: rd && rd.em ? rd.em + 'T08:50:00' : null }, status: rd && rd.em ? `Última leitura em ${fmtData(rd.em)}` : 'Sem leitura gravada' });
+  const inov = lista('inovacoes').map(x => ({ em: x.em || x.criadoEm || x.data, txt: x.titulo })).filter(x => x.em);
+  ms.push({ id: 'b:inovacao', tipo: 'robo', nome: 'Agente especial de inovação', papel: 'Tarefa agendada · seg e qui 6h47', deptos: ['tecnologia'], evs: inov, ult: ult(inov), status: `${lista('inovacoes').length} inovação(ões) no radar` });
+  ms.push({ id: 'b:monitor', tipo: 'robo', nome: 'Monitor da operação', papel: 'Tarefa agendada · seg a sex, de hora em hora', deptos: ['gestao'], evs: [], ult: { em: null }, status: 'Só lê e avisa no celular do Rodrigo' });
+  const tks = lista('tickets').filter(t => t.origem === 'monitor'); const tkA = tks.filter(t => t.status !== 'feito');
+  ms.push({ id: 'b:tickets', tipo: 'robo', nome: 'Abridor de tickets', papel: 'Vira ocorrência em ticket do departamento', deptos: ['gestao'], evs: tks.map(t => ({ em: t.abertoEm, txt: t.titulo })), ult: ult(tks.map(t => ({ em: t.abertoEm, txt: t.titulo }))), status: `${tkA.length} ticket(s) automático(s) abertos` });
+  const ig = integracoes(); ms.push({ id: 'b:integ', tipo: 'robo', nome: 'Integrações', papel: 'Conexões com serviços de fora', deptos: ['tecnologia'], evs: [], ult: { em: null }, status: `${ig.filter(x => x[1] === 'ok').length} de ${ig.length} conectadas` });
+  const atras = lista('contratos').filter(x => x.status === 'ativo').length;
+  ms.push({ id: 'b:cobranca', tipo: 'robo', nome: 'Vigia de cobrança e repasse', papel: 'Avisa atrasos e prazos de repasse', deptos: ['operacoes'], evs: [], ult: { em: new Date().toISOString() }, status: `${atras} contrato(s) ativo(s) acompanhados` });
+  const sv = lista('servicos').filter(s => ['pedido', 'orcamento'].includes(s.status)).length;
+  ms.push({ id: 'b:casamais', tipo: 'robo', nome: 'Fila do Casa+', papel: 'Avisa pedido sem orçamento', deptos: ['casamais'], evs: [], ult: { em: new Date().toISOString() }, status: `${sv} pedido(s) em andamento` });
+  const pr = lista('prospects').filter(p => !['captado', 'perdido'].includes(p.etapa)).length;
+  ms.push({ id: 'b:prosp', tipo: 'robo', nome: 'Cadência de captação', papel: 'Monta a fila diária de contatos', deptos: ['imoveis'], evs: [], ult: { em: new Date().toISOString() }, status: `${pr} proprietário(s) em prospecção` });
+  return ms;
+}
+const mapaVivo = m => !m.parado && tMs2(m.ult.em) && Date.now() - tMs2(m.ult.em) < 864e5;
+function mapaCartao(m) {
+  const vivo = mapaVivo(m), cls = m.tipo === 'robo' ? 'mp-bot' : 'mp-hum';
+  return `<button type="button" class="mp-m ${cls}${m.parado ? ' off' : ''}" data-act="mapa-membro" data-id="${esc(m.id)}" title="${m.tipo === 'robo' ? 'Robô' : 'Pessoa'}: ${esc(m.nome)}">
+    <span class="mp-ic">${m.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}<i class="${vivo ? 'on' : m.parado ? 'pa' : ''}"></i></span>
+    <span class="mp-tx"><b>${esc(m.nome)}</b><small>${esc(m.status || m.papel)}</small><small>${m.ult.txt ? esc(String(m.ult.txt).slice(0, 70)) + ' · ' : ''}${haQuanto(m.ult.em)}</small></span></button>`;
+}
+function viewMapa() {
+  const ms = mapaMembros(), f = estado.mapaF || 'todos', vis = ms.filter(m => f === 'todos' || m.tipo === f), hum = ms.filter(m => m.tipo === 'humano').length, rob = ms.length - hum;
+  const hoje = REF, leadsHoje = lista('leads').filter(l => l.criadoEm === hoje).length, decis = lista('aprovacoes').filter(a => a.decisao && String(a.decisao.em).slice(0, 10) === hoje).length;
+  const tHoje = lista('tarefas').filter(t => t.status === 'pendente' && t.data === hoje).length, pend = aqPendentes(), msgs = gatilhoFila(null).length + autoMsgFila(null).length;
+  const feed = ms.flatMap(m => m.evs.filter(e => tMs2(e.em)).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 3).map(e => ({ ...e, m }))).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 14);
+  const rotinas = [['Varredura das automações', 'a cada 5 min'], ['Monitor da operação', '8h32 às 18h32'], ['Radar de concorrentes', '8h50'], ['Agente de inovação', 'seg e qui 6h47'], ['Radar e gatilhos', 'ao abrir o sistema']];
+  return cab('Mapa da empresa', 'Quem é quem, onde trabalha e o que está fazendo. Pessoa aparece com o bonequinho, robô com o mini bot. Atualiza sozinho.', `<span class="pill ok" id="mp-vivo">● ao vivo · ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>`) +
+  `<div class="mp-topo"><section class="mp-eq"><h2>Equipe Elora</h2><p><b>${hum}</b> pessoa(s) · <b>${rob}</b> robô(s) · ${MAPA_DEPTOS.length} departamentos</p>
+      <div class="chips" role="group" aria-label="Mostrar">${[['todos', 'Todos'], ['humano', 'Pessoas'], ['robo', 'Robôs']].map(([k, t]) => `<button type="button" data-act="mapa-f" data-f="${k}" aria-pressed="${f === k}">${t}</button>`).join('')}</div>
+      <p class="mp-leg"><span class="mp-hum">${ICO_HUMANO} Pessoa</span><span class="mp-bot">${ICO_ROBO} Robô</span><span><i class="on"></i> ativo nas últimas 24 h</span><span><i class="pa"></i> pausado</span></p></section>
+    <section class="mp-cerebro"><h2>Segundo cérebro · hoje</h2><div><span>leads novos <b>${leadsHoje}</b></span><span>decisões <b>${decis}</b></span><span>tarefas <b>${tHoje}</b></span><span>mensagens a enviar <b>${msgs}</b></span><span>aguardando aprovação <b>${pend.length}</b></span><span>leads pedindo ação <b>${radarLista(null).length}</b></span></div></section></div>
+  <div class="mp-deptos" id="mp-deptos">${MAPA_DEPTOS.map(([id, nome, verbo], i) => { const xs = vis.filter(m => m.deptos.includes(id)); return `<section class="mp-d"><header><span>${String(i + 1).padStart(2, '0')}</span><h3>${esc(nome)}</h3><em>${esc(verbo)}</em></header>
+      ${xs.length ? xs.map(mapaCartao).join('') : '<p class="empty">Ninguém neste filtro.</p>'}<footer>${xs.filter(m => m.tipo === 'humano').length} pessoa(s) · ${xs.filter(m => m.tipo === 'robo').length} robô(s)</footer></section>`; }).join('')}</div>
+  <div class="grid two"><section class="panel"><h2>Rotinas dos robôs</h2><div class="mp-rot">${rotinas.map(([t, h]) => `<div><span class="mp-bot">${ICO_ROBO}</span><b>${esc(t)}</b><small>${esc(h)}</small></div>`).join('')}</div></section>
+    <section class="panel"><h2>Para aprovar · ${pend.length}</h2>${pend.length ? `<div class="list">${pend.slice(0, 5).map(a => `<div class="item"><h3>${esc(a.titulo)}</h3><p>${esc(a.origem || '')} · ${haQuanto(a.criadoEm)}</p>${ehGestor ? `<div class="acts">${bt('aq-abrir', 'Revisar e decidir', { id: a.id }, 'elora')}</div>` : ''}</div>`).join('')}</div>` : vazio('Nada esperando decisão.')}</section></div>
+  <section class="panel"><h2>Acontecendo agora</h2>${feed.length ? `<div class="mp-feed" id="mp-feed">${feed.map(e => `<div><span class="${e.m.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}">${e.m.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}</span><p><b>${esc(e.m.nome)}</b> ${esc(String(e.txt || '').slice(0, 140))}</p><time>${haQuanto(e.em)}</time></div>`).join('')}</div>` : vazio('Ainda não há atividade registrada.')}
+    <p class="sub">Ações de pessoas aparecem pelo nome a partir desta versão (o registro passou a guardar quem fez). Antes disso, o registro guardava só o perfil.</p></section>`;
+}
+function abrirMembro(id) {
+  const m = mapaMembros().find(x => x.id === id); if (!m) return;
+  const evs = m.evs.filter(e => tMs2(e.em)).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 20);
+  const deps = m.deptos.map(d => (MAPA_DEPTOS.find(x => x[0] === d) || [, d])[1]).join(', ');
+  abrirDlg(`<h2><span class="${m.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}" style="vertical-align:-3px">${m.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}</span> ${esc(m.nome)}</h2>
+    <p class="sub">${m.tipo === 'robo' ? 'Robô' : 'Pessoa'} · ${esc(m.papel)} · ${esc(deps)}</p>${m.status ? `<p>${esc(m.status)}</p>` : ''}
+    <h3 class="h3">Rastro recente</h3>${evs.length ? `<div class="tl">${evs.map(e => `<div><span>${fmtDataHora(e.em)}</span><span>${esc(String(e.txt || '').slice(0, 200))}</span></div>`).join('')}</div>` : `<p class="empty">Sem registro de atividade${m.tipo === 'robo' ? ' gravado nesta base' : ' com o nome desta pessoa'}.</p>`}
+    <div class="acts">${bt('fechar', 'Fechar')}</div>`);
+}
+// Atualiza o mapa a cada 30 s enquanto ele está na tela (sem atrapalhar quem está digitando ou com janela aberta).
+setInterval(() => { try { if (estado.view === 'mapa' && !document.querySelector('dialog[open]') && !(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) render(); } catch (e) {} }, 30000);
+
 // ---------- Chat interno ----------
 const CHAT_CANAIS = () => [['geral', 'Geral'], ...DEPTOS.map(d => [semAcento(d).replace(/[^a-z]/g, ''), nd(d)])];
 const chatNome = () => estado.perfil === 'corretor' && DB.corretores[eu()] ? DB.corretores[eu()].nome : (prefLer('chatNome') || '');
@@ -5188,7 +5455,7 @@ function pautaSemana(ps) {
 function viewReunioes() {
   const ps = painelSemana(), rs = lista('reunioes').sort((a, b) => String(b.data).localeCompare(String(a.data)));
   return cab('Reuniões', 'Reunião semanal com os números que importam (método do e-book "De 100 a 1000 locações"), ata escrita pela Elora AI e tarefas com responsável e prazo.', ehGestor ? bt('re-nova', 'Agendar reunião', {}, '') : '') + faixaRotativa('fx-reunioes', 'Reuniões', itensFaixaReunioes()) + `
-  <h2 class="h-sec">Painel da semana · ${fmtData(ps.ini)} a ${fmtData(ps.fim)}</h2>${painelSemanaHtml(ps)}
+  <h2 class="h-sec">Painel da semana · ${fmtData(ps.ini)} a ${fmtData(ps.fim)}</h2>${painelSemanaHtml(ps)}${revisaoHtml(revisaoSemanal())}
   <section class="panel"><h2>Reuniões · ${rs.length}</h2>${rs.length ? `<div class="list">${rs.slice(0, 20).map(r => `<div class="item"><h3>${esc(r.titulo || 'Reunião semanal')} · ${fmtData(r.data)}${r.hora ? ' às ' + esc(r.hora) : ''} ${r.data >= REF && !r.ata ? pill('gold', 'Agendada · ' + quandoRe(r)) : ''}</h3><p>${esc(r.participantes || 'Participantes não informados')} · ${(r.acoes || []).length} ação(ões)${r.ata ? ' · ata pronta' : ''}</p><div class="acts">${bt('re-abrir', 'Abrir', { id: r.id })}</div></div>`).join('')}</div>` : vazio('Nenhuma reunião registrada. Comece pela reunião semanal: a pauta já vem montada com os números.')}</section>`;
 }
 function abrirReuniao(id) {
@@ -10270,7 +10537,7 @@ for (const p of BV_PERFIS) { const ini = AX_VIEWS[p].inicio, mais = AX_VIEWS[p].
   AX_VIEWS[p].inicio = feed => { const h = ini(feed), i = h.indexOf('</section>'); return i < 0 ? bvEntrada() + h : h.slice(0, i + 10) + bvEntrada() + h.slice(i + 10); };
   AX_VIEWS[p].mais = feed => mais(feed).replace('<div class="ax-lista">', `<div class="ax-lista"><button type="button" data-act="app-aba" data-aba="buscar">${ic('busca', 22, 'i')}<b>Buscar imóveis</b><small>Por voz ou por escrito, para comprar ou alugar</small>${ic('seta', 18, 's')}</button>`); }
 
-const RENDER = { quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), radar: () => viewRadar(false), 'radar-c': () => viewRadar(true), fontes: () => viewFontes(), automacoes: () => viewAutomacoes(), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
+const RENDER = { mapa: () => viewMapa(), meudia: () => viewMeuDia(), aprovacoes: () => viewAprovacoes(), integracoes: () => viewIntegracoes(), quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), radar: () => viewRadar(false), 'radar-c': () => viewRadar(true), fontes: () => viewFontes(), automacoes: () => viewAutomacoes(), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
   agenda: () => viewAgenda(false), 'agenda-c': () => viewAgenda(true), ideias: () => viewIdeias(false), 'ideias-c': () => viewIdeias(true), inicio: viewInicio, carteira: viewCarteira, extrato: viewExtrato, ia: () => cab('Elora AI', 'Lê a sua carteira, o extrato e as pendências.') + painelIA('corretor'), proprietario: viewProprietario, inquilino: viewInquilino };
 // ---------- Elora Casa+: a venda ou a locação abre uma jornada de serviços ----------
 // O cliente escolhe profissionais parceiros no app; a Elora recebe uma comissão do parceiro quando o serviço é feito
@@ -11468,12 +11735,12 @@ Object.assign(ACOES, {
   'radar-f': d => { estado.radarF = d.v || ''; render(); }, 'radar-k': d => { estado.radarK = d.v || ''; render(); },
   'ga-feito': d => { marcarGatilho(d.id, d.ch); registrarAtendimento(d.id, 'mensagem', null, 'gatilho por etapa'); toast('Mensagem marcada como enviada.'); }, 'ga-pular': d => { marcarGatilho(d.id, d.ch); toast('Gatilho pulado.'); },
   'ga-edit': () => { estado.gaEdit = !estado.gaEdit; render(); }, 'ga-padrao': () => { if (!ehGestor) return; salvarConfig({ gatilhos: [] }); estado.gaEdit = false; toast('Gatilhos de volta ao padrão.'); },
-  'am-feito': d => { marcarAutoMsg(d.id, d.k); registrarAtendimento(d.id, 'mensagem', null, 'sugerida pela automação'); toast('Mensagem marcada como enviada.'); }, 'am-pular': d => { marcarAutoMsg(d.id, d.k); toast('Sugestão descartada.'); },
+  'am-feito': d => { marcarAutoMsg(d.id, d.k, 'enviado', 'marcado como enviado por quem atende'); registrarAtendimento(d.id, 'mensagem', null, 'sugerida pela automação'); toast('Mensagem marcada como enviada.'); }, 'am-pular': d => { marcarAutoMsg(d.id, d.k, 'descartado'); toast('Sugestão descartada.'); },
   'fonte-nova': () => abrirFonte(null), 'fonte-editar': d => abrirFonte(d.id), 'fonte-endereco': d => abrirEnderecoFonte(d.id),
   'fonte-colar': d => { if (!estado.fonteColar || estado.fonteColar.id !== d.id) estado.fonteColar = { id: d.id, txt: '', itens: [] }; abrirColarFonte(d.id); },
   'fonte-ler': d => { const t = ($('fo-colar') || {}).value || ''; const its = lerColados(t).slice(0, 200); estado.fonteColar = { id: d.id, txt: t, itens: its }; if (!its.length) toast('Não encontrei leads no texto. Confira o formato.'); abrirColarFonte(d.id); },
   'fonte-importar': d => importarDaFonte(d.id),
-  'au-tab': d => { estado.auTab = d.tab; render(); }, 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
+  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-f': d => { estado.mapaF = d.f; render(); }, 'mapa-membro': d => abrirMembro(d.id), 'aq-tab': d => { estado.aqTab = d.tab; render(); }, 'aq-abrir': d => abrirAprovacao(d.id), 'aq-aprovar': d => aqDecidir(d.id, true), 'aq-recusar': d => aqDecidir(d.id, false), 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
   'au-ligar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; store.salvar('automacoes', d.id, { ...r, ativa: !r.ativa }); registrar('Comercial', `Automação ${r.ativa ? 'pausada' : 'ligada'}: ${r.nome}.`); toast(r.ativa ? 'Regra pausada.' : 'Regra ligada.'); if (!r.ativa) setTimeout(() => { auVarredura().catch(() => {}); }, 300); },
   'au-apagar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; if (estado.confirmar !== 'au' + d.id) { estado.confirmar = 'au' + d.id; return render(); } estado.confirmar = null; store.apagar('automacoes', d.id); registrar('Comercial', `Automação apagada: ${r.nome}.`); toast('Regra apagada.'); },
   'gz-tab': d => { estado.gzTab = d.tab; estado.confirmar = null; render(); }, 'gz-cat': d => { estado.gzCat = d.v || ''; render(); },
@@ -11538,7 +11805,7 @@ Object.assign(ACOES, {
   'fl-pausa': d => { marcarFlow(d.id, null, true); toast('Sequência pausada para este lead.'); if ($('dlg').open) abrirAtendimento(d.id); }, 'fl-retomar': d => { marcarFlow(d.id, null, false); abrirAtendimento(d.id); },
   'fl-edit': () => { estado.flEdit = !estado.flEdit; render(); }, 'fl-padrao': () => { if (!ehGestor) return; salvarConfig({ flows: {} }); estado.flEdit = false; toast('Sequências de volta ao padrão.'); },
   'chat-canal': d => { estado.chatCanal = d.v; render(); }, 'chat-nome': () => { prefGravar('chatNome', ''); render(); },
-  're-nova': () => { if (!ehGestor) return; const id = 'RE-' + Date.now().toString(36), ps = painelSemana(); store.salvar('reunioes', id, { data: REF, titulo: 'Reunião semanal', pauta: pautaSemana(ps), participantes: Object.values((DB.config || {}).heads || {}).filter((v, i, a) => a.indexOf(v) === i).join(', '), notas: '', acoes: [] }); abrirReuniao(id); },
+  're-nova': () => { if (!ehGestor) return; const id = 'RE-' + Date.now().toString(36), ps = painelSemana(); store.salvar('reunioes', id, { data: REF, titulo: 'Reunião semanal', pauta: pautaSemana(ps) + '\n\n' + revisaoTexto(revisaoSemanal()), participantes: Object.values((DB.config || {}).heads || {}).filter((v, i, a) => a.indexOf(v) === i).join(', '), notas: '', acoes: [] }); abrirReuniao(id); },
   're-abrir': d => abrirReuniao(d.id), 're-ia': d => ataReuniao(d.id),
   're-tarefa': d => { const r = DB.reunioes[d.id], a = r && (r.acoes || [])[+d.i]; if (!a) return; const k = lista('corretores').find(x => semAcento(x.nome).includes(semAcento(a.quem || '').split(' ')[0] || '#')), tid = novoId('tarefas');
     store.salvar('tarefas', tid, { titulo: a.txt, tipo: 'reuniao', data: a.prazo || somaDias(REF, 7), status: 'pendente', nota: `Ação da reunião de ${fmtData(r.data)}${a.quem ? '. Responsável: ' + a.quem : ''}`, ...(k ? { corretorId: k.id } : {}) });
@@ -11770,7 +12037,7 @@ const MK_PUBLICOS = ['Proprietários', 'Locatários', 'Compradores', 'Empresas e
 const MK_ST = { ideia: ['', 'Ideia'], producao: ['gold', 'Em produção'], agendado: ['warn', 'Agendado'], publicado: ['ok', 'Publicado'] };
 const MK_TEMAS = ['Seguro-fiança: alugar sem fiador', 'Recebimento do imóvel (24 itens)', 'Programa de manutenção e Selo Elora', 'App Elora: pagar por PIX ou cartão', 'Reajuste anual do aluguel', 'Documentos para alugar', 'Casa própria com renda até R$ 3.500', 'Mudança Plug & Play (luz, água, internet)', 'Quanto rende um imóvel alugado', 'Erros que deixam o imóvel vazio', 'Vistoria de entrada e de saída', 'IPTU e condomínio: quem paga o quê'];
 const MK_CHECK = [
-  ['cnpj', 'CNPJ aberto', 'Base'], ['creci', 'Número do CRECI-J informado no sistema (inscrição em andamento)', 'Base'], ['banco', 'Conta bancária da empresa', 'Base'], ['dominio', 'Domínio e e-mail da Elora', 'Base'],
+  ['cnpj', 'CNPJ aberto', 'Base'], ['creci', 'Número do CRECI-J informado no sistema', 'Base'], ['banco', 'Conta bancária da empresa', 'Base'], ['dominio', 'Domínio e e-mail da Elora', 'Base'],
   ['marca', 'Kit de marca: logo, cores, modelos de post', 'Base'], ['fotos', 'Fotos profissionais da equipe', 'Base'], ['privacidade', 'Política de privacidade no site (LGPD)', 'Base'],
   ['gmb', 'Perfil da Empresa no Google criado', 'Google'], ['gmbv', 'Perfil no Google verificado, com fotos, horário e serviços', 'Google'], ['gads', 'Conta no Google Ads', 'Google'],
   ['ig', 'Instagram criado, bio com CRECI-J e link do WhatsApp', 'Redes'], ['meta', 'Gerenciador de Negócios da Meta e pixel no site', 'Redes'], ['estoque', '15 posts prontos em estoque', 'Redes'],
@@ -11782,12 +12049,12 @@ const MK_PLANO = [
   ['App Elora: pagar o aluguel em 10 segundos', 'Reels', 'Locatários'], ['Bastidores: quem cuida do seu imóvel', 'Post', 'Geral'], ['Imóvel com histórico: programa de manutenção', 'Post', 'Proprietários'],
   ['Imóvel da semana', 'Post', 'Locatários'], ['Casa própria com renda até R$ 3.500', 'Carrossel', 'Compradores'], ['Mudança Plug & Play', 'Post', 'Geral'],
   ['5 erros que deixam o imóvel vazio', 'Carrossel', 'Proprietários'], ['Como funciona o reajuste anual', 'Post', 'Locatários'], ['Tem imóvel para alugar? Avaliação sem custo', 'Anúncio', 'Proprietários']];
-const MK_REGRAS = 'Regras da Elora para comunicação: tom profissional, persuasivo e humano, em português do Brasil; não invente dados, medidas, preços nem vizinhança; não cite nem compare concorrentes; não relacione imóveis a aviação; não use superlativos vazios ("imperdível", "maravilhoso"); não prometa aprovação de crédito; nenhuma taxa para o locatário além do aluguel e encargos legais; serviço de parceiro é oferta, nunca condição; a garantia de locação da Elora é o seguro-fiança. Não escreva número de CRECI, telefone nem nome de corretor: o sistema acrescenta o rodapé.';
+const MK_REGRAS = 'Regras da Elora para comunicação: tom profissional, persuasivo e humano, em português do Brasil; não invente dados, medidas, preços nem vizinhança; não cite nem compare concorrentes; não relacione imóveis a aviação; não use superlativos vazios ("imperdível", "maravilhoso"); a garantia de locação da Elora é o seguro-fiança. Não escreva número de CRECI, telefone nem nome de corretor: o sistema acrescenta o rodapé.';
 const mkCfg = () => ({ checklist: {}, metas: {}, hist: [], ...((DB.config || {}).mkt || {}) });
 const mkMetas = () => ({ ...MK_METAS_PADRAO, ...(mkCfg().metas || {}) });
 const mkUltimo = () => { const h = mkCfg().hist || []; return h.length ? h[h.length - 1] : {}; };
 const salvarMk = patch => salvarConfig({ mkt: { ...mkCfg(), ...patch } });
-const mkRodape = () => `\n\n${EMPRESA} · ${DB.config.creciJ ? 'CRECI ' + DB.config.creciJ : 'CRECI-J a informar'}`;
+const mkRodape = () => `\n\n${EMPRESA}${DB.config.creciJ ? ' · CRECI ' + DB.config.creciJ : ''}`;
 const mkCreciOk = () => !!String(DB.config.creciJ || '').trim();
 const mkCheckFeito = k => k === 'creci' ? mkCreciOk() : k === 'estoque' ? lista('posts').filter(p => p.status !== 'ideia').length >= 15 : !!(mkCfg().checklist || {})[k];
 function mkNumeros() {
@@ -11802,12 +12069,12 @@ function mkNumeros() {
 const mkBarra = (v, meta, inverso) => { if (v == null || !meta) return ''; const r = inverso ? (v <= meta ? 1 : meta / v) : Math.min(1, v / meta), c = r >= 1 ? 'var(--ok, #2e7d4f)' : r >= .5 ? 'var(--gold, #b8954a)' : 'var(--bad, #b3261e)';
   return `<span style="display:block;height:6px;border-radius:3px;background:rgba(0,0,0,.08);margin-top:6px;padding:0;border:0" role="img" aria-label="${Math.round(r * 100)}% da meta"><span style="display:block;height:6px;border-radius:3px;width:${Math.max(2, Math.round(r * 100))}%;background:${c}"></span></span>`; };
 const mkPill = s => pill((MK_ST[s] || MK_ST.ideia)[0], (MK_ST[s] || MK_ST.ideia)[1]);
-const mkTrava = () => mkCreciOk() ? '' : `<section class="panel" style="border-left:4px solid var(--gold, #b8954a)"><h2>CRECI-J em andamento: aguardando o número</h2><p>Prepare tudo agora: calendário, peças, campanhas e listas. As peças da Elora AI já saem com o campo do CRECI-J no rodapé. No dia em que o número chegar, informe-o em Empresa e jurídico: ele entra em todas as peças e os anúncios podem ser marcados como publicados (Lei 6.530/78, art. 20, IV).</p><div class="acts">${bt('ir', 'Informar o número do CRECI-J', { view: 'juridico' }, '')}</div></section>`;
+const mkTrava = () => '';
 
 function viewMarketing() {
   const t = ['calendario', 'estudio', 'presenca'].includes(estado.mkTab) ? estado.mkTab : 'painel';
   return cab('Marketing', 'Plano, calendário de conteúdo, peças com a Elora AI e presença digital da Elora.', bt('mk-novo', 'Novo post', {}, '')) +
-    abas('mk-tab', t, [['painel', 'Visão geral'], ['calendario', 'Calendário'], ['estudio', 'Estúdio Elora AI'], ['presenca', 'Presença e metas']]) + mkTrava() +
+    abas('mk-tab', t, [['painel', 'Visão geral'], ['calendario', 'Calendário'], ['estudio', 'Estúdio Elora AI'], ['presenca', 'Presença e metas']]) +
     ({ painel: mkPainel, calendario: mkCalendario, estudio: mkEstudio, presenca: mkPresenca }[t])();
 }
 function mkPainel() {
@@ -11837,7 +12104,7 @@ function mkItem(p) {
   const im = p.imovelId && DB.imoveis[p.imovelId], cp = p.campanhaId && DB.campanhas[p.campanhaId];
   return `<div class="item"><h3>${esc(p.tema || 'Sem tema')}</h3><p>${fmtData(p.data)} · ${esc(p.canal || '—')} · ${esc(p.formato || '—')} · ${esc(p.publico || 'Geral')}${im ? ' · ' + esc(im.id) : ''}${cp ? ' · campanha ' + esc(cp.titulo) : ''}</p>
     ${p.resultado && (p.resultado.alcance || p.resultado.leads) ? `<p class="sub">Alcance ${p.resultado.alcance || 0} · interações ${p.resultado.interacoes || 0} · leads ${p.resultado.leads || 0}</p>` : ''}
-    <div class="acts">${bt('mk-editar', 'Abrir', { id: p.id })}${p.status !== 'publicado' ? bt('mk-pub', 'Marcar publicado', { id: p.id }, '') : ''}${p.texto ? bt('mk-copiar', 'Copiar texto', { id: p.id }) : ''}</div><div class="side-r">${mkPill(p.status)}${p.formato === 'Anúncio' && !mkCreciOk() ? pill('gold', 'Aguarda nº do CRECI-J') : ''}</div></div>`;
+    <div class="acts">${bt('mk-editar', 'Abrir', { id: p.id })}${p.status !== 'publicado' ? bt('mk-pub', p.aprovacao ? 'Marcar publicado' : (aqLista('pendente').some(a => a.ref && a.ref.id === p.id) ? 'Aguardando aprovação' : 'Pedir aprovação'), { id: p.id }, '') : ''}${p.texto ? bt('mk-copiar', 'Copiar texto', { id: p.id }) : ''}</div><div class="side-r">${mkPill(p.status)}</div></div>`;
 }
 function mkCalendario() {
   const m = estado.mkMes || mesRef(), ps = lista('posts').filter(p => String(p.data).slice(0, 7) === m).sort((a, b) => a.data < b.data ? -1 : a.data > b.data ? 1 : 0);
@@ -11853,9 +12120,9 @@ function mkCalendario() {
 }
 function abrirPost(id, pre = {}) {
   const p = id ? DB.posts[id] : { data: REF, canal: 'Instagram', formato: 'Post', publico: 'Geral', status: 'ideia', ...pre }; if (id && !p) return; const r = p.resultado || {};
-  const ims = lista('imoveis').filter(i => i.autorizacaoEm && i.vendaStatus !== 'vendido').sort((a, b) => a.id < b.id ? -1 : 1), cps = lista('campanhas');
+  const ims = lista('imoveis').filter(i => i.vendaStatus !== 'vendido').sort((a, b) => a.id < b.id ? -1 : 1), cps = lista('campanhas');
   const sel = (idc, ops, v) => `<select id="${idc}">${ops.map(o => `<option${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
-  abrirDlg(`<h2>${id ? 'Post' : 'Novo post'}</h2><p class="sub">Planeje, escreva e registre o resultado. Toda peça publicada leva o CRECI-J da Elora.</p>
+  abrirDlg(`<h2>${id ? 'Post' : 'Novo post'}</h2><p class="sub">Planeje, escreva e registre o resultado. O CRECI-J entra no rodapé dos textos da Elora AI.</p>
     <form id="frm-mk-post" data-id="${esc(id || '')}"><div class="fgrid">
       <div class="f"><label for="mp-data">Data *</label><input id="mp-data" type="date" required value="${esc(p.data || REF)}"></div>
       <div class="f"><label for="mp-st">Situação</label><select id="mp-st">${Object.entries(MK_ST).map(([k, v]) => `<option value="${k}"${k === (p.status || 'ideia') ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></div>
@@ -11871,22 +12138,21 @@ function abrirPost(id, pre = {}) {
         <div class="f"><label for="mp-alc">Alcance</label><input id="mp-alc" type="number" min="0" step="1" value="${r.alcance ?? ''}"></div>
         <div class="f"><label for="mp-int">Interações</label><input id="mp-int" type="number" min="0" step="1" value="${r.interacoes ?? ''}"></div>
         <div class="f"><label for="mp-lds">Leads gerados</label><input id="mp-lds" type="number" min="0" step="1" value="${r.leads ?? ''}"></div></div></fieldset>
-      <p class="sub">Anúncio de imóvel só com autorização escrita do proprietário (a lista mostra só esses). Anúncio só vai a "Publicado" com o CRECI-J informado.</p>
       <div class="acts" style="margin-top:14px">${id ? bt('mk-del', estado.confirmar === 'mk' + id ? 'Confirmar: apagar' : 'Apagar', { id }, 'danger') : ''}${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Salvar</button></div></form>`, true);
 }
 function salvarPost(f) {
   const v = x => ($(x) ? $(x).value.trim() : ''), id = f.dataset.id || gzId('PO'), p0 = DB.posts[id] || {}, n = x => { const k = parseInt(v(x), 10); return k >= 0 ? k : null; };
   if (!v('mp-tema') || !/^\d{4}-\d{2}-\d{2}$/.test(v('mp-data'))) return toast('Informe a data e o tema.');
   const st = MK_ST[v('mp-st')] ? v('mp-st') : 'ideia', fmt = MK_FORMATOS.includes(v('mp-fmt')) ? v('mp-fmt') : 'Post';
-  if (st === 'publicado' && fmt === 'Anúncio' && !mkCreciOk()) return toast('Anúncio aguardando o número do CRECI-J: informe-o em Empresa e jurídico e publique (Lei 6.530/78, art. 20, IV).');
-  const im = v('mp-im'); if (im && !(DB.imoveis[im] || {}).autorizacaoEm) return toast('Imóvel sem autorização escrita do proprietário não pode ser divulgado.');
+  if (st === 'publicado' && p0.status !== 'publicado' && !p0.aprovacao) return toast('Antes de publicar, peça a aprovação: use "Pedir aprovação" no calendário.');
+  const im = v('mp-im');
   const o = { ...p0, id, data: v('mp-data'), status: st, canal: v('mp-canal'), formato: fmt, publico: v('mp-pub'), imovelId: im || null, campanhaId: v('mp-cp') || null, tema: v('mp-tema').slice(0, 120), texto: v('mp-txt').slice(0, 3000),
     resultado: { alcance: n('mp-alc'), interacoes: n('mp-int'), leads: n('mp-lds') }, criadoEm: p0.criadoEm || REF, ...(st === 'publicado' && p0.status !== 'publicado' ? { publicadoEm: REF } : {}) };
-  store.salvar('posts', id, o); registrar('Comercial', `Marketing: ${p0.tema ? 'post atualizado' : 'post planejado'} "${o.tema}" (${o.canal}, ${fmtData(o.data)}, ${MK_ST[st][1].toLowerCase()}).`); fecharDlg(); toast('Post salvo.');
+  if (o.aprovacao && p0.status !== 'publicado' && (o.texto !== (p0.texto || '') || o.tema !== (p0.tema || ''))) delete o.aprovacao; // texto mudou: precisa de nova aprovação
+  store.salvar('posts', id, o); if (st === 'publicado' && p0.status !== 'publicado' && p0.aprovacao) aqEnviado(p0.aprovacao.id, 'publicado pela equipe e marcado no sistema').catch(() => {}); registrar('Comercial', `Marketing: ${p0.tema ? 'post atualizado' : 'post planejado'} "${o.tema}" (${o.canal}, ${fmtData(o.data)}, ${MK_ST[st][1].toLowerCase()}).`); fecharDlg(); toast('Post salvo.');
 }
 function mkPublicar(id) {
-  const p = DB.posts[id]; if (!p) return; if (p.formato === 'Anúncio' && !mkCreciOk()) return toast('Anúncio aguardando o número do CRECI-J: informe-o em Empresa e jurídico e publique (Lei 6.530/78, art. 20, IV).');
-  if (!mkCreciOk()) toast('Lembrete: até o número do CRECI-J chegar, publicação só no perfil pessoal de corretor com CRECI-F.');
+  const p = DB.posts[id]; if (!p) return;
   store.salvar('posts', id, { ...p, status: 'publicado', publicadoEm: REF }); registrar('Comercial', `Marketing: publicado "${p.tema}" (${p.canal}).`);
 }
 function mkCarregarPlano() {
@@ -11907,24 +12173,24 @@ async function mkIaPost() {
 }
 async function mkSemanaIA() {
   if (!amostra) return semIA(); toast('A Elora AI está montando a semana…');
-  const oferta = lista('imoveis').filter(i => i.autorizacaoEm && i.vendaStatus !== 'vendido' && (paraLocacao(i) ? !contratoAtivoDo(i.id) : aVenda(i))).slice(0, 12).map(i => ({ codigo: i.id, descricao: i.descricao, local: i.local }));
+  const oferta = lista('imoveis').filter(i => i.vendaStatus !== 'vendido' && (paraLocacao(i) ? !contratoAtivoDo(i.id) : aVenda(i))).slice(0, 12).map(i => ({ codigo: i.id, descricao: i.descricao, local: i.local }));
   const procura = Object.entries(lista('leads').filter(l => PROB[l.etapa]).reduce((m, l) => { const k = (l.regiao || '').split(',')[0].trim(); if (k) m[k] = (m[k] || 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]).slice(0, 5);
   const ja = lista('posts').filter(p => p.data >= diaMais(REF, -30)).map(p => p.tema).slice(-20);
   try {
-    const r = await amostra.json(`${MK_REGRAS}\nMonte o calendário de conteúdo dos próximos 7 dias da ${EMPRESA}, começando em ${REF}, com 4 a 5 peças. Prioridade: captar proprietários; depois locatários e compradores. Equilibre educativo, prova de método (recebimento, manutenção, app), imóvel real e chamada direta. Não repita estes temas recentes: ${JSON.stringify(ja)}. Imóveis autorizados para divulgar: ${JSON.stringify(oferta)}. Bairros mais procurados pelos leads: ${JSON.stringify(procura)}.
+    const r = await amostra.json(`${MK_REGRAS}\nMonte o calendário de conteúdo dos próximos 7 dias da ${EMPRESA}, começando em ${REF}, com 4 a 5 peças. Prioridade: captar proprietários; depois locatários e compradores. Equilibre educativo, prova de método (recebimento, manutenção, app), imóvel real e chamada direta. Não repita estes temas recentes: ${JSON.stringify(ja)}. Imóveis em oferta: ${JSON.stringify(oferta)}. Bairros mais procurados pelos leads: ${JSON.stringify(procura)}.
 Responda só com JSON: {"posts":[{"data":"AAAA-MM-DD","canal":"${MK_CANAIS.join('|')}","formato":"${MK_FORMATOS.join('|')}","publico":"${MK_PUBLICOS.join('|')}","tema":"até 90 caracteres","imovel":"código ou vazio","texto":"texto da arte e legenda, até 600 caracteres"}]}`, { cache: false, modelTier: 'default' });
     const xs = (r && Array.isArray(r.posts) ? r.posts : []).filter(x => x && /^\d{4}-\d{2}-\d{2}$/.test(x.data) && x.tema).slice(0, 7); if (!xs.length) throw { code: 'invalid_json' };
-    xs.forEach(x => { const id = gzId('PO'), im = x.imovel && DB.imoveis[x.imovel] && DB.imoveis[x.imovel].autorizacaoEm ? x.imovel : null;
+    xs.forEach(x => { const id = gzId('PO'), im = x.imovel && DB.imoveis[x.imovel] ? x.imovel : null;
       store.salvar('posts', id, { id, data: x.data < REF ? REF : x.data, status: 'ideia', canal: MK_CANAIS.includes(x.canal) ? x.canal : 'Instagram', formato: MK_FORMATOS.includes(x.formato) ? x.formato : 'Post', publico: MK_PUBLICOS.includes(x.publico) ? x.publico : 'Geral',
         tema: String(x.tema).slice(0, 120), texto: (String(x.texto || '').slice(0, 2600) + mkRodape()), imovelId: im, campanhaId: null, resultado: {}, criadoEm: REF, ia: true }); });
     registrar('Comercial', `Marketing: a Elora AI sugeriu ${xs.length} posts para a semana (gravados como ideia).`); estado.mkTab = 'calendario'; estado.mkMes = xs[0].data.slice(0, 7); render(); toast(`${xs.length} posts sugeridos no calendário, como ideia. Revise antes de publicar.`);
   } catch (e) { toast(ERROS_IA[e && e.code] || 'A Elora AI não conseguiu montar a semana agora. Tente de novo.'); }
 }
 function mkEstudio() {
-  const ims = lista('imoveis').filter(i => i.autorizacaoEm && i.vendaStatus !== 'vendido');
+  const ims = lista('imoveis').filter(i => i.vendaStatus !== 'vendido');
   const sel = (idc, ops) => `<select id="${idc}">${ops.map(o => `<option>${esc(o)}</option>`).join('')}</select>`;
   return `<div class="grid two">
-    <section class="panel"><h2>Peça sob medida</h2><p class="sub">A Elora AI escreve com as regras da marca. O CRECI-J entra no rodapé pelo sistema.</p>
+    <section class="panel"><h2>Peça sob medida</h2><p class="sub">A Elora AI escreve no tom da marca, só com dados reais do sistema.</p>
       <form id="frm-mk-peca"><div class="fgrid">
         <div class="f"><label for="mk-tipo">Peça</label>${sel('mk-tipo', ['Post com legenda', 'Carrossel', 'Roteiro de Reels', 'Anúncio no Meta (título, texto, botão)', 'Anúncio no Google (títulos e descrições)', 'Post no Perfil do Google', 'Mensagem de WhatsApp', 'Abordagem para RH ou empresa'])}</div>
         <div class="f"><label for="mk-pub">Público</label>${sel('mk-pub', MK_PUBLICOS)}</div></div>
@@ -11932,7 +12198,7 @@ function mkEstudio() {
         <div class="f"><label for="mk-im">Imóvel (opcional)</label><select id="mk-im"><option value="">Nenhum</option>${ims.map(i => `<option value="${esc(i.id)}">${esc(i.id)} · ${esc(i.descricao || '')}</option>`).join('')}</select></div>
         <div class="acts" style="margin-top:12px"><button class="btn" type="submit">Escrever com a Elora AI</button></div></form></section>
     <section class="panel"><h2>Atalhos</h2><div class="list">
-      <div class="item"><h3>Sugerir a semana</h3><p>4 a 5 posts com base nos imóveis autorizados e nos bairros mais procurados. Entram no calendário como ideia.</p><div class="acts">${bt('mk-semana-ia', 'Sugerir a semana', {}, '')}</div></div>
+      <div class="item"><h3>Sugerir a semana</h3><p>4 a 5 posts com base nos imóveis em oferta e nos bairros mais procurados. Entram no calendário como ideia.</p><div class="acts">${bt('mk-semana-ia', 'Sugerir a semana', {}, '')}</div></div>
       <div class="item"><h3>Responder avaliação do Google</h3><p>Cole a avaliação (positiva ou negativa) e receba uma resposta pública educada, sem expor dados do cliente.</p><div class="acts">${bt('mk-aval', 'Responder avaliação')}</div></div>
       <div class="item"><h3>Leitura do marketing do mês</h3><p>A Elora AI lê leads por canal, campanhas e posts e diz o que cortar, o que escalar e o que testar.</p><div class="acts">${bt('mk-leitura', 'Ler o mês')}</div></div></div></section></div>`;
 }
@@ -11940,7 +12206,7 @@ function mkPeca(f) {
   const v = x => ($(x) ? $(x).value.trim() : ''), tema = v('mk-tema'), im = DB.imoveis[v('mk-im')]; if (!tema && !im) return toast('Informe o tema ou escolha um imóvel.');
   const dados = im ? { codigo: im.id, descricao: im.descricao, local: im.local, uso: im.tipo, aluguel_pedido: paraLocacao(im) ? im.pedido : undefined, preco_de_venda: aVenda(im) && !im.sobConsulta ? im.precoVenda : undefined } : null, tipo = v('mk-tipo'), pub = v('mk-pub');
   iaJanela(tipo, `${MK_REGRAS}\nEscreva: ${tipo}, para o público "${pub}" da ${EMPRESA} (Vale do Paraíba, SP). Tema: ${tema || 'divulgar o imóvel'}. ${dados ? 'Use só estes dados do imóvel: ' + JSON.stringify(dados) + '.' : ''} ${/Google \(/.test(tipo) ? 'Títulos com até 30 caracteres e descrições com até 90, em lista.' : ''} Texto simples, sem markdown.`,
-    { rodape: tipo.startsWith('Anúncio no Google') ? '' : mkRodape(), nota: 'Rodapé com o CRECI-J inserido pelo sistema (Lei 6.530/78, art. 20, IV). Revise antes de publicar.', salvar: 'Salvar no calendário', aoSalvar: t => { const id = gzId('PO');
+    { rodape: tipo.startsWith('Anúncio no Google') ? '' : mkRodape(), nota: 'Texto da Elora AI. Ajuste o que quiser antes de publicar.', salvar: 'Salvar no calendário', aoSalvar: t => { const id = gzId('PO');
       store.salvar('posts', id, { id, data: REF, status: 'producao', canal: /Google/.test(tipo) ? 'Google' : /WhatsApp|RH/.test(tipo) ? 'WhatsApp' : 'Instagram', formato: /Anúncio/.test(tipo) ? 'Anúncio' : /Reels/.test(tipo) ? 'Reels' : /Carrossel/.test(tipo) ? 'Carrossel' : /Perfil do Google/.test(tipo) ? 'Post no Google' : /WhatsApp|RH/.test(tipo) ? 'Mensagem' : 'Post',
         publico: pub, tema: (tema || (im ? 'Imóvel ' + im.id : tipo)).slice(0, 120), texto: (t.trim() + (tipo.startsWith('Anúncio no Google') ? '' : mkRodape())).slice(0, 3000), imovelId: im ? im.id : null, campanhaId: null, resultado: {}, criadoEm: REF, ia: true });
       registrar('Comercial', `Marketing: peça da Elora AI salva no calendário (${tipo}).`); fecharDlg(); toast('Salvo no calendário como Em produção, com a data de hoje.'); } });
@@ -11975,15 +12241,12 @@ function mkPresenca() {
         <form id="frm-mk-metas"><div class="fgrid">${[['leadsMes', 'Leads por mês'], ['cpl', 'Custo por lead até (R$)'], ['postsSemana', 'Publicações por semana'], ['avaliacoes', 'Avaliações no Google'], ['nota', 'Nota no Google'], ['seguidores', 'Seguidores no Instagram'], ['captados', 'Imóveis captados em 90 dias'], ['contratos', 'Contratos de locação em 90 dias']]
           .map(([k, r]) => `<div class="f"><label for="mk-m-${k}">${r}</label><input id="mk-m-${k}" type="number" min="0" step="${k === 'nota' ? '0.1' : '1'}" value="${mt[k]}"${ehGestor ? '' : ' disabled'}></div>`).join('')}</div>
           ${ehGestor ? '<div class="acts" style="margin-top:10px"><button class="btn" type="submit">Salvar metas</button></div>' : '<p class="sub">Só os gestores alteram as metas.</p>'}</form></section>
-      <section class="panel"><h2>Regras da comunicação</h2><ul class="sub" style="padding-left:18px;margin:0">
-        <li>CRECI-J em toda peça; em vídeo e áudio, falado (Resolução COFECI 1.065/2007).</li><li>Imóvel só com autorização escrita do proprietário e recebimento aprovado.</li>
-        <li>Preço, metragem e fotos iguais ao cadastro (CDC, art. 37).</li><li>Sem citar concorrentes (CONAR).</li><li>Depoimento só de cliente real, com autorização de imagem; nunca avaliação em troca de vantagem.</li>
-        <li>Leads só com consentimento e para o fim informado (LGPD); lista comprada não entra.</li><li>Sem relação do imóvel com aviação; tom profissional e persuasivo.</li></ul></section></div></div>`;
+</div></div>`;
 }
 RENDER.marketing = viewMarketing;
 Object.assign(ACOES, {
   'mk-tab': d => { estado.mkTab = d.tab; estado.confirmar = null; if (estado.view !== 'marketing') return ir('marketing'); render(); },
-  'mk-novo': () => abrirPost(null), 'mk-editar': d => abrirPost(d.id), 'mk-pub': d => mkPublicar(d.id), 'mk-plano': () => mkCarregarPlano(),
+  'mk-novo': () => abrirPost(null), 'mk-editar': d => abrirPost(d.id), 'mk-pub': d => { const p = DB.posts[d.id]; if (!p) return; if (!p.aprovacao) return aqPedirPost(d.id); mkPublicar(d.id); aqEnviado(p.aprovacao.id, 'publicado pela equipe e marcado no sistema').catch(() => {}); }, 'mk-plano': () => mkCarregarPlano(),
   'mk-mes': d => { estado.mkMes = somaMeses((estado.mkMes || mesRef()) + '-01', +d.n || 0).slice(0, 7); render(); },
   'mk-copiar': d => { const p = DB.posts[d.id]; if (!p || !p.texto) return; try { navigator.clipboard.writeText(p.texto).then(() => toast('Texto copiado.'), () => toast('Não consegui copiar. Abra o post e copie à mão.')); } catch (e) { toast('Não consegui copiar. Abra o post e copie à mão.'); } },
   'mk-del': d => { if (!DB.posts[d.id]) return; if (estado.confirmar !== 'mk' + d.id) { estado.confirmar = 'mk' + d.id; return abrirPost(d.id); } estado.confirmar = null; const t0 = DB.posts[d.id].tema; store.apagar('posts', d.id); registrar('Comercial', `Marketing: post apagado "${t0}".`); fecharDlg(); toast('Post apagado.'); },
@@ -11993,7 +12256,7 @@ Object.assign(ACOES, {
 document.addEventListener('submit', e => { const f = e.target; if (!/^frm-mk-/.test(f.id || '')) return; e.preventDefault(); e.stopImmediatePropagation(); const v = x => ($(x) ? $(x).value.trim() : '');
   if (f.id === 'frm-mk-post') return salvarPost(f);
   if (f.id === 'frm-mk-peca') return mkPeca(f);
-  if (f.id === 'frm-mk-aval') { const txt = v('mk-av-txt'); if (!txt) return; return iaJanela('Resposta à avaliação', `${MK_REGRAS}\nEscreva a resposta pública da ${EMPRESA} a esta avaliação de ${v('mk-av-n')} estrela(s) no Google, em até 4 frases, educada e específica. Se for negativa: agradeça, reconheça sem discutir, não exponha dados nem detalhes do contrato e convide a falar no WhatsApp da Elora. Se for positiva: agradeça de forma pessoal, sem exageros. Não invente fatos. Avaliação: ${JSON.stringify(txt.slice(0, 1500))}`, { nota: 'Revise antes de publicar. Não responda com dados pessoais do cliente (LGPD).' }); }
+  if (f.id === 'frm-mk-aval') { const txt = v('mk-av-txt'); if (!txt) return; return iaJanela('Resposta à avaliação', `${MK_REGRAS}\nEscreva a resposta pública da ${EMPRESA} a esta avaliação de ${v('mk-av-n')} estrela(s) no Google, em até 4 frases, educada e específica. Se for negativa: agradeça, reconheça sem discutir, não exponha dados nem detalhes do contrato e convide a falar no WhatsApp da Elora. Se for positiva: agradeça de forma pessoal, sem exageros. Não invente fatos. Avaliação: ${JSON.stringify(txt.slice(0, 1500))}`, { nota: 'Texto da Elora AI. Ajuste o que quiser antes de publicar.' }); }
   if (f.id === 'frm-mk-num') { const n = x => { const k = parseFloat(v(x)); return k >= 0 ? k : null; }, o = { em: REF, avaliacoes: n('mk-n-av'), nota: n('mk-n-nota') != null ? Math.min(5, n('mk-n-nota')) : null, seguidores: n('mk-n-seg') };
     const hs = (mkCfg().hist || []).filter(x => x.em !== REF); hs.push(o); salvarMk({ hist: hs.slice(-60) }); registrar('Comercial', `Marketing: números registrados (Google ${o.avaliacoes ?? '—'} avaliações, nota ${o.nota ?? '—'}; Instagram ${o.seguidores ?? '—'} seguidores).`); return toast('Números registrados.'); }
   if (f.id === 'frm-mk-metas') { if (!ehGestor) return toast('Só os gestores alteram as metas.'); const m = {}; Object.keys(MK_METAS_PADRAO).forEach(k => { const x = parseFloat(v('mk-m-' + k)); if (x >= 0) m[k] = x; }); salvarMk({ metas: m }); registrar('Comercial', 'Marketing: metas do plano atualizadas.'); toast('Metas salvas.'); }
@@ -12005,6 +12268,7 @@ store.iniciar();
 (() => { let tok = null; try { tok = new URLSearchParams(location.search).get('e'); } catch (e) {} if (!tok || !/^[a-z0-9]{6,20}$/.test(tok)) return;
   const t = setInterval(async () => { if (!estado.pronto) return; clearInterval(t); const e = DB.envios[tok]; if (!e) return; await registrarAbertura(tok, navigator.userAgent); if (DB.imoveis[e.imovelId]) abrirAnuncio(e.imovelId); }, 300); })();
 </script>
+
 
 
 

@@ -56,3 +56,17 @@ própria e aparecem na Central.
   celular sem rolagem lateral, nenhum erro de página.
 - Back-end: `AprovacaoTest` (5) e `AprovacoesCasosDeUsoTest` (5). Migrações V1–V9 aplicadas em PostgreSQL 16, com as
   travas do banco conferidas (aprovado sem texto, quem pediu aprovando e enviado sem data são recusados).
+
+## Mapa da empresa (Hoje → Mapa da empresa)
+
+Visão de toda a operação por departamento (Comercial, Marketing, Imóveis e captação, Locação e financeiro, Elora Casa+,
+Gestão, Tecnologia, Diretoria). Cada membro aparece com um ícone: **bonequinho** para pessoa, **mini bot** para robô.
+
+- Pessoas: gestores (tela Acessos) e corretores, com o que estão atendendo e a última ação registrada.
+- Robôs: automações, rodízio, Radar, gatilhos, porteiro de aprovações, Elora AI, tarefas agendadas (monitor, radar de
+  concorrentes, agente de inovação), abridor de tickets, integrações, vigia de cobrança, fila do Casa+ e cadência de captação.
+- Ponto verde: atividade nas últimas 24 h; cinza: pausado. Clique em alguém para ver o rastro recente.
+- "Segundo cérebro", "Rotinas dos robôs", "Para aprovar" e "Acontecendo agora"; a tela se atualiza a cada 30 s e a cada
+  gravação no banco.
+- O registro de alterações passou a guardar **quem** fez (nome do gestor ou do corretor). Registros antigos têm só o perfil.
+- Testes: `docs/testes/mapa.cjs`, 10 verificações.
