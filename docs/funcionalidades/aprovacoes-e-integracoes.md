@@ -78,3 +78,11 @@ No alto do Mapa, uma planta com a Recepção e as 8 salas. Cada aba aberta do si
 Quem está fora do sistema fica apagado na sala de origem. Robôs ativos se mexem nas salas deles; cada atividade nova
 registrada voa como um pacote até a sala do setor. Nada disso é gravado: a presença some quando a pessoa fecha a página.
 Testes: `docs/testes/escritorio.cjs` (9 verificações, com presença simulada).
+
+### Mascotes (versão 67)
+
+Cada robô tem um mascote próprio (formato, cor e rosto ligados à função: rodízio, radar, gatilhos, aprovações, Elora AI,
+concorrência, inovação, monitor, tickets, integrações, cobrança, Casa+, captação; automações novas ganham um mascote
+pela regra). Cada pessoa escolhe o seu em "Escolher meu mascote" (faixa "Sua equipe, hoje" no Mapa). A escolha fica em
+`config.mascotes` (`g:<gestor>` ou `k:<corretor>`); pessoas levam um selo verde para não se confundir com os robôs.
+Testes: `docs/testes/mascote.cjs` (10 verificações).

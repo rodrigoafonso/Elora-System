@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 66). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 67). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -475,6 +475,38 @@ button.ax-card{text-align:left;width:100%;cursor:pointer;font:inherit;color:inhe
 @media (max-width:1180px){.mp-deptos{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:860px){.mp-topo{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.mp-deptos{grid-template-columns:minmax(0,1fr)}.mp-cerebro div{grid-template-columns:minmax(0,1fr)}}
+
+/* Mascotes dos robôs */
+.masc{width:100%;height:100%;overflow:visible;display:block}
+.masc.vivo .masc-olhos{transform-box:fill-box;transform-origin:center;animation:masc-pisca 4.2s infinite}
+@keyframes masc-pisca{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.mp-bot .mp-ic{background:none!important;box-shadow:none!important;border-radius:0!important}
+.mp-m .mp-bot .mp-ic,.mp-m.mp-bot .mp-ic{width:36px;height:38px}
+.of-a.mp-bot .mp-ic{width:38px;height:40px}
+.of-a.vivo.mp-bot .mp-ic{animation:of-bot 2.4s ease-in-out infinite}
+.mp-feed .mp-bot{display:inline-block;width:22px;height:23px} .rot-m{display:block;width:40px;height:42px} .leg-m{display:inline-flex} .leg-m .masc{width:18px;height:19px}
+.eq-robos{display:flex;flex-direction:column;align-items:stretch}
+.eq-fila{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 10px;padding:0 24px;position:relative;z-index:1;margin-bottom:-14px}
+.eq-r{width:58px;height:60px;border:0;background:none;padding:0;cursor:pointer;transition:transform .25s}
+.eq-r:hover,.eq-r:focus-visible{transform:translateY(-6px)} .eq-r.off{filter:grayscale(.8);opacity:.55}
+.eq-r .masc.vivo{animation:eq-sobe 3s ease-in-out infinite} .eq-r:nth-child(2n) .masc.vivo{animation-delay:-1.1s} .eq-r:nth-child(3n) .masc.vivo{animation-delay:-2s}
+@keyframes eq-sobe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.eq-barra{background:#1c1c1e;color:#f2f2f2;border-radius:22px 22px 12px 12px;padding:20px 20px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.eq-barra b{font:600 15px/1.2 var(--ui)} .eq-st{margin-left:auto;color:#8be0a4;font-size:12.5px;font-weight:600}
+.eq-dots{display:flex;gap:6px} .eq-dots i{width:10px;height:10px;border-radius:50%;background:#3a3a3c}
+@media (prefers-reduced-motion:reduce){.masc .masc-olhos,.eq-r .masc{animation:none!important}}
+@media (max-width:560px){.eq-r{width:44px;height:46px}.eq-fila{gap:2px 4px;padding:0 6px}}
+
+.mp-ic:has(.masc){background:none!important;box-shadow:none!important;border-radius:0!important}
+.of-a.vivo.mp-hum .mp-ic:has(.masc){filter:drop-shadow(0 0 4px var(--c1))} .of-a.eu.mp-hum .mp-ic:has(.masc){filter:drop-shadow(0 0 4px var(--gold))}
+.mp-m.mp-hum .mp-ic:has(.masc){width:36px;height:38px}
+.eq-h{display:flex;flex-direction:column;align-items:center;height:auto} .eq-h small{font:600 10px var(--ui);color:var(--muted);margin-top:-2px}
+.eq-sem{display:grid;place-items:center;width:44px;height:44px;margin-top:8px;border-radius:50%;background:var(--green-soft);color:var(--green)}
+.eq-div{width:1px;align-self:stretch;background:var(--line);margin:6px 6px 16px}
+.eq-barra .btn{padding:5px 11px;font-size:12px}
+.mm-prev{width:110px;height:114px;margin:0 auto}
+.mm-formas label{color:var(--muted);padding:5px 7px} .mm-formas input:checked+label{color:var(--on-green)}
+.mm-cores label{width:30px;height:30px;padding:0;border-radius:50%} .mm-cores input:checked+label{outline:3px solid var(--ink);outline-offset:2px;background-color:inherit}
 /* Escritório ao vivo */
 .of-wrap h2{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}.of-wrap h2 .pill{white-space:normal;letter-spacing:0;text-transform:none}
 .of{position:relative;overflow:hidden;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -5335,6 +5367,100 @@ function viewIntegracoes() {
 // Robô = função automática do sistema ou tarefa agendada. Nada é inventado: sem registro, aparece "sem registro".
 const ICO_HUMANO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="7" r="4" fill="currentColor"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="currentColor"/></svg>';
 const ICO_ROBO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="2.5" r="1.5" fill="currentColor"/><rect x="4" y="6" width="16" height="13" rx="4" fill="currentColor"/><circle cx="9" cy="12" r="1.8" fill="var(--surface)"/><circle cx="15" cy="12" r="1.8" fill="var(--surface)"/><path d="M9 16h6" stroke="var(--surface)" stroke-width="1.6" stroke-linecap="round"/><path d="M2 11v4M22 11v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+// ---------- Mascotes dos robôs: cada função tem formato, cor e rosto próprios ----------
+const MASC_FORMAS = {
+  bolha: '<path d="M7 31C7 16 14 8 24 8s17 8 17 23c0 8-3 13-8 13H15c-5 0-8-5-8-13z"/>',
+  tri: '<path d="M24 5c4 0 19 29 19 35 0 3-2 4-5 4H10c-3 0-5-1-5-4C5 34 20 5 24 5z"/>',
+  casa: '<path d="M22 8a3 3 0 0 1 4 0l14 12a4 4 0 0 1 1 3v17a4 4 0 0 1-4 4H11a4 4 0 0 1-4-4V23a4 4 0 0 1 1-3z"/>',
+  nuvem: '<path d="M12 44c-5 0-9-4-9-9 0-4 3-8 7-8 0-7 5-12 12-12 4 0 7 2 9 5 1 0 2-1 4-1 5 0 9 4 9 9 3 1 4 4 4 7 0 5-4 9-8 9z"/>',
+  quad: '<rect x="6" y="11" width="36" height="33" rx="11"/>',
+  gota: '<path d="M24 4c3 4 17 19 17 29 0 7-7 11-17 11S7 40 7 33C7 23 21 8 24 4z"/>',
+  hexa: '<path d="M21 6a6 6 0 0 1 6 0l12 7a6 6 0 0 1 3 5v14a6 6 0 0 1-3 5l-12 7a6 6 0 0 1-6 0L9 37a6 6 0 0 1-3-5V18a6 6 0 0 1 3-5z"/>',
+  capsula: '<rect x="10" y="5" width="28" height="39" rx="14"/>',
+  estrela: '<path d="M24 5c2 0 3 2 5 8 1 2 2 3 4 3 7 1 9 1 9 3s-2 4-7 8c-2 1-2 3-2 5 2 7 2 9 0 10s-4-1-9-4c-1-1-3-1-4 0-5 3-7 5-9 4s-1-3 0-10c1-2 0-4-2-5-5-4-7-6-7-8s2-2 9-3c2 0 3-1 4-3 2-6 3-8 5-8z"/>',
+  losango: '<path d="M21 6a4 4 0 0 1 6 0l15 17a4 4 0 0 1 0 5L27 44a4 4 0 0 1-6 0L6 28a4 4 0 0 1 0-5z"/>',
+  feijao: '<path d="M8 30c0-10 6-17 15-17 4 0 6 2 9 2 6 0 10 5 10 13 0 10-8 16-18 16S8 39 8 30z"/>',
+  cogumelo: '<path d="M5 25C5 13 14 6 24 6s19 7 19 19c0 3-2 4-5 4H34v11a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V29h-4c-3 0-5-1-5-4z"/>',
+  fantasma: '<path d="M8 43V24C8 14 15 7 24 7s16 7 16 17v19c0 1-1 2-2 1l-3-3-3 3-3-3-3 3-3-3-3 3-3-3-3 3c-1 1-2 0-2-1z"/>',
+};
+// rosto: o = olhos (pontos, grandes, bravo, pisca, sono), b = boca (sorri, o, reta, nada), c = bochechas
+const MASC = {
+  'b:rodizio': { f: 'bolha', cor: '#F2C14E', o: 'pontos', b: 'sorri', c: 1 },
+  'b:radar': { f: 'tri', cor: '#4F7CF7', o: 'bravo', b: 'sorri' },
+  'b:gatilhos': { f: 'casa', cor: '#5CCDB6', o: 'grandes', b: 'nada' },
+  'b:aprov': { f: 'nuvem', cor: '#E86AA8', o: 'grandes', b: 'sorri', c: 1 },
+  'b:ai': { f: 'estrela', cor: '#9B6CF2', o: 'pisca', b: 'sorri' },
+  'b:concorrentes': { f: 'losango', cor: '#F08A3C', o: 'bravo', b: 'reta' },
+  'b:inovacao': { f: 'gota', cor: '#A3D95B', o: 'grandes', b: 'o' },
+  'b:monitor': { f: 'quad', cor: '#6C8EA8', o: 'grandes', b: 'reta' },
+  'b:tickets': { f: 'fantasma', cor: '#EE6B5B', o: 'pontos', b: 'o' },
+  'b:integ': { f: 'hexa', cor: '#3CB4E6', o: 'pontos', b: 'sorri' },
+  'b:cobranca': { f: 'capsula', cor: '#3FAE6E', o: 'sono', b: 'sorri' },
+  'b:casamais': { f: 'cogumelo', cor: '#F5A37A', o: 'pontos', b: 'sorri', c: 1 },
+  'b:prosp': { f: 'feijao', cor: '#D9A33A', o: 'grandes', b: 'sorri' },
+};
+const MASC_EXTRA = [['bolha', '#7FC8F8'], ['capsula', '#F7A6C4'], ['quad', '#B9A1F2'], ['gota', '#7DD3A8'], ['hexa', '#F6C177'], ['tri', '#8FB3FF']];
+// ---------- Mascote de cada pessoa: quem usa o sistema escolhe o seu (guardado em config.mascotes) ----------
+const MASC_CORES = ['#F2C14E', '#4F7CF7', '#5CCDB6', '#E86AA8', '#9B6CF2', '#F08A3C', '#A3D95B', '#6C8EA8', '#EE6B5B', '#3CB4E6', '#3FAE6E', '#F5A37A'];
+const MASC_OLHOS = { pontos: 'Pontinhos', grandes: 'Grandes', bravo: 'Determinado', pisca: 'Piscando', sono: 'Tranquilo' };
+const MASC_BOCA = { sorri: 'Sorriso', o: 'Surpresa', reta: 'Séria', nada: 'Sem boca' };
+// Quem sou eu no mapa: gestor escolhido em "Quem está usando?", o dono da página ou o corretor do portal.
+function meuMembroId() {
+  if (estado.perfil === 'corretor' && eu()) return 'k:' + eu();
+  const g = gestorAtual(); if (g) return 'g:' + g.id;
+  if (souDono) { const d = acessosCfg().find(x => x.pastas === '*'); if (d) return 'g:' + d.id; }
+  return null;
+}
+const mascPessoa = id => ((DB.config || {}).mascotes || {})[id] || null;
+function abrirMeuMascote() {
+  const id = meuMembroId(); if (!id) return toast('Escolha quem está usando o sistema primeiro (seu nome em "Quem está usando?").');
+  const s = mascPessoa(id) || { f: 'bolha', cor: MASC_CORES[0], o: 'grandes', b: 'sorri', c: 1 };
+  const rd = (nome, val, txt, sel, extra = '') => `<span><input type="radio" name="${nome}" id="mm-${nome}-${esc(val)}" value="${esc(val)}"${sel ? ' checked' : ''}><label for="mm-${nome}-${esc(val)}"${extra}>${txt}</label></span>`;
+  abrirDlg(`<h2>Escolha o seu mascote</h2><p class="sub">Ele representa você no Mapa da empresa e no escritório ao vivo. Pessoas levam um selo verde; robôs não.</p>
+    <form id="frm-masc"><div class="mm-prev" id="mm-prev">${mascote('__prev', true, true)}</div>
+    <div class="f"><label>Formato</label><div class="tags mm-formas">${Object.keys(MASC_FORMAS).map(f => rd('f', f, `<svg viewBox="0 0 48 50" width="30" height="31"><g fill="currentColor">${MASC_FORMAS[f]}</g></svg>`, s.f === f, ` title="${f}"`)).join('')}</div></div>
+    <div class="f"><label>Cor</label><div class="tags mm-cores">${MASC_CORES.map(c => rd('cor', c, '', s.cor === c, ` style="background:${c}" title="${c}"`)).join('')}</div></div>
+    <div class="f"><label>Olhos</label><div class="tags">${Object.entries(MASC_OLHOS).map(([k, t]) => rd('o', k, t, s.o === k)).join('')}</div></div>
+    <div class="f"><label>Boca</label><div class="tags">${Object.entries(MASC_BOCA).map(([k, t]) => rd('b', k, t, s.b === k)).join('')}</div></div>
+    <div class="f ck"><input type="checkbox" id="mm-c"${s.c ? ' checked' : ''}><label for="mm-c">Bochechas rosadas</label></div>
+    <div class="acts">${bt('fechar', 'Cancelar')}<button class="btn" type="submit">Salvar meu mascote</button></div></form>`);
+  const ler = () => { const f = $('frm-masc'); if (!f) return null; const v = n => (f.querySelector(`input[name="${n}"]:checked`) || {}).value;
+    return { f: MASC_FORMAS[v('f')] ? v('f') : 'bolha', cor: MASC_CORES.includes(v('cor')) ? v('cor') : MASC_CORES[0], o: MASC_OLHOS[v('o')] ? v('o') : 'grandes', b: MASC_BOCA[v('b')] ? v('b') : 'sorri', c: $('mm-c').checked ? 1 : 0 }; };
+  const prev = () => { const x = ler(); if (!x) return; MASC_PREVIA = x; $('mm-prev').innerHTML = mascote('__prev', true, true); };
+  $('frm-masc').addEventListener('input', prev); prev();
+  $('frm-masc').addEventListener('submit', e => { e.preventDefault(); const x = ler(); if (!x) return; MASC_PREVIA = null;
+    salvarConfig({ mascotes: { ...((DB.config || {}).mascotes || {}), [id]: x } }); registrar('Gestão', 'Mascote escolhido no Mapa da empresa.'); fecharDlg(); toast('Mascote salvo. Ele já aparece no mapa.'); });
+}
+let MASC_PREVIA = null;
+function mascSpec(id) {
+  if (id === '__prev') return MASC_PREVIA || { f: 'bolha', cor: '#F2C14E', o: 'grandes', b: 'sorri', c: 1 };
+  const pe = mascPessoa(id); if (pe) return pe;
+  if (MASC[id]) return MASC[id];
+  const h = parseInt(auHash(id), 36), [f, cor] = MASC_EXTRA[h % MASC_EXTRA.length];
+  return { f, cor, o: ['pontos', 'grandes', 'pisca'][h % 3], b: ['sorri', 'o', 'sorri'][(h >> 3) % 3] };
+}
+function mascote(id, vivo = true, humano = false) {
+  const s = mascSpec(id), esc2 = '#1E1A2B', y = s.f === 'tri' ? 30 : s.f === 'cogumelo' ? 19 : 26;
+  const olho = x => s.o === 'pontos' ? `<ellipse cx="${x}" cy="${y}" rx="2.6" ry="3.2" fill="${esc2}"/>`
+    : s.o === 'sono' ? `<path d="M${x - 3} ${y}q3 3 6 0" stroke="${esc2}" stroke-width="2" fill="none" stroke-linecap="round"/>`
+    : `<circle cx="${x}" cy="${y}" r="4.6" fill="#fff"/><circle cx="${x + .8}" cy="${y + .6}" r="2.5" fill="${esc2}"/>`;
+  let olhos = olho(18) + olho(30);
+  if (s.o === 'pisca') olhos = `<circle cx="18" cy="${y}" r="4.6" fill="#fff"/><circle cx="18.8" cy="${y + .6}" r="2.5" fill="${esc2}"/><path d="M27 ${y}q3-3 6 0" stroke="${esc2}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  if (s.o === 'bravo') olhos += `<path d="M14 ${y - 7}q4-2 7 0M27 ${y - 7}q4-2 7 0" stroke="${esc2}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+  const by = y + 7, boca = s.b === 'sorri' ? `<path d="M20 ${by}q4 3.5 8 0" stroke="${esc2}" stroke-width="2" fill="none" stroke-linecap="round"/>` : s.b === 'o' ? `<ellipse cx="24" cy="${by + 1}" rx="2" ry="2.4" fill="${esc2}"/>` : s.b === 'reta' ? `<path d="M21 ${by + 1}h6" stroke="${esc2}" stroke-width="2" stroke-linecap="round"/>` : '';
+  const boch = s.c ? `<ellipse cx="13" cy="${y + 5}" rx="2.6" ry="1.6" fill="#F28C8C" opacity=".6"/><ellipse cx="35" cy="${y + 5}" rx="2.6" ry="1.6" fill="#F28C8C" opacity=".6"/>` : '';
+  return `<svg class="masc${vivo ? ' vivo' : ''}" viewBox="0 0 48 50" aria-hidden="true"><defs><linearGradient id="mg${auHash(id)}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${s.cor}"/><stop offset="1" stop-color="${s.cor}" stop-opacity=".82"/></linearGradient></defs>
+    <g fill="url(#mg${auHash(id)})">${MASC_FORMAS[s.f] || MASC_FORMAS.bolha}</g><ellipse cx="17" cy="45.5" rx="4" ry="2.6" fill="${s.cor}"/><ellipse cx="31" cy="45.5" rx="4" ry="2.6" fill="${s.cor}"/>
+    <g class="masc-olhos">${olhos}</g>${boca}${boch}${humano ? '<g class="masc-hum"><circle cx="41" cy="9" r="7" fill="#2A6542" stroke="#fff" stroke-width="1.5"/><circle cx="41" cy="6.8" r="2.1" fill="#fff"/><path d="M37.3 13c.5-2.2 2-3.4 3.7-3.4s3.2 1.2 3.7 3.4z" fill="#fff"/></g>' : ''}</svg>`;
+}
+const icoMembro = (m, vivo = true) => m.tipo === 'robo' ? mascote(m.id, !m.parado) : mascPessoa(m.id) ? mascote(m.id, vivo, true) : ICO_HUMANO;
+function faixaRobos(ms) {
+  const bs = ms.filter(m => m.tipo === 'robo'), ativos = bs.filter(m => !m.parado).length, hs = ms.filter(m => m.tipo === 'humano');
+  const pessoas = hs.map(m => `<button type="button" class="eq-r eq-h" data-act="mapa-membro" data-id="${esc(m.id)}" title="${esc(m.nome)} · ${esc(m.papel)}">${mascPessoa(m.id) ? mascote(m.id, true, true) : `<span class="eq-sem">${ICO_HUMANO}</span>`}<small>${esc(m.nome.split(' ')[0])}</small></button>`).join('');
+  return `<section class="eq-robos"><div class="eq-fila">${pessoas}<span class="eq-div" aria-hidden="true"></span>${bs.map(m => `<button type="button" class="eq-r${m.parado ? ' off' : ''}" data-act="mapa-membro" data-id="${esc(m.id)}" title="${esc(m.nome)} · ${esc(m.status || m.papel)}">${mascote(m.id, !m.parado)}</button>`).join('')}</div>
+    <div class="eq-barra"><span class="eq-dots"><i></i><i></i><i></i></span><b>Sua equipe, hoje</b>${meuMembroId() ? bt('mapa-masc', 'Escolher meu mascote', {}, 'elora') : ''}<span class="eq-st">● ${hs.length} pessoa(s) · ${ativos} robô(s) trabalhando${bs.length - ativos ? ` · ${bs.length - ativos} pausado(s)` : ''}</span></div></section>`;
+}
+
 const tMs2 = x => { const d = new Date(x); return isNaN(d) ? 0 : d.getTime(); };
 const haQuanto = x => { const ms = tMs2(x); if (!ms) return 'sem registro'; const m = Math.max(0, Math.round((Date.now() - ms) / 60000)); return m < 1 ? 'agora' : m < 60 ? `há ${m} min` : m < 1440 ? `há ${Math.round(m / 60)} h` : `há ${Math.round(m / 1440)} dia(s)`; };
 const donoNome = () => (acessosCfg().find(x => x.pastas === '*') || {}).nome || 'Dono';
@@ -5389,7 +5515,7 @@ const mapaVivo = m => !m.parado && tMs2(m.ult.em) && Date.now() - tMs2(m.ult.em)
 function mapaCartao(m) {
   const vivo = mapaVivo(m), cls = m.tipo === 'robo' ? 'mp-bot' : 'mp-hum';
   return `<button type="button" class="mp-m ${cls}${m.parado ? ' off' : ''}" data-act="mapa-membro" data-id="${esc(m.id)}" title="${m.tipo === 'robo' ? 'Robô' : 'Pessoa'}: ${esc(m.nome)}">
-    <span class="mp-ic">${m.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}<i class="${vivo ? 'on' : m.parado ? 'pa' : ''}"></i></span>
+    <span class="mp-ic">${icoMembro(m)}<i class="${vivo ? 'on' : m.parado ? 'pa' : ''}"></i></span>
     <span class="mp-tx"><b>${esc(m.nome)}</b><small>${esc(m.status || m.papel)}</small><small>${m.ult.txt ? esc(String(m.ult.txt).slice(0, 70)) + ' · ' : ''}${haQuanto(m.ult.em)}</small></span></button>`;
 }
 function viewMapa() {
@@ -5398,25 +5524,26 @@ function viewMapa() {
   const tHoje = lista('tarefas').filter(t => t.status === 'pendente' && t.data === hoje).length, pend = aqPendentes(), msgs = gatilhoFila(null).length + autoMsgFila(null).length;
   setTimeout(() => { try { ofPosicionar(); } catch (e) {} }, 0);
   const feed = ms.flatMap(m => m.evs.filter(e => tMs2(e.em)).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 3).map(e => ({ ...e, m }))).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 14);
-  const rotinas = [['Varredura das automações', 'a cada 5 min'], ['Monitor da operação', '8h32 às 18h32'], ['Radar de concorrentes', '8h50'], ['Agente de inovação', 'seg e qui 6h47'], ['Radar e gatilhos', 'ao abrir o sistema']];
-  return cab('Mapa da empresa', 'Quem é quem, onde trabalha e o que está fazendo. Pessoa aparece com o bonequinho, robô com o mini bot. Atualiza sozinho.', `<span class="pill ok" id="mp-vivo">● ao vivo · ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>`) +
+  const rotinas = [['Varredura das automações', 'a cada 5 min', 'b:gatilhos'], ['Monitor da operação', '8h32 às 18h32', 'b:monitor'], ['Radar de concorrentes', '8h50', 'b:concorrentes'], ['Agente de inovação', 'seg e qui 6h47', 'b:inovacao'], ['Radar de leads', 'ao abrir o sistema', 'b:radar']];
+  return cab('Mapa da empresa', 'Quem é quem, onde trabalha e o que está fazendo. Cada pessoa escolhe o seu mascote (com selo verde de pessoa; sem escolha, aparece o bonequinho). Cada robô tem um mascote próprio da sua função. Atualiza sozinho.', `<span class="pill ok" id="mp-vivo">● ao vivo · ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>`) +
   `<div class="mp-topo"><section class="mp-eq"><h2>Equipe Elora</h2><p><b>${hum}</b> pessoa(s) · <b>${rob}</b> robô(s) · ${MAPA_DEPTOS.length} departamentos</p>
       <div class="chips" role="group" aria-label="Mostrar">${[['todos', 'Todos'], ['humano', 'Pessoas'], ['robo', 'Robôs']].map(([k, t]) => `<button type="button" data-act="mapa-f" data-f="${k}" aria-pressed="${f === k}">${t}</button>`).join('')}</div>
-      <p class="mp-leg"><span class="mp-hum">${ICO_HUMANO} Pessoa</span><span class="mp-bot">${ICO_ROBO} Robô</span><span><i class="on"></i> ativo nas últimas 24 h</span><span><i class="pa"></i> pausado</span></p></section>
+      <p class="mp-leg"><span class="mp-hum">${ICO_HUMANO} Pessoa</span><span class="mp-bot leg-m">${mascote('b:ai')} Robô</span><span><i class="on"></i> ativo nas últimas 24 h</span><span><i class="pa"></i> pausado</span></p></section>
     <section class="mp-cerebro"><h2>Segundo cérebro · hoje</h2><div><span>leads novos <b>${leadsHoje}</b></span><span>decisões <b>${decis}</b></span><span>tarefas <b>${tHoje}</b></span><span>mensagens a enviar <b>${msgs}</b></span><span>aguardando aprovação <b>${pend.length}</b></span><span>leads pedindo ação <b>${radarLista(null).length}</b></span></div></section></div>
+  ${faixaRobos(ms)}
   ${ofHtml()}
   <div class="mp-deptos" id="mp-deptos">${MAPA_DEPTOS.map(([id, nome, verbo], i) => { const xs = vis.filter(m => m.deptos.includes(id)); return `<section class="mp-d"><header><span>${String(i + 1).padStart(2, '0')}</span><h3>${esc(nome)}</h3><em>${esc(verbo)}</em></header>
       ${xs.length ? xs.map(mapaCartao).join('') : '<p class="empty">Ninguém neste filtro.</p>'}<footer>${xs.filter(m => m.tipo === 'humano').length} pessoa(s) · ${xs.filter(m => m.tipo === 'robo').length} robô(s)</footer></section>`; }).join('')}</div>
-  <div class="grid two"><section class="panel"><h2>Rotinas dos robôs</h2><div class="mp-rot">${rotinas.map(([t, h]) => `<div><span class="mp-bot">${ICO_ROBO}</span><b>${esc(t)}</b><small>${esc(h)}</small></div>`).join('')}</div></section>
+  <div class="grid two"><section class="panel"><h2>Rotinas dos robôs</h2><div class="mp-rot">${rotinas.map(([t, h, id]) => `<div><span class="mp-bot rot-m">${mascote(id)}</span><b>${esc(t)}</b><small>${esc(h)}</small></div>`).join('')}</div></section>
     <section class="panel"><h2>Para aprovar · ${pend.length}</h2>${pend.length ? `<div class="list">${pend.slice(0, 5).map(a => `<div class="item"><h3>${esc(a.titulo)}</h3><p>${esc(a.origem || '')} · ${haQuanto(a.criadoEm)}</p>${ehGestor ? `<div class="acts">${bt('aq-abrir', 'Revisar e decidir', { id: a.id }, 'elora')}</div>` : ''}</div>`).join('')}</div>` : vazio('Nada esperando decisão.')}</section></div>
-  <section class="panel"><h2>Acontecendo agora</h2>${feed.length ? `<div class="mp-feed" id="mp-feed">${feed.map(e => `<div><span class="${e.m.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}">${e.m.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}</span><p><b>${esc(e.m.nome)}</b> ${esc(String(e.txt || '').slice(0, 140))}</p><time>${haQuanto(e.em)}</time></div>`).join('')}</div>` : vazio('Ainda não há atividade registrada.')}
+  <section class="panel"><h2>Acontecendo agora</h2>${feed.length ? `<div class="mp-feed" id="mp-feed">${feed.map(e => `<div><span class="${e.m.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}">${icoMembro(e.m)}</span><p><b>${esc(e.m.nome)}</b> ${esc(String(e.txt || '').slice(0, 140))}</p><time>${haQuanto(e.em)}</time></div>`).join('')}</div>` : vazio('Ainda não há atividade registrada.')}
     <p class="sub">Ações de pessoas aparecem pelo nome a partir desta versão (o registro passou a guardar quem fez). Antes disso, o registro guardava só o perfil.</p></section>`;
 }
 function abrirMembro(id) {
   const m = mapaMembros().find(x => x.id === id); if (!m) return;
   const evs = m.evs.filter(e => tMs2(e.em)).sort((a, b) => tMs2(b.em) - tMs2(a.em)).slice(0, 20);
   const deps = m.deptos.map(d => (MAPA_DEPTOS.find(x => x[0] === d) || [, d])[1]).join(', ');
-  abrirDlg(`<h2><span class="${m.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}" style="vertical-align:-3px">${m.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}</span> ${esc(m.nome)}</h2>
+  abrirDlg(`<h2><span class="${m.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}" style="vertical-align:-3px;display:inline-block;width:30px;height:30px">${icoMembro(m)}</span> ${esc(m.nome)}</h2>
     <p class="sub">${m.tipo === 'robo' ? 'Robô' : 'Pessoa'} · ${esc(m.papel)} · ${esc(deps)}</p>${m.status ? `<p>${esc(m.status)}</p>` : ''}
     <h3 class="h3">Rastro recente</h3>${evs.length ? `<div class="tl">${evs.map(e => `<div><span>${fmtDataHora(e.em)}</span><span>${esc(String(e.txt || '').slice(0, 200))}</span></div>`).join('')}</div>` : `<p class="empty">Sem registro de atividade${m.tipo === 'robo' ? ' gravado nesta base' : ' com o nome desta pessoa'}.</p>`}
     <div class="acts">${bt('fechar', 'Fechar')}</div>`);
@@ -5454,35 +5581,38 @@ function ofHtml() {
   const salas = [['recepcao', 'Recepção', 'Hoje, Dashboard, Agenda'], ...MAPA_DEPTOS.map(d => [d[0], d[1], d[2]])];
   return `<section class="panel of-wrap"><h2>Escritório ao vivo <span class="pill ${OF_ROOM ? 'ok' : ''}" id="of-st">${OF_ROOM ? '● conectado' : 'presença ao vivo indisponível nesta abertura'}</span></h2>
     <div class="of" id="of">${salas.map(([id, n, v]) => `<div class="of-sala${id === 'recepcao' ? ' rec' : ''}" data-sala="${id}"><b>${esc(n)}</b><small>${esc(v)}</small></div>`).join('')}<div class="of-av" id="of-av" aria-live="polite"></div></div>
-    <p class="sub">Pessoas com o sistema aberto andam até a sala da tela em que estão (bonequinho aceso). Quem está fora do sistema fica apagado na sala de origem. Robôs ativos piscam trabalhando; cada atividade nova registrada voa como um pacote até a sala do setor.</p></section>`;
+    <p class="sub">Pessoas com o sistema aberto andam até a sala da tela em que estão, com o seu mascote aceso. Quem está fora do sistema fica apagado na sala de origem. Robôs ativos piscam trabalhando; cada atividade nova registrada voa como um pacote até a sala do setor.</p></section>`;
 }
 function ofSlot(salaEl, i, n, ofR) {
   const r = salaEl.getBoundingClientRect(), cols = Math.max(1, Math.floor((r.width - 16) / 58)), lin = Math.floor(i / cols), col = i % cols;
   return { x: r.left - ofR.left + 12 + col * 58 + 4, y: r.top - ofR.top + 48 + lin * 58 };
 }
 function ofPosicionar() {
-  const of = $('of'), lay = $('of-av'); if (!of || !lay) return; const ofR = of.getBoundingClientRect(); const st = $('of-st'); if (st) { st.className = 'pill' + (OF_ROOM ? ' ok' : ''); st.textContent = OF_ROOM ? `● conectado · ${OF_PEERS.length} com o sistema aberto` : 'presença ao vivo indisponível nesta abertura'; }
+  const of = $('of'), lay = $('of-av'); if (!of || !lay) return;
+  if (!of._ro && window.ResizeObserver) { of._ro = new ResizeObserver(() => { clearTimeout(of._t); of._t = setTimeout(() => { if (of.isConnected) ofPosicionar(); }, 120); }); of._ro.observe(of); } const ofR = of.getBoundingClientRect(); const st = $('of-st'); if (st) { st.className = 'pill' + (OF_ROOM ? ' ok' : ''); st.textContent = OF_ROOM ? `● conectado · ${OF_PEERS.length} com o sistema aberto` : 'presença ao vivo indisponível nesta abertura'; }
   const ms = mapaMembros(), on = new Map(); for (const p of OF_PEERS) { const pr = p.presence || {}; if (!pr.nome) continue; on.set(semAcento(String(pr.nome)) + '|' + p.peer, p); }
   const itens = [];
   // Pessoas online (uma por aba aberta) na sala da tela atual.
   const onNomes = new Set();
   for (const p of on.values()) { const pr = p.presence; const salas = ['recepcao', ...MAPA_DEPTOS.map(d => d[0])]; const sala = salas.includes(pr.depto) ? pr.depto : 'recepcao'; onNomes.add(semAcento(String(pr.nome)));
-    itens.push({ id: 'p:' + p.peer, tipo: 'humano', nome: String(pr.nome), sala, vivo: true, eu: p.sameTab, dica: `${pr.nome}${p.sameTab ? ' (você)' : ''} · agora em ${(MAPA_DEPTOS.find(d => d[0] === sala) || [, 'Recepção'])[1]}${pr.view ? ' · tela ' + pr.view : ''}` }); }
+    const mb = ms.find(x => x.tipo === 'humano' && semAcento(x.nome) === semAcento(String(pr.nome)));
+    itens.push({ id: 'p:' + p.peer, tipo: 'humano', nome: String(pr.nome), sala, vivo: true, eu: p.sameTab, membro: mb ? mb.id : null, dica: `${pr.nome}${p.sameTab ? ' (você)' : ''} · agora em ${(MAPA_DEPTOS.find(d => d[0] === sala) || [, 'Recepção'])[1]}${pr.view ? ' · tela ' + pr.view : ''}` }); }
   // Pessoas fora do sistema: sala de origem, apagadas.
   for (const m of ms.filter(x => x.tipo === 'humano')) if (!onNomes.has(semAcento(m.nome))) itens.push({ id: 'h:' + m.id, tipo: 'humano', nome: m.nome, sala: m.deptos[0], vivo: false, membro: m.id, dica: `${m.nome} · fora do sistema · última ação ${haQuanto(m.ult.em)}` });
   for (const m of ms.filter(x => x.tipo === 'robo')) itens.push({ id: 'r:' + m.id, tipo: 'robo', nome: m.nome, sala: m.deptos[0], vivo: !m.parado, membro: m.id, dica: `${m.nome} · ${m.status || m.papel}` });
   const porSala = {}; for (const it of itens) (porSala[it.sala] = porSala[it.sala] || []).push(it);
+  // Altura das salas cresce com quem está nelas (antes de calcular as posições).
+  for (const el of of.querySelectorAll('.of-sala')) { const n = (porSala[el.dataset.sala] || []).length, cols = Math.max(1, Math.floor((el.getBoundingClientRect().width - 16) / 58)); el.style.minHeight = (60 + Math.max(1, Math.ceil(n / cols)) * 58) + 'px'; }
+  const ofR2 = of.getBoundingClientRect();
   const vivos = new Set();
   for (const [sala, xs] of Object.entries(porSala)) { const el = of.querySelector(`[data-sala="${sala}"]`); if (!el) continue;
-    xs.forEach((it, i) => { const alvo = ofSlot(el, i, xs.length, ofR); vivos.add(it.id); let a = lay.querySelector(`[data-av="${CSS.escape(it.id)}"]`);
+    xs.forEach((it, i) => { const alvo = ofSlot(el, i, xs.length, ofR2); vivos.add(it.id); let a = lay.querySelector(`[data-av="${CSS.escape(it.id)}"]`);
       if (!a) { a = document.createElement('button'); a.type = 'button'; a.dataset.av = it.id; const ini = OF_POS[it.id] || alvo; a.style.transform = `translate(${ini.x}px,${ini.y}px)`; lay.appendChild(a); }
       a.className = `of-a ${it.tipo === 'robo' ? 'mp-bot' : 'mp-hum'}${it.vivo ? ' vivo' : ' fora'}${it.eu ? ' eu' : ''}`; a.title = it.dica; a.setAttribute('aria-label', it.dica);
       if (it.membro) { a.dataset.act = 'mapa-membro'; a.dataset.id = it.membro; } else { delete a.dataset.act; }
-      a.innerHTML = `<span class="mp-ic">${it.tipo === 'robo' ? ICO_ROBO : ICO_HUMANO}</span><small></small>`; a.querySelector('small').textContent = (OF_APELIDO[it.membro] || it.nome.split(' ')[0]).slice(0, 12);
+      a.innerHTML = `<span class="mp-ic">${it.tipo === 'robo' ? mascote(it.membro, it.vivo) : it.membro && mascPessoa(it.membro) ? mascote(it.membro, it.vivo, true) : ICO_HUMANO}</span><small></small>`; a.querySelector('small').textContent = (OF_APELIDO[it.membro] || it.nome.split(' ')[0]).slice(0, 12);
       requestAnimationFrame(() => { a.style.transform = `translate(${alvo.x}px,${alvo.y}px)`; }); OF_POS[it.id] = alvo; }); }
   for (const a of [...lay.querySelectorAll('.of-a')]) if (!vivos.has(a.dataset.av)) a.remove();
-  // Altura das salas cresce com quem está nelas.
-  for (const el of of.querySelectorAll('.of-sala')) { const n = (porSala[el.dataset.sala] || []).length, cols = Math.max(1, Math.floor((el.getBoundingClientRect().width - 16) / 58)); el.style.minHeight = (60 + Math.max(1, Math.ceil(n / cols)) * 58) + 'px'; }
   ofPacotes();
 }
 // Pacote voando: atividade nova desde a última olhada (registro de alterações, automações e aprovações).
@@ -11843,7 +11973,7 @@ Object.assign(ACOES, {
   'fonte-colar': d => { if (!estado.fonteColar || estado.fonteColar.id !== d.id) estado.fonteColar = { id: d.id, txt: '', itens: [] }; abrirColarFonte(d.id); },
   'fonte-ler': d => { const t = ($('fo-colar') || {}).value || ''; const its = lerColados(t).slice(0, 200); estado.fonteColar = { id: d.id, txt: t, itens: its }; if (!its.length) toast('Não encontrei leads no texto. Confira o formato.'); abrirColarFonte(d.id); },
   'fonte-importar': d => importarDaFonte(d.id),
-  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-f': d => { estado.mapaF = d.f; render(); }, 'mapa-membro': d => abrirMembro(d.id), 'aq-tab': d => { estado.aqTab = d.tab; render(); }, 'aq-abrir': d => abrirAprovacao(d.id), 'aq-aprovar': d => aqDecidir(d.id, true), 'aq-recusar': d => aqDecidir(d.id, false), 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
+  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-masc': () => abrirMeuMascote(), 'mapa-f': d => { estado.mapaF = d.f; render(); }, 'mapa-membro': d => abrirMembro(d.id), 'aq-tab': d => { estado.aqTab = d.tab; render(); }, 'aq-abrir': d => abrirAprovacao(d.id), 'aq-aprovar': d => aqDecidir(d.id, true), 'aq-recusar': d => aqDecidir(d.id, false), 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
   'au-ligar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; store.salvar('automacoes', d.id, { ...r, ativa: !r.ativa }); registrar('Comercial', `Automação ${r.ativa ? 'pausada' : 'ligada'}: ${r.nome}.`); toast(r.ativa ? 'Regra pausada.' : 'Regra ligada.'); if (!r.ativa) setTimeout(() => { auVarredura().catch(() => {}); }, 300); },
   'au-apagar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; if (estado.confirmar !== 'au' + d.id) { estado.confirmar = 'au' + d.id; return render(); } estado.confirmar = null; store.apagar('automacoes', d.id); registrar('Comercial', `Automação apagada: ${r.nome}.`); toast('Regra apagada.'); },
   'gz-tab': d => { estado.gzTab = d.tab; estado.confirmar = null; render(); }, 'gz-cat': d => { estado.gzCat = d.v || ''; render(); },
