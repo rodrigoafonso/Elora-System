@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 68). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 69). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -477,6 +477,7 @@ button.ax-card{text-align:left;width:100%;cursor:pointer;font:inherit;color:inhe
 @media (max-width:560px){.mp-deptos{grid-template-columns:minmax(0,1fr)}.mp-cerebro div{grid-template-columns:minmax(0,1fr)}}
 
 
+.ach-tel{flex-wrap:wrap}.ach-tel .inp{flex:1 1 170px;min-width:150px}
 /* Mensagens do app (estilo WhatsApp) */
 .ax-tabs button{position:relative} .ax-nb{position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#25D366;color:#fff;font:700 10.5px/18px var(--ui)}
 .wz{display:flex;flex-direction:column;min-height:calc(100dvh - 190px)}
@@ -2976,7 +2977,8 @@ const prAberto = p => ['mapeado', 'prospeccao', 'conversa'].includes(p.etapa);
 const prTent = p => (p.tentativas || []).slice().sort((a, b) => String(a.em).localeCompare(String(b.em)));
 // Próxima tentativa: a data combinada ou a cadência; depois de 6 tentativas sem conversa, sai da fila.
 function prProxima(p) {
-  if (!prAberto(p)) return null; const ts = prTent(p), n = ts.length;
+  // Achado do portal sem contato ainda: espera o corretor pegar o contato no anúncio.
+  if (!prAberto(p) || ehAchado(p)) return null; const ts = prTent(p), n = ts.length;
   if (p.retornoEm) return { data: p.retornoEm, canal: p.retornoCanal || 'ligacao', n: n + 1, combinado: true };
   if (p.etapa !== 'conversa' && n >= PR_CAD.length) return null;
   const base = n ? ts[n - 1].em.slice(0, 10) : String(p.criadoEm || REF).slice(0, 10), passo = p.etapa === 'conversa' ? 3 : (PR_CAD[n] - (n ? PR_CAD[n - 1] : 0));
@@ -4873,7 +4875,7 @@ ${txt.slice(0, 8000)}`, { cache: false, modelTier: 'default' });
 
 // ---------- Tela Prospecção ----------
 const prQuem = () => { const k = estado.perfil === 'corretor' ? DB.corretores[eu()] : null; return k ? k.nome : (prefLer('chatNome') || 'Equipe'); };
-const CANAL_T = { ligacao: 'Ligação', whatsapp: 'WhatsApp', visita: 'Visita' };
+const CANAL_T = { ligacao: 'Ligação', whatsapp: 'WhatsApp', visita: 'Visita', portal: 'Chat do portal' };
 function itemProsp(p, fila) {
   const x = prProxima(p), ts = prTent(p), u = ts[ts.length - 1], k = DB.corretores[p.resp], tel = soDigitos(p.telefone || '');
   return `<div class="item"><h3>${esc(p.descricao || 'Imóvel')} · ${esc([p.endereco, p.bairro].filter(Boolean).join(', ') || 'endereço a confirmar')}</h3>
@@ -4893,6 +4895,7 @@ function viewProsp(soC) {
     <div><span>Mapeados hoje</span><b class="num">${r.mapeadosHoje} de ${m.mapear}</b><em>imóveis e proprietários novos</em></div>
     <div><span>Na fila de hoje</span><b class="num">${r.fila.length}</b><em>tentativas vencidas ou para hoje</em></div>
     <div><span>Mapeado → captado</span><b class="num">${r.conv == null ? '—' : String(r.conv).replace('.', ',') + '%'}</b><em>${r.captadosPer} captado(s) em 30 dias</em></div></div>
+  ${painelAchados(soC)}
   <section class="panel"><h2>Fila de hoje · ${r.fila.length}</h2>${r.fila.length ? `<div class="list" id="pr-fila">${r.fila.slice(0, 40).map(p => itemProsp(p, true)).join('')}</div>` : vazio('Nenhum contato pendente hoje. Mapeie imóveis novos: placas, anúncios diretos de proprietários, condomínios e indicações.')}</section>
   <div class="grid two"><section class="panel"><h2>Funil dos últimos 30 dias</h2>${barrasH(r.funil.map(([nome, v]) => ({ nome, v, sub: 'imóveis' })), v => String(v))}
       ${r.perdas.length ? `<h3>Por que não captamos</h3>${barrasH(r.perdas.map(x => ({ nome: x.t, v: x.n, sub: 'imóveis' })), v => String(v))}` : ''}</section>
@@ -5707,6 +5710,70 @@ function msgNotificar() {
   clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ve'); }, 6000);
 }
 
+// ---------- Achados dos portais: o agente diário encontra, o corretor pega o contato no portal e a cadência segue ----------
+const PORTAIS = { 'vivareal': 'Viva Real', 'zapimoveis': 'ZAP Imóveis', 'olx': 'OLX', 'imovelweb': 'Imovelweb', 'quintoandar': 'QuintoAndar', 'chavesnamao': 'Chaves na Mão', 'mercadolivre': 'Mercado Livre' };
+const portalDe = u => { const h = String(u || '').toLowerCase(); const k = Object.keys(PORTAIS).find(x => h.includes(x)); return k ? PORTAIS[k] : (h.match(/^https:\/\/(?:www\.)?([^/]+)/) || [, 'Portal'])[1]; };
+// Quanto mais quente, mais alto na lista: particular, anunciado há tempo, preço reduzido, bairro com procura.
+function achadoNota(p) {
+  let n = 0; if (p.anunciante === 'particular') n += 3; if (+p.diasAnunciado >= 30) n += 2; if (+p.diasAnunciado >= 60) n += 1; if (p.precoCaiu) n += 2;
+  const b = semAcento(String(p.bairro || '').split(',')[0]); if (b && lista('leads').some(l => PROB[l.etapa] && semAcento(l.quer || '').includes(b))) n += 2; return n;
+}
+const ehAchado = p => p.achado && p.etapa === 'mapeado' && !p.telefone && !(p.tentativas || []).length;
+function painelAchados(soC) {
+  const k = soC ? eu() : null, xs = lista('prospects').filter(ehAchado).filter(p => !k || !p.resp || p.resp === k).sort((a, b) => achadoNota(b) - achadoNota(a) || String(b.achadoEm || '').localeCompare(String(a.achadoEm || '')));
+  const ag = (DB.config || {}).captacaoAgente || {};
+  return `<section class="panel" id="ach"><h2>Achados dos portais · ${xs.length}</h2>
+    <p class="sub">${ag.em ? `Agente diário: última busca em ${fmtDataHora(ag.em)}${ag.n != null ? `, ${ag.n} anúncio(s) novo(s)` : ''}${ag.bairros ? ` · bairros: ${esc(String(ag.bairros).slice(0, 160))}` : ''}.` : 'O agente diário ainda não rodou nesta base.'} Abra o anúncio, pegue o contato pelo botão do próprio portal e cole aqui: o imóvel entra na fila de ligação e WhatsApp.</p>
+    <div class="acts" style="justify-content:flex-start">${bt('ach-colar', 'Colar anúncio', {}, '')}${bt('ach-botao', 'Botão "Enviar para a Elora" no navegador')}</div>
+    ${xs.length ? `<div class="list" id="ach-lista">${xs.slice(0, 40).map(p => { const nt = achadoNota(p);
+      return `<div class="item"><h3>${esc(p.descricao || 'Imóvel')} · ${esc(p.bairro || 'bairro a confirmar')}</h3>
+      <p>${esc(p.portal || portalDe(p.link))}${p.preco ? ' · ' + brl(cent(p.preco)) : ''} · ${p.negocio === 'venda' ? 'venda' : 'locação'}${p.diasAnunciado != null && p.diasAnunciado !== '' ? ` · anunciado há ${+p.diasAnunciado} dia(s)` : ''}${p.anunciante ? ' · ' + (p.anunciante === 'particular' ? 'particular' : 'imobiliária') : ''}</p>
+      ${p.obs ? `<p>${esc(p.obs)}</p>` : ''}
+      <form class="acts ach-tel" data-id="${esc(p.id)}">${p.link && urlOk(p.link) ? `<a class="btn sm elora" href="${esc(p.link)}" target="_blank" rel="noopener">Abrir anúncio</a>` : ''}<input class="inp" name="tel" type="tel" maxlength="30" placeholder="Telefone ou WhatsApp do anúncio" aria-label="Telefone do anúncio"><input class="inp" name="nome" type="text" maxlength="80" placeholder="Nome (se aparecer)" aria-label="Nome do anunciante"><button class="btn sm" type="submit">Salvar contato</button>
+        ${bt('ach-chat', 'Chamei pelo chat do portal', { id: p.id })}${bt('ach-msg', 'Mensagem pronta', { id: p.id })}${bt('ach-fora', 'Descartar', { id: p.id })}</form>
+      <div class="side-r">${nt >= 5 ? pill('bad', 'Muito quente') : nt >= 3 ? pill('gold', 'Quente') : pill('', 'Normal')}${p.precoCaiu ? pill('ok', 'Preço caiu') : ''}</div></div>`; }).join('')}</div>` : vazio('Nenhum achado esperando contato.')}</section>`;
+}
+function salvarContatoAchado(f) {
+  const p = DB.prospects[f.dataset.id]; if (!p) return; const tel = (f.elements.tel.value || '').trim(), nome = (f.elements.nome.value || '').trim().slice(0, 80);
+  if (soDigitos(tel).length < 10) return toast('Informe o telefone com DDD.');
+  const o = { ...p, telefone: tel.slice(0, 30), ...(nome ? { proprietario: nome } : {}), contatoFonte: 'botão de contato do próprio anúncio', resp: p.resp || (estado.perfil === 'corretor' ? eu() : '') };
+  const dup = prDuplicado(o, p.id); if (dup && f.dataset.ok !== '1') { f.dataset.ok = '1'; return toast(`Atenção: ${dup.txt}. Salve de novo para gravar mesmo assim.`); }
+  store.salvar('prospects', p.id, o); registrar('Imóveis', `Contato do anúncio registrado: ${p.descricao || 'imóvel'}${p.bairro ? ', ' + p.bairro : ''}.`); toast('Contato salvo. O imóvel entrou na fila de ligação e WhatsApp.');
+}
+function abrirColarAnuncio() {
+  abrirDlg(`<h2>Colar anúncio</h2><p class="sub">Cole o que o botão "Enviar para a Elora" copiou, ou só o link do anúncio com o título e o preço.</p>
+    <div class="f"><label for="ach-txt">Anúncio</label><textarea id="ach-txt" rows="7" maxlength="6000" placeholder="https://www.olx.com.br/...&#10;Apartamento 2 quartos no Jardim Aquarius · R$ 2.300"></textarea></div>
+    <div class="acts">${bt('fechar', 'Cancelar')}${bt('ach-ler', 'Criar o cartão', {}, '')}</div>`, true);
+}
+function lerAnuncio(txt) {
+  let o = null; try { const j = JSON.parse(txt); if (j && (j.url || j.titulo)) o = j; } catch (e) {}
+  const t = String(txt || ''), url = o ? o.url : (t.match(/https:\/\/[^\s"'<>]+/) || [''])[0];
+  const titulo = (o ? o.titulo : t.replace(url, '').split('\n').map(x => x.trim()).filter(Boolean)[0] || '').slice(0, 100);
+  const precoTxt = o && o.preco ? String(o.preco) : (t.match(/R\$\s*[\d.]+(?:,\d{2})?/) || [''])[0], preco = precoTxt ? +String(precoTxt).replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.') : null;
+  const base = semAcento(titulo + ' ' + (o ? o.desc || '' : t)), bairros = [...new Set(lista('imoveis').map(i => String(bairro(i) || '')).concat(lista('prospects').map(p => String(p.bairro || '').split(',')[0])).filter(x => x.length > 3))];
+  const bai = bairros.find(b => base.includes(semAcento(b))) || '';
+  const negocio = /alug|locac|\/aluguel|\/alugar/.test(semAcento(titulo + ' ' + url)) ? 'locacao' : /venda|vende|comprar|\/venda/.test(semAcento(titulo + ' ' + url)) ? 'venda' : (preco && preco > 30000 ? 'venda' : 'locacao');
+  const anunciante = /particular|proprietario direto|direto com (o )?proprietario/.test(base) ? 'particular' : '';
+  return { url: urlOk(url) ? url : '', titulo, preco: preco && preco > 0 ? preco : null, bairro: bai, negocio, anunciante, desc: o ? String(o.desc || '').slice(0, 300) : '' };
+}
+function criarAchadoColado() {
+  const a = lerAnuncio(($('ach-txt') || {}).value || ''); if (!a.url && !a.titulo) return toast('Cole o link ou o título do anúncio.');
+  if (a.url && lista('prospects').some(p => p.link === a.url)) return toast('Este anúncio já está na Captação.');
+  const id = 'PR-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  store.salvar('prospects', id, { descricao: a.titulo || 'Imóvel do anúncio', negocio: a.negocio, bairro: a.bairro, fonte: 'portal', link: a.url, portal: portalDe(a.url), preco: a.preco, anunciante: a.anunciante, obs: a.desc, achado: true, achadoEm: new Date(AGORA()).toISOString(), etapa: 'mapeado', criadoEm: new Date(AGORA()).toISOString(), mapeadoPor: prQuem(), tentativas: [], resp: estado.perfil === 'corretor' ? eu() : '' });
+  registrar('Imóveis', `Anúncio enviado para a captação: ${a.titulo || a.url}.`); fecharDlg(); toast('Cartão criado em Achados dos portais.');
+}
+// Favorito do navegador: copia título, preço, link e descrição do anúncio aberto (o corretor cola em "Colar anúncio").
+const BOOKMARKLET = `javascript:(()=>{const m=n=>(document.querySelector('meta[property="'+n+'"],meta[name="'+n+'"]')||{}).content||'';const t=m('og:title')||document.title;const b=document.body.innerText;const p=(b.match(/R\\$\\s*[\\d.]+(,\\d{2})?/)||[''])[0];const d={elora:1,titulo:t.slice(0,140),preco:p,url:location.href.split('#')[0],desc:(m('og:description')||m('description')).slice(0,400)};const s=JSON.stringify(d);(navigator.clipboard?navigator.clipboard.writeText(s):Promise.reject()).then(()=>alert('Copiado para a Elora. Abra Captação > Colar anúncio.'),()=>prompt('Copie e cole na Elora:',s));})();`;
+function abrirBotaoNavegador() {
+  abrirDlg(`<h2>Botão "Enviar para a Elora"</h2><p class="sub">Funciona em qualquer portal (Viva Real, ZAP, OLX, Imovelweb). Um clique no anúncio aberto copia título, preço, link e descrição; depois é só colar em Captação.</p>
+    <ol class="steps"><li>Copie o código abaixo.</li><li>No navegador, crie um favorito novo (Ctrl+D, depois "Editar"), dê o nome <b>Enviar para a Elora</b> e cole o código no campo do endereço (URL).</li><li>Abra um anúncio e clique no favorito. Volte aqui e use <b>Colar anúncio</b>.</li></ol>
+    <div class="f"><label for="bm-cod">Código do botão</label><textarea id="bm-cod" class="ax-code" rows="5" readonly>${esc(BOOKMARKLET)}</textarea></div>
+    <p class="sub">O botão só lê o que está na tela do anúncio que você abriu. O contato do anunciante você pega no botão de contato do próprio portal.</p>
+    <div class="acts">${bt('bm-copiar', 'Copiar o código', {}, '')}${bt('fechar', 'Fechar')}</div>`, true);
+}
+
+document.addEventListener('submit', e => { const f = e.target; if (!f.classList || !f.classList.contains('ach-tel')) return; e.preventDefault(); salvarContatoAchado(f); });
 // ---------- Chat interno ----------
 const CHAT_CANAIS = () => [['geral', 'Geral'], ...DEPTOS.map(d => [semAcento(d).replace(/[^a-z]/g, ''), nd(d)])];
 const chatNome = () => estado.perfil === 'corretor' && DB.corretores[eu()] ? DB.corretores[eu()].nome : (prefLer('chatNome') || '');
@@ -12052,7 +12119,12 @@ Object.assign(ACOES, {
   'fonte-colar': d => { if (!estado.fonteColar || estado.fonteColar.id !== d.id) estado.fonteColar = { id: d.id, txt: '', itens: [] }; abrirColarFonte(d.id); },
   'fonte-ler': d => { const t = ($('fo-colar') || {}).value || ''; const its = lerColados(t).slice(0, 200); estado.fonteColar = { id: d.id, txt: t, itens: its }; if (!its.length) toast('Não encontrei leads no texto. Confira o formato.'); abrirColarFonte(d.id); },
   'fonte-importar': d => importarDaFonte(d.id),
-  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-masc': () => abrirMeuMascote(), 'mapa-f': d => { estado.mapaF = d.f; render(); }, 'mapa-membro': d => abrirMembro(d.id), 'aq-tab': d => { estado.aqTab = d.tab; render(); }, 'aq-abrir': d => abrirAprovacao(d.id), 'aq-aprovar': d => aqDecidir(d.id, true), 'aq-recusar': d => aqDecidir(d.id, false), 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
+  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-masc': () => abrirMeuMascote(), 'ach-colar': () => abrirColarAnuncio(), 'ach-botao': () => abrirBotaoNavegador(), 'ach-ler': () => criarAchadoColado(),
+  'bm-copiar': () => { const t = $('bm-cod'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(() => toast('Código copiado.'), () => { t.select(); toast('Selecionado: use Ctrl+C para copiar.'); }); },
+  'ach-chat': d => { resultadoProsp(d.id, 'sem_resposta', { canal: 'portal' }); toast('Registrado: mensagem enviada pelo chat do portal. O imóvel segue na cadência.'); },
+  'ach-msg': d => { const p = DB.prospects[d.id]; if (!p) return; abrirDlg(`<h2>Mensagem pronta</h2><p class="sub">Para enviar pelo chat do portal ou pelo WhatsApp do anúncio.</p><div class="f"><textarea id="ach-m" rows="7" class="ax-code">${esc(prMsg(p, quemSou()))}</textarea></div><div class="acts">${bt('ach-mcop', 'Copiar', {}, '')}${bt('fechar', 'Fechar')}</div>`); },
+  'ach-mcop': () => { const t = $('ach-m'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(() => toast('Mensagem copiada.'), () => { t.select(); toast('Selecionado: use Ctrl+C para copiar.'); }); },
+  'ach-fora': d => { const p = DB.prospects[d.id]; if (!p) return; store.salvar('prospects', p.id, { ...p, etapa: 'perdido', perdaEm: REF, obs: ((p.obs || '') + ' Descartado na triagem dos achados.').trim().slice(0, 400) }); toast('Descartado.'); }, 'mapa-f': d => { estado.mapaF = d.f; render(); }, 'mapa-membro': d => abrirMembro(d.id), 'aq-tab': d => { estado.aqTab = d.tab; render(); }, 'aq-abrir': d => abrirAprovacao(d.id), 'aq-aprovar': d => aqDecidir(d.id, true), 'aq-recusar': d => aqDecidir(d.id, false), 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
   'au-ligar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; store.salvar('automacoes', d.id, { ...r, ativa: !r.ativa }); registrar('Comercial', `Automação ${r.ativa ? 'pausada' : 'ligada'}: ${r.nome}.`); toast(r.ativa ? 'Regra pausada.' : 'Regra ligada.'); if (!r.ativa) setTimeout(() => { auVarredura().catch(() => {}); }, 300); },
   'au-apagar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; if (estado.confirmar !== 'au' + d.id) { estado.confirmar = 'au' + d.id; return render(); } estado.confirmar = null; store.apagar('automacoes', d.id); registrar('Comercial', `Automação apagada: ${r.nome}.`); toast('Regra apagada.'); },
   'gz-tab': d => { estado.gzTab = d.tab; estado.confirmar = null; render(); }, 'gz-cat': d => { estado.gzCat = d.v || ''; render(); },
