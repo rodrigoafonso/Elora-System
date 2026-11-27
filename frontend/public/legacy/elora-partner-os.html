@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 69). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 70). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -477,6 +477,9 @@ button.ax-card{text-align:left;width:100%;cursor:pointer;font:inherit;color:inhe
 @media (max-width:560px){.mp-deptos{grid-template-columns:minmax(0,1fr)}.mp-cerebro div{grid-template-columns:minmax(0,1fr)}}
 
 
+.mt-ops{display:grid;gap:6px;margin:6px 0;grid-column:1} .mt-ops>div{display:grid;grid-template-columns:52px minmax(0,1fr);gap:0 10px;align-items:center;background:var(--sunken);border-radius:8px;padding:7px 10px}
+.mt-ops b{grid-row:span 2;font:700 17px/1 var(--ui);color:var(--ok);text-align:center} .mt-ops span{font-size:12.5px;font-weight:600} .mt-ops small{font-size:11.5px;color:var(--muted)}
+.ach-nota{font-size:11px;color:var(--muted)} .ach-nota b{font:700 22px/1 var(--ui);color:var(--ink)} .ach-nota.a b{color:var(--bad)} .ach-nota.b b{color:var(--gold)}
 .ach-tel{flex-wrap:wrap}.ach-tel .inp{flex:1 1 170px;min-width:150px}
 /* Mensagens do app (estilo WhatsApp) */
 .ax-tabs button{position:relative} .ax-nb{position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#25D366;color:#fff;font:700 10.5px/18px var(--ui)}
@@ -3407,7 +3410,7 @@ const VIEWS = {
   // Menu enxuto: 7 entradas (cada uma reúne telas irmãs em abas, via GRUPOS_TELA) e Configurações no fim.
   // As pastas de acesso continuam as mesmas: Dinheiro = operacoes, Empresa = equipe (PASTA_ALIAS).
   equipe: [['#', 'Hoje'], ['meudia', 'Meu dia'], ['aprovacoes', 'Aprovações'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
-    ['#', 'Clientes'], ['comercial', 'Funil'], ['radar', 'Radar'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['pessoas', 'Pessoas'],
+    ['#', 'Clientes'], ['comercial', 'Funil'], ['radar', 'Radar'], ['casamento', 'Melhores opções'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['pessoas', 'Pessoas'],
     ['#', 'Imóveis'], ['im-locacao', 'Para locação'], ['im-venda', 'À venda'], ['im-cuidado', 'Recebimento e manutenção'], ['prospeccao', 'Captação'],
     ['#', 'Dinheiro'], ['locacao', 'Contratos de locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'],
     ['#', 'Marketing'], ['marketing', 'Marketing'], ['campanhas', 'Campanhas'],
@@ -3423,7 +3426,7 @@ const VIEWS = {
   inquilino: [['inquilino', 'Minha locação']],
 };
 // Telas irmãs: uma entrada no menu e abas no alto da tela.
-const GRUPOS_TELA = [['Hoje', ['meudia', 'aprovacoes', 'agenda']], ['Clientes', ['comercial', 'radar', 'compradores', 'flows', 'pessoas']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado', 'prospeccao']],
+const GRUPOS_TELA = [['Hoje', ['meudia', 'aprovacoes', 'agenda']], ['Clientes', ['comercial', 'radar', 'casamento', 'compradores', 'flows', 'pessoas']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado', 'prospeccao']],
   ['Dinheiro', ['locacao', 'financeiro', 'posvenda']], ['Marketing', ['marketing', 'campanhas']], ['Empresa', ['mapa', 'reunioes', 'tickets', 'rede', 'rodizio', 'ideias']],
   ['Análises', ['central', 'desempenho', 'resultados', 'inteligencia', 'guerra']], ['Configurações', ['automacoes', 'fontes', 'integracoes', 'juridico', 'acessos', 'dados']],
   ['Hoje', ['inicio', 'agenda-c', 'flows-c', 'radar-c']], ['Clientes', ['crm-c', 'leads-c', 'compradores-c']], ['Imóveis', ['imoveis-c', 'capt-c', 'prosp-c']],
@@ -3576,6 +3579,7 @@ const store = {
     const antesAu = col === 'leads' ? DB.leads[id] || null : undefined;
     DB[col] = { ...DB[col], [id]: { ...body, id } }; agendar();
     if (antesAu !== undefined && !AU_RODANDO) setTimeout(() => { auEvento(antesAu, DB.leads[id]).catch(() => {}); }, 0);
+    if (col === 'leads' && !MT_RODANDO && ehGestor && podeGravar && estado.perfil === 'equipe') setTimeout(() => { casarLead(DB.leads[id]).catch(() => {}); }, 60);
     if (this.modo === 'nuvem') { try { await this.db.doc(col + '/' + id).set(body); } catch (e) { erroDb(e); } } else this.gravarLocal();
   },
   // Várias gravações de uma vez: uma atualização da tela e, no modo local, uma escrita só.
@@ -5407,6 +5411,7 @@ const MASC_FORMAS = {
   losango: '<path d="M21 6a4 4 0 0 1 6 0l15 17a4 4 0 0 1 0 5L27 44a4 4 0 0 1-6 0L6 28a4 4 0 0 1 0-5z"/>',
   feijao: '<path d="M8 30c0-10 6-17 15-17 4 0 6 2 9 2 6 0 10 5 10 13 0 10-8 16-18 16S8 39 8 30z"/>',
   cogumelo: '<path d="M5 25C5 13 14 6 24 6s19 7 19 19c0 3-2 4-5 4H34v11a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V29h-4c-3 0-5-1-5-4z"/>',
+  coracao: '<path d="M24 44C13 37 5 30 5 20a9.5 9.5 0 0 1 19-4 9.5 9.5 0 0 1 19 4c0 10-8 17-19 24z"/>',
   fantasma: '<path d="M8 43V24C8 14 15 7 24 7s16 7 16 17v19c0 1-1 2-2 1l-3-3-3 3-3-3-3 3-3-3-3 3-3-3-3 3c-1 1-2 0-2-1z"/>',
 };
 // rosto: o = olhos (pontos, grandes, bravo, pisca, sono), b = boca (sorri, o, reta, nada), c = bochechas
@@ -5424,6 +5429,7 @@ const MASC = {
   'b:cobranca': { f: 'capsula', cor: '#3FAE6E', o: 'sono', b: 'sorri' },
   'b:casamais': { f: 'cogumelo', cor: '#F5A37A', o: 'pontos', b: 'sorri', c: 1 },
   'b:prosp': { f: 'feijao', cor: '#D9A33A', o: 'grandes', b: 'sorri' },
+  'b:match': { f: 'coracao', cor: '#E5484D', o: 'grandes', b: 'sorri', c: 1 },
 };
 const MASC_EXTRA = [['bolha', '#7FC8F8'], ['capsula', '#F7A6C4'], ['quad', '#B9A1F2'], ['gota', '#7DD3A8'], ['hexa', '#F6C177'], ['tri', '#8FB3FF']];
 // ---------- Mascote de cada pessoa: quem usa o sistema escolhe o seu (guardado em config.mascotes) ----------
@@ -5517,6 +5523,7 @@ function mapaMembros() {
   const rad = radarLista(null), gat = gatilhoFila(null).length + autoMsgFila(null).length, pend = aqPendentes().length;
   const sem = lista('leads').filter(l => PROB[l.etapa] && !l.corretorId).length;
   ms.push({ id: 'b:rodizio', tipo: 'robo', nome: 'Rodízio de leads', papel: 'Distribui leads aos corretores', deptos: ['comercial'], evs: [], ult: { em: null }, status: c.rodizioAuto && !c.rodizioPausado ? `Ligado · ${sem} lead(s) sem corretor` : `Desligado · ${sem} lead(s) sem corretor`, parado: !(c.rodizioAuto && !c.rodizioPausado) });
+  { const mts = lista('aprovacoes').filter(a => String(a.id).startsWith('AP-MT-')); ms.push({ id: 'b:match', tipo: 'robo', nome: 'Agente casamenteiro', papel: 'Casa cliente qualificado com os melhores imóveis', deptos: ['comercial'], evs: mts.map(a => ({ em: a.criadoEm, txt: a.titulo })), ult: ult(mts.map(a => ({ em: a.criadoEm, txt: a.titulo }))), status: matchAuto() ? `Ligado · ${mts.length} mensagem(ns) preparada(s)` : 'Pausado', parado: !matchAuto() }); }
   ms.push({ id: 'b:radar', tipo: 'robo', nome: 'Radar de leads', papel: 'Vigia prazos de atendimento', deptos: ['comercial'], evs: [], ult: { em: new Date().toISOString() }, status: `${rad.length} lead(s) pedindo ação` });
   ms.push({ id: 'b:gatilhos', tipo: 'robo', nome: 'Gatilhos por etapa', papel: 'Prepara mensagens do dia', deptos: ['comercial'], evs: [], ult: { em: new Date().toISOString() }, status: `${gat} mensagem(ns) para hoje` });
   ms.push({ id: 'b:aprov', tipo: 'robo', nome: 'Porteiro de aprovações', papel: 'Segura o que sai da empresa', deptos: ['gestao'], evs: lista('aprovacoes').map(a => ({ em: a.criadoEm, txt: `Pedido: ${a.titulo}` })), ult: ult(lista('aprovacoes').map(a => ({ em: a.criadoEm, txt: a.titulo }))), status: `${pend} pedido(s) aguardando` });
@@ -5592,7 +5599,7 @@ function ofDeptoDaTela(v) {
 }
 let OF_ROOM = null, OF_PEERS = [], OF_ULT_EV = null, OF_EU = { view: null, nome: null };
 const OF_POS = {};
-const OF_APELIDO = { 'b:rodizio': 'Rodízio', 'b:radar': 'Radar leads', 'b:gatilhos': 'Gatilhos', 'b:aprov': 'Aprovações', 'b:ai': 'Elora AI', 'b:concorrentes': 'Concorrência', 'b:inovacao': 'Inovação', 'b:monitor': 'Monitor', 'b:tickets': 'Tickets', 'b:integ': 'Integrações', 'b:cobranca': 'Cobrança', 'b:casamais': 'Casa+', 'b:prosp': 'Captação' };
+const OF_APELIDO = { 'b:rodizio': 'Rodízio', 'b:radar': 'Radar leads', 'b:gatilhos': 'Gatilhos', 'b:aprov': 'Aprovações', 'b:ai': 'Elora AI', 'b:concorrentes': 'Concorrência', 'b:inovacao': 'Inovação', 'b:monitor': 'Monitor', 'b:tickets': 'Tickets', 'b:integ': 'Integrações', 'b:cobranca': 'Cobrança', 'b:casamais': 'Casa+', 'b:prosp': 'Captação', 'b:match': 'Casamenteiro' };
 (async () => { try { const r = await window.claude.use('room'); if (!r) return; OF_ROOM = r;
   r.onPeers(ch => { OF_PEERS = ch.peers.filter(p => p.kind === 'viewer'); if (estado.view === 'mapa') ofPosicionar(); }, () => { OF_ROOM = null; });
   ofPresenca(); } catch (e) { OF_ROOM = null; } })();
@@ -5720,18 +5727,20 @@ function achadoNota(p) {
 }
 const ehAchado = p => p.achado && p.etapa === 'mapeado' && !p.telefone && !(p.tentativas || []).length;
 function painelAchados(soC) {
-  const k = soC ? eu() : null, xs = lista('prospects').filter(ehAchado).filter(p => !k || !p.resp || p.resp === k).sort((a, b) => achadoNota(b) - achadoNota(a) || String(b.achadoEm || '').localeCompare(String(a.achadoEm || '')));
+  const k = soC ? eu() : null, fl = estado.achF || 'bons', todos = lista('prospects').filter(ehAchado).filter(p => !k || !p.resp || p.resp === k).map(p => ({ p, sc: achadoScore(p) })).sort((a, b) => b.sc.s - a.sc.s || String(b.p.achadoEm || '').localeCompare(String(a.p.achadoEm || '')));
+  const xs = todos.filter(x => fl === 'todos' || (fl === 'bons' ? x.sc.s >= 35 : fl === 'quentes' ? x.sc.s >= 55 : fl === 'clientes' ? x.sc.clientes > 0 : x.p.anunciante === 'particular')), FL = [['bons', `Nota 35+ · ${todos.filter(x => x.sc.s >= 35).length}`], ['quentes', `Nota 55+ · ${todos.filter(x => x.sc.s >= 55).length}`], ['clientes', `Com clientes procurando · ${todos.filter(x => x.sc.clientes > 0).length}`], ['particular', 'Particulares'], ['todos', `Todos · ${todos.length}`]];
   const ag = (DB.config || {}).captacaoAgente || {};
-  return `<section class="panel" id="ach"><h2>Achados dos portais · ${xs.length}</h2>
+  return `<section class="panel" id="ach"><h2>Achados dos portais · ${todos.length}</h2>
     <p class="sub">${ag.em ? `Agente diário: última busca em ${fmtDataHora(ag.em)}${ag.n != null ? `, ${ag.n} anúncio(s) novo(s)` : ''}${ag.bairros ? ` · bairros: ${esc(String(ag.bairros).slice(0, 160))}` : ''}.` : 'O agente diário ainda não rodou nesta base.'} Abra o anúncio, pegue o contato pelo botão do próprio portal e cole aqui: o imóvel entra na fila de ligação e WhatsApp.</p>
     <div class="acts" style="justify-content:flex-start">${bt('ach-colar', 'Colar anúncio', {}, '')}${bt('ach-botao', 'Botão "Enviar para a Elora" no navegador')}</div>
-    ${xs.length ? `<div class="list" id="ach-lista">${xs.slice(0, 40).map(p => { const nt = achadoNota(p);
+    <div class="chips" role="group" aria-label="Filtrar achados">${FL.map(([v, t]) => `<button type="button" data-act="ach-f" data-f="${v}" aria-pressed="${fl === v}">${t}</button>`).join('')}</div>
+    ${xs.length ? `<div class="list" id="ach-lista">${xs.slice(0, 40).map(({ p, sc }) => {
       return `<div class="item"><h3>${esc(p.descricao || 'Imóvel')} · ${esc(p.bairro || 'bairro a confirmar')}</h3>
       <p>${esc(p.portal || portalDe(p.link))}${p.preco ? ' · ' + brl(cent(p.preco)) : ''} · ${p.negocio === 'venda' ? 'venda' : 'locação'}${p.diasAnunciado != null && p.diasAnunciado !== '' ? ` · anunciado há ${+p.diasAnunciado} dia(s)` : ''}${p.anunciante ? ' · ' + (p.anunciante === 'particular' ? 'particular' : 'imobiliária') : ''}</p>
-      ${p.obs ? `<p>${esc(p.obs)}</p>` : ''}
+      ${sc.mot.length ? `<p><b>Por que:</b> ${esc(sc.mot.join(' · '))}</p>` : ''}${p.obs ? `<p>${esc(p.obs)}</p>` : ''}
       <form class="acts ach-tel" data-id="${esc(p.id)}">${p.link && urlOk(p.link) ? `<a class="btn sm elora" href="${esc(p.link)}" target="_blank" rel="noopener">Abrir anúncio</a>` : ''}<input class="inp" name="tel" type="tel" maxlength="30" placeholder="Telefone ou WhatsApp do anúncio" aria-label="Telefone do anúncio"><input class="inp" name="nome" type="text" maxlength="80" placeholder="Nome (se aparecer)" aria-label="Nome do anunciante"><button class="btn sm" type="submit">Salvar contato</button>
         ${bt('ach-chat', 'Chamei pelo chat do portal', { id: p.id })}${bt('ach-msg', 'Mensagem pronta', { id: p.id })}${bt('ach-fora', 'Descartar', { id: p.id })}</form>
-      <div class="side-r">${nt >= 5 ? pill('bad', 'Muito quente') : nt >= 3 ? pill('gold', 'Quente') : pill('', 'Normal')}${p.precoCaiu ? pill('ok', 'Preço caiu') : ''}</div></div>`; }).join('')}</div>` : vazio('Nenhum achado esperando contato.')}</section>`;
+      <div class="side-r"><span class="ach-nota ${sc.s >= 75 ? 'a' : sc.s >= 55 ? 'b' : ''}"><b>${sc.s}</b>/100</span>${pill(sc.faixa[0], sc.faixa[1])}${p.precoCaiu ? pill('ok', 'Preço caiu') : ''}</div></div>`; }).join('')}</div>` : vazio(todos.length ? 'Nenhum achado neste filtro.' : 'Nenhum achado esperando contato.')}</section>`;
 }
 function salvarContatoAchado(f) {
   const p = DB.prospects[f.dataset.id]; if (!p) return; const tel = (f.elements.tel.value || '').trim(), nome = (f.elements.nome.value || '').trim().slice(0, 80);
@@ -5771,6 +5780,63 @@ function abrirBotaoNavegador() {
     <div class="f"><label for="bm-cod">Código do botão</label><textarea id="bm-cod" class="ax-code" rows="5" readonly>${esc(BOOKMARKLET)}</textarea></div>
     <p class="sub">O botão só lê o que está na tela do anúncio que você abriu. O contato do anunciante você pega no botão de contato do próprio portal.</p>
     <div class="acts">${bt('bm-copiar', 'Copiar o código', {}, '')}${bt('fechar', 'Fechar')}</div>`, true);
+}
+
+// ---------- Nota do achado (0 a 100): quanto vale captar este imóvel agora ----------
+// Procura real (clientes da Elora com orçamento compatível) 35 · anunciante particular 20 · tempo anunciado 15 · preço caiu 10 · preço frente ao mercado 20.
+function clientesParaAchado(p) {
+  const b = semAcento(String(p.bairro || '').split(',')[0]).trim(), compra = p.negocio === 'venda', preco = +p.preco || 0;
+  if (!b) return [];
+  return lista('leads').filter(l => PROB[l.etapa] && (compra ? l.tipo === 'Compra' : l.tipo !== 'Compra') && semAcento([l.quer, l.regiao].join(' ')).includes(b))
+    .filter(l => { const teto = +l.valorMax || (compra ? +((l.comprador || {}).valorAprovado) || 0 : 0); return !preco || !teto || preco <= teto * 1.15; });
+}
+function precoRef(p) {
+  const b = semAcento(String(p.bairro || '').split(',')[0]).trim(), modo = p.negocio === 'venda' ? 'venda' : 'locacao'; if (!b) return null;
+  const vs = [...lista('imoveis').filter(im => semAcento(String(bairro(im) || '')).includes(b)).map(im => +precoModo(im, modo) || 0), ...lista('prospects').filter(x => x.achado && x.id !== p.id && x.negocio === p.negocio && semAcento(String(x.bairro || '')).includes(b)).map(x => +x.preco || 0)].filter(v => v > 0).sort((a, c) => a - c);
+  return vs.length >= 2 ? vs[Math.floor(vs.length / 2)] : null;
+}
+function achadoScore(p) {
+  const cl = clientesParaAchado(p), ref = precoRef(p), preco = +p.preco || 0, d = +p.diasAnunciado || 0, mot = [];
+  let s = Math.min(35, cl.length * 12); if (cl.length) mot.push(`${cl.length} cliente(s) da Elora procuram este perfil`);
+  if (p.anunciante === 'particular') { s += 20; mot.push('anunciado pelo proprietário'); } else if (!p.anunciante) s += 8;
+  if (d >= 60) { s += 15; mot.push(`${d} dias anunciado`); } else if (d >= 30) { s += 10; mot.push(`${d} dias anunciado`); } else if (d >= 15) s += 5;
+  if (p.precoCaiu) { s += 10; mot.push('preço reduzido'); }
+  if (preco && ref) { const r = preco / ref; if (r <= 1) { s += 20; mot.push('preço igual ou abaixo do bairro'); } else if (r <= 1.1) s += 10; else mot.push('preço acima do bairro'); } else s += 5;
+  s = Math.min(100, Math.round(s)); const faixa = s >= 75 ? ['bad', 'Captar já'] : s >= 55 ? ['gold', 'Quente'] : s >= 35 ? ['', 'Morno'] : ['', 'Frio'];
+  return { s, faixa, mot, clientes: cl.length };
+}
+// ---------- Agente casamenteiro: para cada cliente qualificado, as melhores opções da carteira, prontas para aprovar e enviar ----------
+const matchAuto = () => (DB.config || {}).matchAuto !== false;
+function melhoresOpcoes(l, n = 3) { const q = qualificacao(l); if (!q.pronto) return []; return q.opcoes.filter(x => !jaTratado(l, x.im.id)).slice(0, n); }
+function textoOpcoes(l, ops) {
+  const compra = l.tipo === 'Compra', cor = DB.corretores[l.corretorId], quem = cor ? `${tratar(cor.nome)}, da ${EMPRESA}` : quemSou();
+  return `Olá, ${tratar(l.nome)}! Separei ${ops.length === 1 ? 'uma opção' : ops.length + ' opções'} que combinam com o que você procura:\n` +
+    ops.map((x, i) => `${i + 1}) ${x.im.descricao}, ${bairro(x.im)} (${x.im.id}): ${x.im.sobConsulta ? 'valor sob consulta' : brl(cent(compra ? x.im.precoVenda : x.im.pedido)) + (compra ? '' : ' por mês')}`).join('\n') +
+    `\nQuer visitar alguma? Me diga o melhor dia e horário. ${quem}`;
+}
+const matchChave = (l, ops) => 'AP-MT-' + auHash(l.id + '|' + ops.map(x => x.im.id).join(','));
+async function casarLead(l, forcar = false) {
+  if (!l || !PROB[l.etapa] || !l.telefone) return false; const ops = melhoresOpcoes(l); if (!ops.length) return false;
+  const id = matchChave(l, ops); if ((DB.aprovacoes || {})[id]) return false; if (!forcar && !matchAuto()) return false;
+  return aqPedir(id, { tipo: 'mensagem', titulo: `Melhores opções para ${l.nome}`, conteudo: textoOpcoes(l, ops), canal: 'whatsapp', origem: 'Agente casamenteiro', pedidoPor: 'Agente casamenteiro', ref: { col: 'leads', id: l.id, k: 'mt-' + id.slice(6) } });
+}
+let MT_RODANDO = false;
+async function casarVarredura() {
+  if (MT_RODANDO || !podeGravar || estado.perfil !== 'equipe' || !ehGestor || !matchAuto()) return; MT_RODANDO = true;
+  try { for (const l of lista('leads')) await casarLead(l); } catch (e) {} finally { MT_RODANDO = false; }
+}
+setInterval(() => { casarVarredura().catch(() => {}); }, 300000);
+function viewCasamento() {
+  const ls = lista('leads').filter(l => PROB[l.etapa]).map(l => ({ l, q: qualificacao(l) })).filter(x => x.q.pronto).map(x => ({ ...x, ops: melhoresOpcoes(x.l) })).sort((a, b) => b.q.pts - a.q.pts);
+  const st = l => { const ap = lista('aprovacoes').filter(a => a.ref && a.ref.id === l.id && String(a.id).startsWith('AP-MT-')).sort((a, b) => String(b.criadoEm).localeCompare(String(a.criadoEm)))[0]; return ap ? (AQ_ST[ap.status] || ['', ap.status]) : null; };
+  return cab('Melhores opções', 'O agente casamenteiro cruza cada cliente qualificado com a carteira: filtra pelo orçamento e pela renda, dá a nota de compatibilidade e prepara a mensagem com as melhores opções. A mensagem vai para a Central de aprovações; depois de aprovada, o corretor envia.',
+    ehGestor ? bt('mt-auto', matchAuto() ? 'Agente ligado · pausar' : 'Agente pausado · ligar', {}, matchAuto() ? '' : 'elora') : '') +
+  `<section class="panel"><h2>Clientes qualificados · ${ls.length}</h2>${ls.length ? `<div class="list" id="mt-lista">${ls.map(({ l, q, ops }) => { const s = st(l);
+    return `<div class="item"><h3>${esc(l.nome)} · ${esc(l.tipo || '')}${DB.corretores[l.corretorId] ? ' · ' + esc(DB.corretores[l.corretorId].nome) : ''}</h3><p>${esc(String(l.quer || '').slice(0, 140))}</p>
+      ${ops.length ? `<div class="mt-ops">${ops.map(x => `<div><b>${x.pct}%</b><span>${esc(x.im.descricao)}, ${esc(bairro(x.im))} (${esc(x.im.id)})</span><small>${esc((x.motivos || []).slice(0, 3).join(' · '))}</small></div>`).join('')}</div>` : '<p class="empty">Nenhum imóvel da carteira cabe hoje no que ele procura. Ele entra na procura do Mapa de oportunidades.</p>'}
+      <div class="acts">${ops.length && l.telefone ? bt('mt-agora', 'Preparar a mensagem agora', { id: l.id }, 'elora') : ''}${bt('atendimento', 'Atendimento', { id: l.id })}</div>
+      <div class="side-r">${pill(q.temp === 'quente' ? 'bad' : q.temp === 'morno' ? 'gold' : '', q.temp)}${s ? pill(s[0], s[1]) : ''}</div></div>`; }).join('')}</div>` : vazio('Nenhum cliente com as perguntas essenciais respondidas ainda.')}
+    <p class="sub">Roda a cada 5 minutos e ao abrir o sistema, para cliente qualificado com telefone. Mesma combinação de imóveis não gera pedido de novo; imóvel novo na carteira gera uma combinação nova.</p></section>`;
 }
 
 document.addEventListener('submit', e => { const f = e.target; if (!f.classList || !f.classList.contains('ach-tel')) return; e.preventDefault(); salvarContatoAchado(f); });
@@ -10915,7 +10981,7 @@ for (const p of BV_PERFIS) { const ini = AX_VIEWS[p].inicio, mais = AX_VIEWS[p].
   AX_VIEWS[p].inicio = feed => { const h = ini(feed), i = h.indexOf('</section>'); return i < 0 ? bvEntrada() + h : h.slice(0, i + 10) + bvEntrada() + h.slice(i + 10); };
   AX_VIEWS[p].mais = feed => mais(feed).replace('<div class="ax-lista">', `<div class="ax-lista"><button type="button" data-act="app-aba" data-aba="buscar">${ic('busca', 22, 'i')}<b>Buscar imóveis</b><small>Por voz ou por escrito, para comprar ou alugar</small>${ic('seta', 18, 's')}</button>`); }
 
-const RENDER = { mapa: () => viewMapa(), meudia: () => viewMeuDia(), aprovacoes: () => viewAprovacoes(), integracoes: () => viewIntegracoes(), quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), radar: () => viewRadar(false), 'radar-c': () => viewRadar(true), fontes: () => viewFontes(), automacoes: () => viewAutomacoes(), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
+const RENDER = { casamento: () => viewCasamento(), mapa: () => viewMapa(), meudia: () => viewMeuDia(), aprovacoes: () => viewAprovacoes(), integracoes: () => viewIntegracoes(), quem: () => viewQuem(), acessos: () => viewAcessos(), guerra: () => viewGuerra(), prospeccao: () => viewProsp(false), 'prosp-c': () => viewProsp(true), flows: () => viewFlows(false), 'flows-c': () => viewFlows(true), radar: () => viewRadar(false), 'radar-c': () => viewRadar(true), fontes: () => viewFontes(), automacoes: () => viewAutomacoes(), chat: () => viewChat(), 'chat-c': () => viewChat(), reunioes: () => viewReunioes(), 'treino-c': () => viewTreinoCorretor(), compradores: () => viewCompradores(false), 'compradores-c': () => viewCompradores(true), inteligencia: () => viewInteligencia(), 'capt-c': () => viewCaptacoesCorretor(), 'im-venda': () => { estado.imTab = 'venda'; return viewImoveis(); }, 'im-locacao': () => { estado.imTab = 'locacao'; return viewImoveis(); }, 'im-cuidado': () => { estado.imTab = 'cuidado'; return viewImoveis(); }, 'leads-c': viewLeadsCorretor, 'crm-c': viewCrmCorretor, 'imoveis-c': viewImoveisCorretor, campanhas: viewComercial, desempenho: viewComercial, rodizio: viewComercial, tickets: viewTickets, resultados: viewResultados, central: viewCentral, comercial: viewComercial, imoveis: viewImoveis, locacao: viewLocacao, financeiro: viewFinanceiro, posvenda: viewPosvenda, pessoas: viewPessoas, rede: viewRede, juridico: viewJuridico, dados: viewDados,
   agenda: () => viewAgenda(false), 'agenda-c': () => viewAgenda(true), ideias: () => viewIdeias(false), 'ideias-c': () => viewIdeias(true), inicio: viewInicio, carteira: viewCarteira, extrato: viewExtrato, ia: () => cab('Elora AI', 'Lê a sua carteira, o extrato e as pendências.') + painelIA('corretor'), proprietario: viewProprietario, inquilino: viewInquilino };
 // ---------- Elora Casa+: a venda ou a locação abre uma jornada de serviços ----------
 // O cliente escolhe profissionais parceiros no app; a Elora recebe uma comissão do parceiro quando o serviço é feito
@@ -11526,7 +11592,7 @@ function render() {
   $('in-ref').value = REF;
   $('modo').textContent = store.modo === 'nuvem' ? 'Dados gravados no banco desta página, na sua conta.' : 'Dados gravados apenas neste navegador.';
   if (!estado.pronto) return;
-  sincronizarTickets(); if (!estado.auVarreu) { estado.auVarreu = true; setTimeout(() => { auVarredura().catch(() => {}); }, 2000); }
+  sincronizarTickets(); if (!estado.auVarreu) { estado.auVarreu = true; setTimeout(() => { auVarredura().catch(() => {}); }, 2000); setTimeout(() => { casarVarredura().catch(() => {}); }, 3500); }
   if (estado.app) { const ap = AX_PERFIS[estado.perfil] ? estado.perfil : 'proprietario', ops = OPCOES_QUEM[ap](); estado.perfil = ap; estado.view = ap; if (!ops.some(o => o[0] === estado.quem[ap])) estado.quem[ap] = ops.length ? ops[0][0] : null; $('appx').innerHTML = viewApp(); trDom($('appx')); try { msgNotificar(); } catch (e) {} return; }
   { const wp = $('wz-push'); if (wp) wp.classList.remove('ve'); }
   if (estado.perfil === 'equipe' && !viewPermitida(estado.view)) { estado.view = primeiraPermitida(); try { history.replaceState(null, '', '#' + estado.view); } catch (e) {} }
@@ -12119,10 +12185,12 @@ Object.assign(ACOES, {
   'fonte-colar': d => { if (!estado.fonteColar || estado.fonteColar.id !== d.id) estado.fonteColar = { id: d.id, txt: '', itens: [] }; abrirColarFonte(d.id); },
   'fonte-ler': d => { const t = ($('fo-colar') || {}).value || ''; const its = lerColados(t).slice(0, 200); estado.fonteColar = { id: d.id, txt: t, itens: its }; if (!its.length) toast('Não encontrei leads no texto. Confira o formato.'); abrirColarFonte(d.id); },
   'fonte-importar': d => importarDaFonte(d.id),
-  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-masc': () => abrirMeuMascote(), 'ach-colar': () => abrirColarAnuncio(), 'ach-botao': () => abrirBotaoNavegador(), 'ach-ler': () => criarAchadoColado(),
+  'au-tab': d => { estado.auTab = d.tab; render(); }, 'mapa-masc': () => abrirMeuMascote(), 'ach-colar': () => abrirColarAnuncio(), 'ach-f': d => { estado.achF = d.f; render(); },
+  'mt-auto': () => { if (!ehGestor) return; const v = !matchAuto(); salvarConfig({ matchAuto: v }); registrar('Comercial', `Agente casamenteiro ${v ? 'ligado' : 'pausado'}.`); toast(v ? 'Agente casamenteiro ligado.' : 'Agente casamenteiro pausado.'); if (v) casarVarredura(); },
+  'mt-agora': d => { casarLead(DB.leads[d.id], true).then(ok => toast(ok ? 'Mensagem com as opções enviada para a Central de aprovações.' : 'Essas opções já estão na Central de aprovações.')).catch(() => toast('Não consegui preparar agora.')); }, 'ach-botao': () => abrirBotaoNavegador(), 'ach-ler': () => criarAchadoColado(),
   'bm-copiar': () => { const t = $('bm-cod'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(() => toast('Código copiado.'), () => { t.select(); toast('Selecionado: use Ctrl+C para copiar.'); }); },
   'ach-chat': d => { resultadoProsp(d.id, 'sem_resposta', { canal: 'portal' }); toast('Registrado: mensagem enviada pelo chat do portal. O imóvel segue na cadência.'); },
-  'ach-msg': d => { const p = DB.prospects[d.id]; if (!p) return; abrirDlg(`<h2>Mensagem pronta</h2><p class="sub">Para enviar pelo chat do portal ou pelo WhatsApp do anúncio.</p><div class="f"><textarea id="ach-m" rows="7" class="ax-code">${esc(prMsg(p, quemSou()))}</textarea></div><div class="acts">${bt('ach-mcop', 'Copiar', {}, '')}${bt('fechar', 'Fechar')}</div>`); },
+  'ach-msg': d => { const p = DB.prospects[d.id]; if (!p) return; const nc = achadoScore(p).clientes; abrirDlg(`<h2>Mensagem pronta</h2><p class="sub">Para enviar pelo chat do portal ou pelo WhatsApp do anúncio.</p><div class="f"><textarea id="ach-m" rows="8" class="ax-code">${esc(prMsg(p, quemSou()) + (nc ? `\n\nHoje tenho ${nc === 1 ? 'um cliente procurando' : nc + ' clientes procurando'} um imóvel com esse perfil${p.bairro ? ' no ' + String(p.bairro).split(',')[0] : ''}.` : ''))}</textarea></div><div class="acts">${bt('ach-mcop', 'Copiar', {}, '')}${bt('fechar', 'Fechar')}</div>`); },
   'ach-mcop': () => { const t = $('ach-m'); if (!t) return; (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(() => toast('Mensagem copiada.'), () => { t.select(); toast('Selecionado: use Ctrl+C para copiar.'); }); },
   'ach-fora': d => { const p = DB.prospects[d.id]; if (!p) return; store.salvar('prospects', p.id, { ...p, etapa: 'perdido', perdaEm: REF, obs: ((p.obs || '') + ' Descartado na triagem dos achados.').trim().slice(0, 400) }); toast('Descartado.'); }, 'mapa-f': d => { estado.mapaF = d.f; render(); }, 'mapa-membro': d => abrirMembro(d.id), 'aq-tab': d => { estado.aqTab = d.tab; render(); }, 'aq-abrir': d => abrirAprovacao(d.id), 'aq-aprovar': d => aqDecidir(d.id, true), 'aq-recusar': d => aqDecidir(d.id, false), 'au-nova': () => abrirAutomacao(null), 'au-editar': d => abrirAutomacao(d.id), 'au-receita': d => abrirAutomacao(null, JSON.parse(JSON.stringify(AU_RECEITAS[+d.i] || AU_RECEITAS[0]))),
   'au-ligar': d => { const r = (DB.automacoes || {})[d.id]; if (!r || !ehGestor) return; store.salvar('automacoes', d.id, { ...r, ativa: !r.ativa }); registrar('Comercial', `Automação ${r.ativa ? 'pausada' : 'ligada'}: ${r.nome}.`); toast(r.ativa ? 'Regra pausada.' : 'Regra ligada.'); if (!r.ativa) setTimeout(() => { auVarredura().catch(() => {}); }, 300); },

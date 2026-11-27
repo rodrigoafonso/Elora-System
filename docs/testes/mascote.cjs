@@ -27,7 +27,7 @@ const chk = (c, m) => { if (c) ok++; else falhas.push(m); console.log(c ? 'OK ' 
   chk(robosCertos, 'Robôs dentro das salas, abaixo do título');
   const o = await p.locator('#of').boundingBox(); await p.screenshot({ path: S('k2-of.png'), clip: { x: o.x, y: o.y, width: o.width, height: Math.min(o.height, 560) } });
   const r = await p.locator('.eq-robos').boundingBox(); await p.screenshot({ path: S('k3-faixa.png'), clip: { x: r.x, y: r.y - 10, width: r.width, height: r.height + 20 } });
-  await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(2500); chk(await p.evaluate(`!!DB.config.mascotes['g:pedro']`), 'Continua depois de recarregar');
+  await p.waitForTimeout(2500); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(2500); chk(await p.evaluate(`!!(DB.config.mascotes||{})['g:pedro']`), 'Continua depois de recarregar');
   await p.setViewportSize({ width: 390, height: 844 }); await p.waitForTimeout(1500); chk(await p.evaluate('document.documentElement.scrollWidth') <= 390, 'Celular sem rolagem lateral');
   chk(!errs.length, 'Sem erros: ' + errs.join(' / '));
   console.log(`\n${ok} ok, ${falhas.length} falha(s)`); await b.close(); })();
