@@ -36,6 +36,15 @@ cd backend
 ./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
 
+## Configuração, modo de demonstração e integrações
+
+- Variáveis do back-end: copie `backend/.env.example` para `.env` **no servidor** e preencha. Chaves nunca vão para o código.
+- Sem as variáveis de um canal (WhatsApp, e-mail, redes, anúncios, agenda), ele fica em **modo demonstração**: um pedido aprovado
+  não é enviado, e o registro diz "nada foi enviado". `GET /api/v1/integracoes` mostra a situação de cada canal.
+- Toda ação externa passa pela fila de aprovação (`/api/v1/aprovacoes`): quem aprovou, quando e o texto exato ficam registrados.
+- Saúde da aplicação: `GET /actuator/health` (público).
+- Detalhes e limitações: [`docs/funcionalidades/aprovacoes-e-integracoes.md`](docs/funcionalidades/aprovacoes-e-integracoes.md).
+
 ## Comandos de qualidade
 
 | Front-end (`frontend/`) | Back-end (`backend/`) |
