@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Protótipo de referência (Elora Partner OS, versão 67). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
+<!-- Protótipo de referência (Elora Partner OS, versão 68). Não editar: é a especificação visual e de comportamento das telas ainda não migradas. -->
 <style>body.embed .side,body.embed .tabbar{display:none!important}body.embed .app{grid-template-columns:minmax(0,1fr)!important}</style>
 <script>
 /* Modo embutido (?embed=1): usado pelo front-end React enquanto a tela não é migrada.
@@ -476,6 +476,26 @@ button.ax-card{text-align:left;width:100%;cursor:pointer;font:inherit;color:inhe
 @media (max-width:860px){.mp-topo{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.mp-deptos{grid-template-columns:minmax(0,1fr)}.mp-cerebro div{grid-template-columns:minmax(0,1fr)}}
 
+
+/* Mensagens do app (estilo WhatsApp) */
+.ax-tabs button{position:relative} .ax-nb{position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#25D366;color:#fff;font:700 10.5px/18px var(--ui)}
+.wz{display:flex;flex-direction:column;min-height:calc(100dvh - 190px)}
+.wz-top{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#075E54;color:#fff}
+.wz-top b{display:block;font:600 15px/1.2 var(--ui)} .wz-top small{font-size:11.5px;opacity:.8}
+.wz-av{width:38px;height:38px;border-radius:50%;background:var(--side);color:var(--side-gold);display:grid;place-items:center;font:400 18px/1 var(--display);flex:none;box-shadow:0 0 0 2px #fff3}
+.wz-lista{flex:1;display:flex;flex-direction:column;gap:6px;padding:12px 12px 20px;background:#E9E2D8 radial-gradient(circle at 10px 10px,#0000000a 1.2px,transparent 1.3px) 0 0/22px 22px;overflow-y:auto;max-height:calc(100dvh - 230px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wz-lista{background-color:#0B141A}:root:not([data-theme="light"]) .wz-b{background:#202C33;color:#E9EDEF}}
+:root[data-theme="dark"] .wz-lista{background-color:#0B141A} :root[data-theme="dark"] .wz-b{background:#202C33;color:#E9EDEF}
+.wz-dia{align-self:center;margin:8px 0 4px} .wz-dia span{background:#FFFFFFd0;color:#54656F;border-radius:8px;padding:4px 10px;font:600 11px var(--ui);box-shadow:0 1px 1px #0001}
+.wz-b{align-self:flex-start;max-width:86%;background:#fff;color:#111B21;border-radius:0 10px 10px 10px;padding:7px 10px 6px;box-shadow:0 1px 1px #0000001f;position:relative;display:flex;flex-direction:column;gap:3px}
+.wz-b::before{content:"";position:absolute;left:-7px;top:0;border-style:solid;border-width:0 8px 9px 0;border-color:transparent #fff transparent transparent}
+.wz-b.nova{box-shadow:0 0 0 2px #25D36655,0 1px 1px #0000001f}
+.wz-de{font:600 12.5px/1.3 var(--ui);color:#1F7A55} .wz-b p{font-size:13.5px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+.wz-b time{align-self:flex-end;font-size:10.5px;color:#667781} .wz-bt{align-self:flex-start;margin-top:3px}
+.wz-vazio{margin:auto;text-align:center;color:#54656F;font-size:13px;background:#FFFFFFd0;border-radius:10px;padding:12px}
+#wz-push{position:fixed;z-index:60;top:calc(10px + env(safe-area-inset-top,0px));left:50%;width:min(440px,calc(100vw - 20px));transform:translate(-50%,-140%);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);display:flex;gap:10px;align-items:center;text-align:left;border:0;border-radius:18px;padding:10px 14px;background:#1F2C34f2;color:#fff;box-shadow:0 10px 30px #0006;cursor:pointer}
+#wz-push.ve{transform:translate(-50%,0)} #wz-push .wz-pt{display:flex;flex-direction:column;min-width:0} #wz-push small{font:600 10.5px var(--ui);letter-spacing:.06em;color:#8696A0}
+#wz-push b{font:600 13.5px/1.3 var(--ui)} #wz-push .wz-pt>span{font-size:13px;color:#D1D7DB;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 /* Mascotes dos robôs */
 .masc{width:100%;height:100%;overflow:visible;display:block}
 .masc.vivo .masc-olhos{transform-box:fill-box;transform-origin:center;animation:masc-pisca 4.2s infinite}
@@ -3380,18 +3400,18 @@ if (typeof module !== 'undefined') Object.assign(module.exports, { FAIXAS_RENDA,
 
 <script>
 const EMPRESA = 'Elora Inteligência Imobiliária';
-const estado = { simC: { capt: 2, alug: 3000, conv: 60 }, pronto: false, perfil: 'equipe', quem: {}, view: 'central', mesExt: null, mesFin: null, sim: null, conversa: { equipe: [], corretor: [] }, ocupado: false, confirmar: null };
+const estado = { simC: { capt: 2, alug: 3000, conv: 60 }, pronto: false, perfil: 'equipe', quem: {}, view: 'meudia', mesExt: null, mesFin: null, sim: null, conversa: { equipe: [], corretor: [] }, ocupado: false, confirmar: null };
 const VIEWS = {
-  // Menu por pergunta do dia a dia: Hoje, Clientes, Imóveis, Operações, Equipe, Análises e Configurações.
-  // Telas irmãs viram abas de uma entrada só (GRUPOS_TELA); o endereço de cada tela continua o mesmo.
-  equipe: [['#', 'Hoje'], ['meudia', 'Meu dia'], ['mapa', 'Mapa da empresa'], ['central', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
-    ['#', 'Clientes'], ['comercial', 'Funil de atendimento'], ['radar', 'Radar'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['fontes', 'Fontes de captação'], ['automacoes', 'Automações'], ['pessoas', 'Pessoas'],
-    ['#', 'Marketing'], ['marketing', 'Marketing'], ['campanhas', 'Campanhas'],
+  // Menu enxuto: 7 entradas (cada uma reúne telas irmãs em abas, via GRUPOS_TELA) e Configurações no fim.
+  // As pastas de acesso continuam as mesmas: Dinheiro = operacoes, Empresa = equipe (PASTA_ALIAS).
+  equipe: [['#', 'Hoje'], ['meudia', 'Meu dia'], ['aprovacoes', 'Aprovações'], ['agenda', 'Agenda'], ['chat', 'Chat da equipe'],
+    ['#', 'Clientes'], ['comercial', 'Funil'], ['radar', 'Radar'], ['compradores', 'Compradores'], ['flows', 'Sequências'], ['pessoas', 'Pessoas'],
     ['#', 'Imóveis'], ['im-locacao', 'Para locação'], ['im-venda', 'À venda'], ['im-cuidado', 'Recebimento e manutenção'], ['prospeccao', 'Captação'],
-    ['#', 'Operações'], ['locacao', 'Locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'],
-    ['#', 'Equipe'], ['rede', 'Corretores'], ['rodizio', 'Rodízio e funil'], ['tickets', 'Tickets e Kanban'], ['reunioes', 'Reuniões'], ['ideias', 'Projeto Boa Ideia'],
-    ['#', 'Análises'], ['desempenho', 'Comercial'], ['resultados', 'Resultados e OKRs'], ['inteligencia', 'Inteligência'], ['guerra', 'Sala de guerra'],
-    ['#', 'Configurações'], ['juridico', 'Empresa e jurídico'], ['acessos', 'Acessos'], ['integracoes', 'Integrações'], ['dados', 'Dados']],
+    ['#', 'Dinheiro'], ['locacao', 'Contratos de locação'], ['financeiro', 'Financeiro'], ['posvenda', 'Elora Casa+'],
+    ['#', 'Marketing'], ['marketing', 'Marketing'], ['campanhas', 'Campanhas'],
+    ['#', 'Empresa'], ['mapa', 'Mapa da empresa'], ['reunioes', 'Reuniões'], ['tickets', 'Tickets e Kanban'], ['rede', 'Corretores'], ['rodizio', 'Rodízio e funil'], ['ideias', 'Projeto Boa Ideia'],
+    ['#', 'Análises'], ['central', 'Dashboard'], ['desempenho', 'Comercial'], ['resultados', 'Resultados e OKRs'], ['inteligencia', 'Inteligência'], ['guerra', 'Sala de guerra'],
+    ['#', 'Configurações'], ['automacoes', 'Robôs'], ['fontes', 'Fontes de captação'], ['integracoes', 'Integrações'], ['juridico', 'Empresa e jurídico'], ['acessos', 'Acessos'], ['dados', 'Dados']],
   corretor: [['#', 'Hoje'], ['inicio', 'Início'], ['agenda-c', 'Agenda'], ['flows-c', 'Mensagens do dia'], ['radar-c', 'Radar'], ['chat-c', 'Chat da equipe'],
     ['#', 'Clientes'], ['crm-c', 'Funil'], ['leads-c', 'Meus leads'], ['compradores-c', 'Compradores'],
     ['#', 'Imóveis'], ['imoveis-c', 'Imóveis em oferta'], ['capt-c', 'Minhas captações'], ['prosp-c', 'Prospecção'],
@@ -3401,9 +3421,11 @@ const VIEWS = {
   inquilino: [['inquilino', 'Minha locação']],
 };
 // Telas irmãs: uma entrada no menu e abas no alto da tela.
-const GRUPOS_TELA = [['Atendimentos', ['comercial', 'radar', 'compradores', 'flows']], ['Entrada de leads', ['fontes', 'automacoes']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado']], ['Corretores', ['rede', 'rodizio']],
-  ['Marketing', ['marketing', 'campanhas']], ['Relatórios', ['desempenho', 'resultados']], ['Inteligência', ['inteligencia', 'guerra']], ['Configurações', ['juridico', 'acessos', 'integracoes', 'dados']],
-  ['Atendimentos', ['crm-c', 'leads-c', 'compradores-c']], ['Captação', ['capt-c', 'prosp-c']], ['Carteira e extrato', ['carteira', 'extrato']]];
+const GRUPOS_TELA = [['Hoje', ['meudia', 'aprovacoes', 'agenda']], ['Clientes', ['comercial', 'radar', 'compradores', 'flows', 'pessoas']], ['Imóveis', ['im-locacao', 'im-venda', 'im-cuidado', 'prospeccao']],
+  ['Dinheiro', ['locacao', 'financeiro', 'posvenda']], ['Marketing', ['marketing', 'campanhas']], ['Empresa', ['mapa', 'reunioes', 'tickets', 'rede', 'rodizio', 'ideias']],
+  ['Análises', ['central', 'desempenho', 'resultados', 'inteligencia', 'guerra']], ['Configurações', ['automacoes', 'fontes', 'integracoes', 'juridico', 'acessos', 'dados']],
+  ['Hoje', ['inicio', 'agenda-c', 'flows-c', 'radar-c']], ['Clientes', ['crm-c', 'leads-c', 'compradores-c']], ['Imóveis', ['imoveis-c', 'capt-c', 'prosp-c']],
+  ['Meus ganhos', ['carteira', 'extrato', 'poschaves-c']], ['Elora', ['treino-c', 'ideias-c', 'ia']]];
 const grupoDe = v => GRUPOS_TELA.find(g => g[1].includes(v)) || null;
 const OCULTAS_MENU = ['chat', 'chat-c'];   // o chat fica no alto de cada tela, ao lado do sino
 const tituloTela = v => { for (const p of ['equipe', 'corretor']) { const x = VIEWS[p].find(y => y[0] === v); if (x) return x[1]; } return v; };
@@ -3417,7 +3439,8 @@ const MENU_IC = { hoje: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19
   elora: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
   busca: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>', chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>' };
 const mic = (n, s = 15) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${MENU_IC[n] || ''}</svg>`;
-const slugPasta = t => semAcento(t).replace(/[^a-z]/g, '');
+const PASTA_ALIAS = { dinheiro: 'operacoes', empresa: 'equipe' };
+const slugPasta = t => { const x = semAcento(t).replace(/[^a-z]/g, ''); return PASTA_ALIAS[x] || x; };
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const $ = id => document.getElementById(id);
 const pill = (cls, txt) => `<span class="pill ${cls}">${esc(txt)}</span>`;
@@ -5631,6 +5654,58 @@ function ofPacotes() {
     setTimeout(() => { p.remove(); dest.classList.add('pisca'); setTimeout(() => dest.classList.remove('pisca'), 900); }, 1500 + i * 350); });
 }
 window.addEventListener('resize', () => { if (estado.view === 'mapa') ofPosicionar(); });
+
+// ---------- Mensagens do App Elora: conversa no estilo WhatsApp com tudo o que chega (lead, recado, lembrete, aprovação...) ----------
+// Tudo é montado a partir dos dados do sistema, que o app lê ao vivo: qualquer alteração feita pela equipe aparece aqui na hora.
+const MSG_TIPO = { lead: ['🔔', 'Novo lead'], recado: ['💬', 'Recado'], lembrete: ['⏰', 'Lembrete'], aprovado: ['✅', 'Mensagem aprovada'], pend: ['📌', 'Precisa de você'], aviso: ['📣', 'Aviso'], ok: ['✅', 'Confirmado'], bad: ['⚠️', 'Atenção'] };
+const msgHora = q => { const s = String(q || ''); return s.length >= 16 ? (() => { const d = new Date(s); return isNaN(d) ? '' : d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); })() : ''; };
+function axMensagens(p, quem) {
+  if (!quem) return []; const ms = [], add = (id, q, tipo, txt, act, d, de) => ms.push({ id, q: String(q), tipo, txt, act, d: d || {}, de: de || 'Elora' });
+  const feed = feedApp(p, quem);
+  feed.pend.forEach((x, i) => add('pd:' + (x.act || '') + ':' + JSON.stringify(x.d || {}) + ':' + i, REF + 'T08:00:00', x.sev === 'bad' ? 'bad' : 'pend', `${x.titulo}\n${x.txt}`, x.act, x.d));
+  feed.ev.filter(x => !(p === 'corretor' && /^Você recebeu o lead/.test(x.txt))).forEach(x => add('ev:' + x.q + ':' + auHash(x.txt), x.q + 'T07:59:00', x.sev === 'ok' ? 'ok' : x.sev === 'bad' ? 'bad' : 'aviso', x.txt));
+  if (p === 'corretor') {
+    for (const l of lista('leads')) { if (l.corretorId !== quem || !l.distEm) continue;
+      add('ld:' + l.id, String(l.distEm).length > 10 ? l.distEm : l.distEm + 'T08:00:00', 'lead', `${l.nome}${l.quer ? ' · ' + l.quer : l.tipo ? ' · ' + l.tipo : ''}${l.canal ? '\nVeio por: ' + l.canal : ''}${l.valorMax ? '\nAté ' + brl(cent(l.valorMax)) : ''}`, aceiteDe(l) === 'pendente' ? 'lead-aceitar' : 'atendimento', { id: l.id }); }
+    const meus = new Set(lista('leads').filter(l => l.corretorId === quem).map(l => 'lead:' + l.id)), eu_ = semAcento((DB.corretores[quem] || {}).nome || '');
+    for (const m of Object.values(DB.chat || {})) { if (!m || !m.q || !(['corretores', 'geral'].includes(m.canal) || meus.has(m.canal))) continue; if (semAcento(m.autor || '') === eu_) continue;
+      const l = String(m.canal).startsWith('lead:') ? DB.leads[m.canal.slice(5)] : null;
+      add('ch:' + (m.id || auHash(m.q + m.txt)), m.q, 'recado', `${l ? 'Sobre ' + l.nome + ': ' : ''}${m.txt}`, l ? 'atendimento' : null, l ? { id: l.id } : {}, m.autor || 'Equipe'); }
+    const amanha = somaDias(REF, 1);
+    for (const t of lista('tarefas')) { if (t.corretorId !== quem || (t.status || 'pendente') !== 'pendente' || !t.data || t.data < REF || t.data > amanha) continue;
+      const l = DB.leads[t.leadId]; add('tf:' + t.id, (t.data === REF ? REF : REF) + 'T' + (t.data === REF ? '07:30' : '18:00') + ':00', 'lembrete', `${t.data === REF ? 'Hoje' : 'Amanhã'}${t.hora ? ' às ' + t.hora : ''}: ${t.titulo}`, l ? 'atendimento' : null, l ? { id: l.id } : {}); }
+    for (const l of lista('leads')) { if (l.corretorId !== quem) continue; for (const [k, m] of Object.entries(l.autoMsg || {})) { if (!m || m.feito || !m.apId) continue;
+      const ap = (DB.aprovacoes || {})[m.apId], q = ap && ap.decisao ? ap.decisao.em : m.em + 'T08:00:00';
+      add('am:' + l.id + ':' + k, q, 'aprovado', `Para ${l.nome}, aprovada${ap && ap.decisao ? ' por ' + ap.decisao.nome : ''}:\n"${m.x}"`, 'atendimento', { id: l.id }); } }
+  }
+  const vistos = new Set(); return ms.filter(m => !vistos.has(m.id) && vistos.add(m.id)).sort((a, b) => tMs2(a.q) - tMs2(b.q)).slice(-80);
+}
+const msgChave = () => 'msgVisto:' + estado.perfil + ':' + axQuem();
+const msgVisto = () => prefLer(msgChave()) || '';
+const msgNaoLidas = () => { const v = msgVisto(); return axMensagens(estado.perfil, axQuem()).filter(m => !m.id.startsWith('pd:') && m.q > v).length; };
+function axMsgs() {
+  const ms = axMensagens(estado.perfil, axQuem()), v = msgVisto(); let dia = '';
+  const rotDia = d => d === REF ? 'Hoje' : d === somaDias(REF, -1) ? 'Ontem' : fmtData(d);
+  const html = ms.map(m => { const d = m.q.slice(0, 10), sep = d !== dia ? `<div class="wz-dia"><span>${rotDia(d)}</span></div>` : ''; dia = d; const [emo, rot] = MSG_TIPO[m.tipo] || MSG_TIPO.aviso, nova = !m.id.startsWith('pd:') && m.q > v;
+    return sep + `<div class="wz-b${nova ? ' nova' : ''}"><b class="wz-de">${emo} ${esc(m.de === 'Elora' ? rot : rot + ' · ' + m.de)}</b><p>${esc(m.txt)}</p>${m.act && AX_MSG_ACAO[m.act] ? axBtn(m.act, AX_MSG_ACAO[m.act], m.d, 'sm wz-bt') : ''}<time>${msgHora(m.q)}${nova ? ' · nova' : ''}</time></div>`; }).join('');
+  setTimeout(() => { try { prefGravar(msgChave(), new Date().toISOString()); const el = document.querySelector('.wz-lista'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 400);
+  return `<div class="wz"><header class="wz-top"><span class="wz-av">E</span><div><b>Elora</b><small>${ms.length ? 'leads, recados, lembretes e avisos' : 'nenhuma mensagem ainda'}</small></div></header>
+    <div class="wz-lista">${html || '<p class="wz-vazio">Quando chegar um lead, um recado ou um lembrete, a mensagem aparece aqui.</p>'}</div></div>`;
+}
+const AX_MSG_ACAO = { 'lead-aceitar': 'Aceitar o lead', atendimento: 'Abrir o cliente', 'tarefa-ok': 'Feito', 'pg-abrir': 'Pagar', 'aprovar-orc': 'Aprovar', sat: 'Avaliar', 'app-prop': 'Responder', confirmacao: 'Confirmar' };
+// Notificação no alto do app, como a do WhatsApp, para cada mensagem nova enquanto o app está aberto.
+let MSG_BASE = null; const MSG_AVISADAS = new Set();
+function msgNotificar() {
+  if (!estado.app || !estado.pronto || !axQuem()) return; const chave = msgChave(), ms = axMensagens(estado.perfil, axQuem()).filter(m => !m.id.startsWith('pd:'));
+  if (!MSG_BASE || MSG_BASE.k !== chave) { MSG_BASE = { k: chave, ids: new Set(ms.map(m => m.id)) }; return; }
+  const novas = ms.filter(m => !MSG_BASE.ids.has(m.id) && !MSG_AVISADAS.has(m.id)); novas.forEach(m => { MSG_BASE.ids.add(m.id); MSG_AVISADAS.add(m.id); });
+  if (!novas.length || estado.appAba === 'msgs') return; const m = novas[novas.length - 1], [emo, rot] = MSG_TIPO[m.tipo] || MSG_TIPO.aviso;
+  let b = $('wz-push'); if (!b) { b = document.createElement('button'); b.id = 'wz-push'; b.type = 'button'; b.dataset.act = 'app-aba'; b.dataset.aba = 'msgs'; document.body.appendChild(b); }
+  b.innerHTML = `<span class="wz-av">E</span><span class="wz-pt"><small>ELORA · agora${novas.length > 1 ? ` · ${novas.length} novas` : ''}</small><b></b><span></span></span>`;
+  b.querySelector('b').textContent = `${emo} ${m.de === 'Elora' ? rot : rot + ' · ' + m.de}`; b.querySelector('.wz-pt>span').textContent = m.txt.replace(/\n/g, ' · ').slice(0, 140);
+  b.classList.remove('sai'); b.classList.add('ve'); try { navigator.vibrate && navigator.vibrate(60); } catch (e) {}
+  clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('ve'); }, 6000);
+}
 
 // ---------- Chat interno ----------
 const CHAT_CANAIS = () => [['geral', 'Geral'], ...DEPTOS.map(d => [semAcento(d).replace(/[^a-z]/g, ''), nd(d)])];
@@ -9984,7 +10059,7 @@ function viewApp() {
     ${podeGravar ? '' : `<p class="ax-leitura">Modo de consulta: você vê tudo${p === 'corretor' ? '' : ' e gera o PIX'}. Para registrar pedidos, o app abre o WhatsApp da Elora.</p>`}
     <div class="ax-body">${nome ? AX_VIEWS[p][aba](feed) : axSemCadastro(p)}</div>
     <p class="ax-rodape">App Elora · Powered by <strong>Elora Core</strong></p>
-    <nav class="ax-tabs" aria-label="Seções do app">${abas.map(([k, t, i]) => `<button type="button" data-act="app-aba" data-aba="${k}"${k === aba ? ' aria-current="page"' : ''}>${ic(i)}<span>${t}</span></button>`).join('')}</nav></div>`;
+    <nav class="ax-tabs" aria-label="Seções do app">${abas.map(([k, t, i]) => { const nl = k === 'msgs' && nome ? msgNaoLidas() : 0; return `<button type="button" data-act="app-aba" data-aba="${k}"${k === aba ? ' aria-current="page"' : ''}>${ic(i)}<span>${t}</span>${nl ? `<b class="ax-nb">${nl > 99 ? '99+' : nl}</b>` : ''}</button>`; }).join('')}</nav></div>`;
 }
 function axSemCadastro(p) {
   const falta = { proprietario: 'proprietário com imóvel cadastrado', inquilino: 'contrato de locação ativo', comprador: 'venda registrada com o nome do comprador', corretor: 'corretor cadastrado' }[p];
@@ -10537,6 +10612,9 @@ function axCorMais() {
     </div></section>`;
 }
 AX_VIEWS.corretor = { inicio: axCorInicio, vender: axCorVender, clientes: axCorClientes, mais: axCorMais };
+for (const k of Object.keys(AX_VIEWS)) AX_VIEWS[k].msgs = axMsgs;
+for (const k of Object.keys(AX_ABAS)) if (!AX_ABAS[k].some(a => a[0] === 'msgs')) AX_ABAS[k].splice(1, 0, ['msgs', 'Mensagens', 'zap']);
+IC.zap = '<path d="M12 3.5a8.5 8.5 0 0 0-7.4 12.7L3.5 20.5l4.4-1.1A8.5 8.5 0 1 0 12 3.5z"/><path d="M9 9.2c.2 2.7 2.6 5.3 5.6 5.8l1-1.1-1.6-.9-.8.6c-1-.4-2-1.4-2.4-2.4l.6-.8-.9-1.6z"/>';
 
 // ----- Janelas do corretor -----
 function abrirEnvio(imId, modo, leadId) {
@@ -11330,7 +11408,7 @@ const DONO_SO = ['guerra', 'inteligencia', 'juridico', 'acessos'];
 // Acessos gravados com as pastas antigas continuam valendo (cada pasta antiga vira as áreas novas onde as telas dela estão).
 const PASTAS_ANTIGAS = { comercial: ['clientes', 'marketing', 'equipe', 'analises', 'imoveis'], gestao: ['equipe', 'analises'], tecnologia: ['configuracoes'], diretoria: [] };
 const normPastas = ps => [...new Set((ps || []).flatMap(k => PASTAS_ANTIGAS[k] || [k]))];
-const PASTAS_NOME = { clientes: 'Clientes', marketing: 'Marketing', imoveis: 'Imóveis', operacoes: 'Operações', equipe: 'Equipe', analises: 'Análises', configuracoes: 'Configurações' };
+const PASTAS_NOME = { clientes: 'Clientes', marketing: 'Marketing', imoveis: 'Imóveis', operacoes: 'Dinheiro', equipe: 'Empresa', analises: 'Análises', configuracoes: 'Configurações' };
 const ACESSOS_PADRAO = [
   { id: 'rodrigo', nome: 'Rodrigo', papel: 'Dono', pastas: '*' },
   { id: 'pedro', nome: 'Pedro', papel: 'Operações', pastas: ['imoveis', 'operacoes', 'equipe', 'analises'] },
@@ -11382,7 +11460,8 @@ function render() {
   $('modo').textContent = store.modo === 'nuvem' ? 'Dados gravados no banco desta página, na sua conta.' : 'Dados gravados apenas neste navegador.';
   if (!estado.pronto) return;
   sincronizarTickets(); if (!estado.auVarreu) { estado.auVarreu = true; setTimeout(() => { auVarredura().catch(() => {}); }, 2000); }
-  if (estado.app) { const ap = AX_PERFIS[estado.perfil] ? estado.perfil : 'proprietario', ops = OPCOES_QUEM[ap](); estado.perfil = ap; estado.view = ap; if (!ops.some(o => o[0] === estado.quem[ap])) estado.quem[ap] = ops.length ? ops[0][0] : null; $('appx').innerHTML = viewApp(); trDom($('appx')); return; }
+  if (estado.app) { const ap = AX_PERFIS[estado.perfil] ? estado.perfil : 'proprietario', ops = OPCOES_QUEM[ap](); estado.perfil = ap; estado.view = ap; if (!ops.some(o => o[0] === estado.quem[ap])) estado.quem[ap] = ops.length ? ops[0][0] : null; $('appx').innerHTML = viewApp(); trDom($('appx')); try { msgNotificar(); } catch (e) {} return; }
+  { const wp = $('wz-push'); if (wp) wp.classList.remove('ve'); }
   if (estado.perfil === 'equipe' && !viewPermitida(estado.view)) { estado.view = primeiraPermitida(); try { history.replaceState(null, '', '#' + estado.view); } catch (e) {} }
   const p = estado.perfil, sq = $('sel-quem'); $('sel-perfil').value = p;
   if (OPCOES_QUEM[p]) { const ops = OPCOES_QUEM[p](); if (!ops.some(o => o[0] === estado.quem[p])) estado.quem[p] = ops.length ? ops[0][0] : null;
@@ -11436,7 +11515,7 @@ function resultadosBusca(q) {
     if (!soC && viewPermitida('rede')) lista('corretores').filter(k => tem(k.nome)).slice(0, 3).forEach(k => r.push(linha('Corretor', k.nome, k.creci || '', 'editar', { col: 'corretores', id: k.id }))); }
   return r.length ? r.slice(0, 24).join('') : `<p class="sub">Nada encontrado para "${esc(q)}".</p>`;
 }
-function ir(v) { if (!RENDER[v]) v = 'central'; estado.app = false; estado.view = v; estado.perfil = perfilDe(v); estado.confirmar = null; try { history.replaceState(null, '', '#' + v); } catch (e) {} render(); window.scrollTo(0, 0); }
+function ir(v) { if (!RENDER[v]) v = 'meudia'; estado.app = false; estado.view = v; estado.perfil = perfilDe(v); estado.confirmar = null; try { history.replaceState(null, '', '#' + v); } catch (e) {} render(); window.scrollTo(0, 0); }
 
 const ACOES = {
   ir: d => ir(d.view), novo: d => abrirForm(d.col, null, { ...(d.fin ? { finalidade: d.fin } : {}), ...(d.lead ? { leadId: d.lead } : {}), ...(d.cor ? { corretorId: d.cor } : {}), ...(d.im ? { imovelId: d.im } : {}), ...(d.tipo ? { tipo: d.tipo } : {}) }), editar: d => abrirForm(d.col, d.id), fechar: fecharDlg,

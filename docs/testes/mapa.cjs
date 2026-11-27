@@ -7,7 +7,7 @@ const chk = (c, m) => { if (c) ok++; else falhas.push(m); console.log(c ? 'OK ' 
   const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
   await p.goto('file:///home/claude/elora/elora-partner-os.html#mapa', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(2500);
   chk(await p.evaluate('estado.view') === 'mapa', 'Mapa abre');
-  chk(await p.locator('.side .nav button', { hasText: 'Mapa da empresa' }).count() >= 1, 'Mapa da empresa no menu da esquerda');
+  chk(await p.locator('.side .nav button', { hasText: 'Empresa' }).count() >= 1 && (await p.locator('.subnav button').allInnerTexts()).includes('Mapa da empresa'), 'Mapa da empresa em Empresa (menu da esquerda)');
   const n = await p.evaluate(`(() => { const m = mapaMembros(); return [m.filter(x => x.tipo === 'humano').length, m.filter(x => x.tipo === 'robo').length]; })()`);
   console.log('pessoas, robôs', n); chk(n[0] >= 4 && n[1] >= 8, 'Pessoas e robôs no mapa');
   chk(await p.locator('#mp-deptos .mp-d').count() === 8, '8 departamentos');
